@@ -678,6 +678,26 @@
             color: #0f172a !important;
         }
 
+    
+        /* 144 FPS GPU-Accelerated Circular Ripple Theme Transition */
+        ::view-transition-old(root),
+        ::view-transition-new(root) {
+            animation: none;
+            mix-blend-mode: normal;
+        }
+        ::view-transition-old(root) {
+            z-index: 1;
+        }
+        ::view-transition-new(root) {
+            z-index: 9999;
+        }
+        html.dark::view-transition-old(root) {
+            z-index: 9999;
+        }
+        html.dark::view-transition-new(root) {
+            z-index: 1;
+        }
+
     </style>
 </head>
 <body class="w-screen h-screen overflow-hidden p-0 m-0 select-none">
@@ -802,6 +822,27 @@
                         <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
                         </svg>
+                    </button>
+
+                    <!-- ปุ่ม Tutorial / Guide Button (คู่มือและคำแนะนำการใช้งาน พร้อมแสงกะพริบเรืองแสง) -->
+                    <button
+                        id="guideBtn"
+                        onclick="openGuideModal(event)"
+                        title="คู่มือการใช้งาน (Tutorial & Guide)"
+                        class="relative w-8 h-8 rounded-xl border border-blue-500/50 bg-blue-500/10 hover:bg-blue-500/20 text-blue-600 dark:text-blue-400 flex items-center justify-center transition-all active:scale-95 cursor-pointer shadow-xs"
+                    >
+                        <!-- แสงกะพริบเรืองแสงเด่นชัดว่านี่คือคู่มือ (Glowing Pulse Effect) -->
+                        <span class="absolute -inset-0.5 rounded-xl bg-blue-500/30 dark:bg-blue-400/30 animate-pulse pointer-events-none"></span>
+                        <svg class="w-4 h-4 relative z-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                            <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                        </svg>
+                        <!-- จุดไฟแจ้งเตือนสีฟ้าสดใสกะพริบ -->
+                        <span class="absolute -top-1 -right-1 flex h-2.5 w-2.5 pointer-events-none">
+                            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                            <span class="relative inline-flex rounded-full h-2.5 w-2.5 bg-blue-500"></span>
+                        </span>
                     </button>
 
                     <!-- ปุ่มเปิด/ปิด Target Cursor -->
@@ -1110,8 +1151,137 @@
                 </button>
             </div>
         </div>
+    </div>
 
         <!-- หน้าต่าง Log แสดงอนิเมชั่นกำลังติดตั้ง / รันโปรแกรม (อยู่ภายในขอบหน้าต่างแอป) -->
+        <!-- หน้าต่างคู่มือการใช้งาน / Tutorial & Tips Modal -->
+        <div id="guideModal" style="display:none;" class="absolute inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-black/75 backdrop-blur-[6px] opacity-0 pointer-events-none transition-all duration-200">
+            <div class="w-full max-w-lg rounded-2xl p-6 shadow-2xl transition-all scale-95 border theme-modal border-zinc-700/60 max-h-[85vh] flex flex-col" id="guideBox">
+                <!-- Modal Header -->
+                <div class="flex items-center justify-between pb-3 border-b border-zinc-500/20 mb-4 shrink-0">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 rounded-xl bg-blue-500/15 text-blue-500 flex items-center justify-center font-bold">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"></path>
+                                <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                            </svg>
+                        </div>
+                        <div>
+                            <h2 id="guideTitle" class="text-sm font-bold theme-text-primary">คู่มือการใช้งาน & เคล็ดลับ</h2>
+                            <p id="guideSubtitle" class="text-[11px] theme-text-secondary">แนะนำฟังก์ชันหลักและการควบคุมภายในโปรแกรม</p>
+                        </div>
+                    </div>
+                    <button
+                        id="closeGuideModalTopBtn"
+                        type="button"
+                        onclick="closeGuideModal()"
+                        class="w-7 h-7 rounded-lg theme-hover flex items-center justify-center theme-text-muted hover:theme-text-primary transition-colors cursor-pointer"
+                    >
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Modal Content (Scrollable list of tips) -->
+                <div class="overflow-y-auto app-scroll flex-1 pr-1 space-y-3 text-xs theme-text-secondary leading-relaxed">
+                    <!-- Tip 1: Target Cursor -->
+                    <div class="p-3 rounded-xl border border-blue-500/20 bg-blue-500/5 flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-blue-500/10 text-blue-500 shrink-0">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="3"></circle>
+                                <path d="M3 12h3M18 12h3M12 3v3M12 18v3"></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="font-semibold theme-text-primary flex items-center justify-between">
+                                <span class="flex items-center gap-1.5">
+                                    <svg class="w-3.5 h-3.5 text-blue-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="10"></circle>
+                                        <circle cx="12" cy="12" r="6"></circle>
+                                        <circle cx="12" cy="12" r="2"></circle>
+                                    </svg>
+                                    <span>วิธีเปิด / ปิด Target Cursor</span>
+                                </span>
+                                <span class="text-[10px] px-1.5 py-0.5 rounded bg-blue-500/15 text-blue-500 font-mono">Reticle Icon</span>
+                            </div>
+                            <p class="text-[11.5px]">สามารถกดปุ่ม <b>เป้าเล็ง (Reticle)</b> บนแถบขวาบนสุดเพื่อ <b>เปิดหรือปิด</b> Target Cursor ได้ตลอดเวลา ระบบจะบันทึกสถานะล่าสุดไว้ให้อัตโนมัติ</p>
+                        </div>
+                    </div>
+
+                    <!-- Tip 2: Scroll to top on category re-click -->
+                    <div class="p-3 rounded-xl border theme-border theme-surface flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-emerald-500/10 text-emerald-500 shrink-0">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="18 15 12 9 6 15"></polyline>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="font-semibold theme-text-primary flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-emerald-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M12 19V5M5 12l7-7 7 7"></path>
+                                </svg>
+                                <span>เลื่อนขึ้นบนสุดอัตโนมัติ (Scroll to Top)</span>
+                            </div>
+                            <p class="text-[11.5px]">เมื่อเลื่อนดูรายการลงมาด้านล่าง หากต้องการกลับขึ้นบนสุดอย่างรวดเร็ว ให้กดที่ <b>หมวดหมู่หลัก</b> หรือ <b>หมวดหมู่ที่กำลังดูอยู่ซ้ำอีกครั้ง</b> หน้าจอจะเลื่อนขึ้นบนสุดทันที</p>
+                        </div>
+                    </div>
+
+                    <!-- Tip 3: Selection & Batch Install -->
+                    <div class="p-3 rounded-xl border theme-border theme-surface flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-violet-500/10 text-violet-500 shrink-0">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="font-semibold theme-text-primary flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-violet-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+                                </svg>
+                                <span>การเลือกและติดตั้งทีละหลายโปรแกรม</span>
+                            </div>
+                            <p class="text-[11.5px]">คลิกที่การ์ดเพื่อเลือก (หรือกดปุ่ม 'เลือกที่ยังไม่ได้ติดตั้ง') จากนั้นกดปุ่มสีฟ้า <b>'ติดตั้งที่เลือก'</b> หน้าต่างยืนยันจะแสดงสรุปรายการก่อนเริ่มติดตั้งจริง</p>
+                        </div>
+                    </div>
+
+                    <!-- Tip 4: Instant Search & Sorting -->
+                    <div class="p-3 rounded-xl border theme-border theme-surface flex items-start gap-3">
+                        <div class="p-2 rounded-lg bg-amber-500/10 text-amber-500 shrink-0">
+                            <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                        </div>
+                        <div class="space-y-1">
+                            <div class="font-semibold theme-text-primary flex items-center gap-1.5">
+                                <svg class="w-3.5 h-3.5 text-amber-500" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <circle cx="11" cy="11" r="8"></circle>
+                                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                                </svg>
+                                <span>การค้นหาและเรียงลำดับ A-Z</span>
+                            </div>
+                            <p class="text-[11.5px]">พิมพ์ค้นหาได้ทั้งภาษาไทยและอังกฤษ พร้อมเมนูเรียงลำดับที่จัดให้ตัวอักษร A-Z แสดงขึ้นก่อนตัวเลขและสัญลักษณ์อย่างเป็นระเบียบ</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Modal Footer -->
+                <div class="pt-4 border-t border-zinc-500/20 mt-3 shrink-0 flex justify-end">
+                    <button
+                        id="closeGuideModalBtn"
+                        type="button"
+                        onclick="closeGuideModal()"
+                        class="px-5 py-2 rounded-xl text-xs font-semibold bg-blue-500 hover:bg-blue-400 text-white shadow-sm transition-all active:scale-95 cursor-pointer"
+                    >
+                        เข้าใจแล้ว (Got it)
+                    </button>
+                </div>
+            </div>
+        </div>
+
         <div
             id="installLogBackdrop"
             class="log-backdrop-hidden absolute inset-0 z-40 bg-slate-900/35 dark:bg-black/65 backdrop-blur-[3px] flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300"
@@ -5696,7 +5866,7 @@
                                                                                                     "en": "Microsoft's MSIX/AppX installer and winget command-line package manager"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/9NBLGGH4NNS1",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.desktopappinstaller.png",
+                                                                                "iconUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22ai%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2329B6F6%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230288D1%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20x%3D%226%22%20y%3D%228%22%20width%3D%2236%22%20height%3D%2232%22%20rx%3D%227%22%20fill%3D%22url%28%23ai%29%22/%3E%3Cpath%20d%3D%22M24%2014v14m-6-6l6%206%206-6%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%223.5%22%20stroke-linecap%3D%22round%22%20stroke-linejoin%3D%22round%22/%3E%3Crect%20x%3D%2212%22%20y%3D%2232%22%20width%3D%2224%22%20height%3D%223%22%20rx%3D%221.5%22%20fill%3D%22%23fff%22%20opacity%3D%220.9%22/%3E%3C/svg%3E",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -5871,7 +6041,7 @@
                                                                                                     "en": "View 3D models, animations, and AR scenes in glTF, FBX, and OBJ formats"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/9NBLGGH42THS",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.microsoft3dviewer.png",
+                                                                                "iconUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22g1%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%2300C7FD%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230078D4%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22g2%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%232896F3%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23005A9E%22/%3E%3C/linearGradient%3E%3ClinearGradient%20id%3D%22g3%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%230078D4%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23106EBE%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Cpath%20fill%3D%22url%28%23g1%29%22%20d%3D%22M24%204l18%2010.4-18%2010.4L6%2014.4z%22/%3E%3Cpath%20fill%3D%22url%28%23g2%29%22%20d%3D%22M24%2024.8l18-10.4v20.8L24%2045.6z%22/%3E%3Cpath%20fill%3D%22url%28%23g3%29%22%20d%3D%22M6%2014.4l18%2010.4v20.8L6%2035.2z%22/%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2224.8%22%20r%3D%225%22%20fill%3D%22%23fff%22%20opacity%3D%220.9%22/%3E%3C/svg%3E",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -5955,7 +6125,7 @@
                                                                                                     "en": "Setup and launcher for Windows VR headsets (deprecated in Windows 11 24H2)"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/9NG1H8B3ZC7M",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.mixedreality.portal.png",
+                                                                                "iconUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22mr%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%237B1FA2%22/%3E%3Cstop%20offset%3D%2250%25%22%20stop-color%3D%22%236200EA%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%230091EA%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Crect%20x%3D%224%22%20y%3D%2212%22%20width%3D%2240%22%20height%3D%2224%22%20rx%3D%228%22%20fill%3D%22url%28%23mr%29%22/%3E%3Cpath%20d%3D%22M4%2022h40v4H4z%22%20fill%3D%22%23000%22%20opacity%3D%220.25%22/%3E%3Cellipse%20cx%3D%2216%22%20cy%3D%2224%22%20rx%3D%226%22%20ry%3D%225%22%20fill%3D%22%23fff%22%20opacity%3D%220.85%22/%3E%3Cellipse%20cx%3D%2232%22%20cy%3D%2224%22%20rx%3D%226%22%20ry%3D%225%22%20fill%3D%22%23fff%22%20opacity%3D%220.85%22/%3E%3Cpath%20d%3D%22M4%2018c0-3.3%202.7-6%206-6h28c3.3%200%206%202.7%206%206%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222%22%20opacity%3D%220.4%22/%3E%3C/svg%3E",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -6246,7 +6416,7 @@
                                                                                                     "en": "Walk-through tutorials and tips for new Windows features"
                                                                                 },
                                                                                 "website": "",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.getstarted.png",
+                                                                                "iconUrl": "data:image/svg+xml;utf8,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20viewBox%3D%220%200%2048%2048%22%3E%3Cdefs%3E%3ClinearGradient%20id%3D%22tip%22%20x1%3D%220%25%22%20y1%3D%220%25%22%20x2%3D%22100%25%22%20y2%3D%22100%25%22%3E%3Cstop%20offset%3D%220%25%22%20stop-color%3D%22%23FFD54F%22/%3E%3Cstop%20offset%3D%22100%25%22%20stop-color%3D%22%23FF9800%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle%20cx%3D%2224%22%20cy%3D%2220%22%20r%3D%2214%22%20fill%3D%22url%28%23tip%29%22/%3E%3Cpath%20d%3D%22M18%2034h12v4a2%202%200%200%201-2%202h-8a2%202%200%200%201-2-2z%22%20fill%3D%22%2378909C%22/%3E%3Cpath%20d%3D%22M19%2030h10v4H19z%22%20fill%3D%22%23B0BEC5%22/%3E%3Cpath%20d%3D%22M22%2013a6%206%200%200%201%206%206%22%20fill%3D%22none%22%20stroke%3D%22%23fff%22%20stroke-width%3D%222.5%22%20stroke-linecap%3D%22round%22/%3E%3C/svg%3E",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -6297,7 +6467,7 @@
                                                                                                     "en": "Built-in email client and calendar (replaced by new Outlook in Windows 11)"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/9WZDNCRFHVQM",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowscommunicationsapps.png",
+                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.outlookforwindows.png",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -6496,7 +6666,7 @@
                                                                                                     "en": "Game Bar overlay component (Microsoft unpublished; auto-installed with Game Bar)"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/\"9NBLGGH537C2\", // globally Accessible=false since 2020-06; bundled with Xbox Game Bar",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xboxgameoverlay.png",
+                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/xbox.png",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -6517,7 +6687,7 @@
                                                                                                     "en": "Authentication service for Xbox Live and related Microsoft gaming services"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/9WZDNCRD1HKW",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xboxidentityprovider.png",
+                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/xbox.png",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -6538,7 +6708,7 @@
                                                                                                     "en": "Title Callable UI for Xbox Live overlays and dialogs shown inside games"
                                                                                 },
                                                                                 "website": "https://apps.microsoft.com/detail/9NKNC0LD5NN6",
-                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xbox.tcui.png",
+                                                                                "iconUrl": "https://cdn.jsdelivr.net/gh/walkxcode/dashboard-icons/png/xbox.png",
                                                                                 "isWindowsApp": true,
                                                                                 "isOptionalFeature": false,
                                                                                 "appxPackageName": [
@@ -7072,25 +7242,63 @@
             return `polygon(${points.join(', ')})`;
         }
 
-        // ฟังก์ชันสลับธีมมืด / สว่าง พร้อมอนิเมชั่นคลื่นมนๆ จบแบบคลีนๆ ไม่ดุ๊กดิ๊ก และคลิกสิ่งอื่นได้ตลอดเวลา
+        // ฟังก์ชันสลับธีมมืด / สว่าง พร้อมอนิเมชั่นคลื่นวงกลมขยายตัวแบบ 144 FPS GPU-Accelerated ลื่นไหล ไม่มีหน่วง ไม่ค้าง
         function toggleTheme(event) {
             if (event) event.stopPropagation();
-            isDarkMode = !isDarkMode;
-            const html = document.documentElement;
-            const moonIcon = document.getElementById('moonIcon');
-            const sunIcon = document.getElementById('sunIcon');
 
-            if (isDarkMode) {
-                html.classList.add('dark');
-                if (moonIcon) moonIcon.classList.add('hidden');
-                if (sunIcon) sunIcon.classList.remove('hidden');
-                matrixConfig.theme = 'dark';
-            } else {
-                html.classList.remove('dark');
-                if (moonIcon) moonIcon.classList.remove('hidden');
-                if (sunIcon) sunIcon.classList.add('hidden');
-                matrixConfig.theme = 'light';
+            const applyThemeDOM = () => {
+                isDarkMode = !isDarkMode;
+                const html = document.documentElement;
+                const moonIcon = document.getElementById('moonIcon');
+                const sunIcon = document.getElementById('sunIcon');
+
+                if (isDarkMode) {
+                    html.classList.add('dark');
+                    if (moonIcon) moonIcon.classList.add('hidden');
+                    if (sunIcon) sunIcon.classList.remove('hidden');
+                    matrixConfig.theme = 'dark';
+                } else {
+                    html.classList.remove('dark');
+                    if (moonIcon) moonIcon.classList.remove('hidden');
+                    if (sunIcon) sunIcon.classList.add('hidden');
+                    matrixConfig.theme = 'light';
+                }
+            };
+
+            const btn = document.getElementById('themeToggleBtn');
+            if (!document.startViewTransition || !btn) {
+                applyThemeDOM();
+                return;
             }
+
+            const rect = btn.getBoundingClientRect();
+            const x = rect.left + rect.width / 2;
+            const y = rect.top + rect.height / 2;
+            const endRadius = Math.hypot(
+                Math.max(x, window.innerWidth - x),
+                Math.max(y, window.innerHeight - y)
+            );
+
+            const transition = document.startViewTransition(() => {
+                applyThemeDOM();
+            });
+
+            transition.ready.then(() => {
+                const clipPath = [
+                    `circle(0px at ${x}px ${y}px)`,
+                    `circle(${endRadius}px at ${x}px ${y}px)`
+                ];
+                document.documentElement.animate(
+                    {
+                        clipPath: isDarkMode ? clipPath : [...clipPath].reverse()
+                    },
+                    {
+                        duration: 360,
+                        easing: 'cubic-bezier(0.2, 0, 0, 1)',
+                        pseudoElement: isDarkMode ? '::view-transition-new(root)' : '::view-transition-old(root)'
+                    }
+                );
+            });
         }
 
         function toggleLangDropdown(event) {
@@ -7747,6 +7955,27 @@
             });
         }
 
+        function openGuideModal(event) {
+            if (event) event.stopPropagation();
+            const modal = document.getElementById('guideModal');
+            const box = document.getElementById('guideBox');
+            if (!modal) return;
+            modal.style.display = 'flex';
+            modal.classList.remove('opacity-0', 'pointer-events-none');
+            if (box) box.classList.remove('scale-95');
+        }
+
+        function closeGuideModal() {
+            const modal = document.getElementById('guideModal');
+            const box = document.getElementById('guideBox');
+            if (!modal) return;
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            if (box) box.classList.add('scale-95');
+            setTimeout(() => {
+                modal.style.display = 'none';
+            }, 200);
+        }
+
         function closeBatchConfirmModal() {
             const modal = document.getElementById('batchConfirmModal');
             const box = document.getElementById('batchConfirmBox');
@@ -7912,20 +8141,37 @@
             updateToolbarButtons();
         }
 
-        // เปลี่ยนหมวดหมู่หลัก (ป้องกันการทำงานซ้ำหากกดหมวดหมู่เดิมที่เลือกอยู่แล้ว)
+        function scrollToTop() {
+            const mainScroll = document.querySelector('main');
+            if (mainScroll) {
+                mainScroll.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+            document.documentElement.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // เปลี่ยนหมวดหมู่หลัก (หากกดหมวดหมู่เดิมซ้ำ หรือเปลี่ยนหมวดหมู่ จะเลื่อนขึ้นบนสุดอัตโนมัติ)
         function selectMainCategory(id) {
-            if (activeMainId === id) return;
+            if (activeMainId === id) {
+                scrollToTop();
+                return;
+            }
             activeMainId = id;
             activeSubId = 'all';
             renderAll();
+            scrollToTop();
         }
 
-        // เปลี่ยนหมวดหมู่ย่อย (ป้องกันการทำงานซ้ำหากกดหมวดหมู่ย่อยเดิม)
+        // เปลี่ยนหมวดหมู่ย่อย (หากกดหมวดหมู่ย่อยเดิมซ้ำ หรือเปลี่ยนหมวดหมู่ จะเลื่อนขึ้นบนสุดอัตโนมัติ)
         function selectSubCategory(id) {
-            if (activeSubId === id) return;
+            if (activeSubId === id) {
+                scrollToTop();
+                return;
+            }
             activeSubId = id;
             renderSubCategories();
             renderPrograms();
+            scrollToTop();
         }
 
         // จำลองการรันโปรแกรมและเปิดหน้าต่างอนิเมชั่น Log กำลังติดตั้ง
@@ -9043,7 +9289,7 @@
                 if (card) return card;
 
                 // Priority 4: tabs, pills, and toolbar buttons
-                const interactive = node.closest('.sub-pill, #mainCategoryBar button, #mainActionToolbar button, #mainActionToolbar input, #header button, #header input, #batchConfirmModal button, #installLogModal button');
+                const interactive = node.closest('.sub-pill, #mainCategoryBar button, #mainActionToolbar button, #mainActionToolbar input, #header button, #header input, #batchConfirmModal button, #installLogModal button, #guideModal button, #guideBtn');
                 if (interactive) return interactive;
 
                 // Priority 5: any general button, anchor with href, or input
@@ -9132,6 +9378,12 @@
                 }
                 if (el.id === 'langDropdownBtn') {
                     return isTh ? 'เปลี่ยนภาษา' : 'Language';
+                }
+                if (el.id === 'guideBtn' || el.closest('#guideBtn')) {
+                    return isTh ? 'คู่มือการใช้งาน (Guide)' : 'Tutorial & Guide';
+                }
+                if (el.id === 'closeGuideModalBtn' || el.id === 'closeGuideModalTopBtn') {
+                    return isTh ? 'ปิดคู่มือ' : 'Close Guide';
                 }
                 if (el.id === 'githubBtn') {
                     return 'GitHub (phwyverysad)';
