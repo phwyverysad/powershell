@@ -68,11 +68,19 @@ namespace WinUtil {{
             HashSet<string> displayNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
             HashSet<string> keyNames = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
 
-            RegistryKey[] hives = new RegistryKey[] {{ Registry.LocalMachine, Registry.LocalMachine, Registry.CurrentUser }};
+            RegistryKey[] hives = new RegistryKey[] {{
+                Registry.LocalMachine,
+                Registry.LocalMachine,
+                Registry.CurrentUser,
+                Registry.CurrentUser,
+                Registry.LocalMachine
+            }};
             string[] paths = new string[] {{
                 @"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
                 @"SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
-                @"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall"
+                @"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall",
+                @"Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppModel\\Repository\\Packages",
+                @"Software\\Classes\\Local Settings\\Software\\Microsoft\\Windows\\CurrentVersion\\AppModel\\Repository\\Packages"
             }};
 
             for (int i = 0; i < hives.Length; i++) {{
@@ -482,22 +490,20 @@ function Start-LauncherApp {{
                                 $pkgId = $item.wingetId
 
                                 if ($mode -eq "uninstall") {{
-                                    $uninstCmd = if ($pkgId) {{ "winget uninstall -e --id $pkgId" }} else {{ "winget uninstall `"$appName`"" }}
-                                    $cmdList += "Write-Host '`n========================================' -ForegroundColor Yellow"
-                                    $cmdList += "Write-Host '[$stepNum/$total] Uninstalling: $appName' -ForegroundColor Yellow"
-                                    $cmdList += "Write-Host 'Command: $uninstCmd' -ForegroundColor DarkGray"
-                                    $cmdList += "Write-Host '========================================' -ForegroundColor Yellow"
+                                    $uninstCmd = if ($item.uninstallCmd) {{ $item.uninstallCmd }} elseif ($pkgId) {{ "winget uninstall -e --id $pkgId" }} else {{ "winget uninstall `"$appName`"" }}
+                                    $cmdList += "Write-Host ('> [' + $stepNum + '/' + $total + '] Uninstalling: ' + '$appName') -ForegroundColor Yellow"
+                                    $cmdList += "Write-Host ('Command: ' + '$uninstCmd') -ForegroundColor DarkGray"
                                     $cmdList += $uninstCmd
+                                    $cmdList += "if (`$LASTEXITCODE -eq 0 -or `$LASTEXITCODE -eq 2316632107 -or `$LASTEXITCODE -eq -1978335189) {{ Write-Host '[OK] Done' -ForegroundColor Green; `$global:LASTEXITCODE = 0 }}"
                                 }} else {{
-                                    $installCmd = if ($item.cmd) {{ $item.cmd }} else {{ "winget install -e --id $pkgId" }}
+                                    $installCmd = if ($item.installCmd) {{ $item.installCmd }} elseif ($item.cmd) {{ $item.cmd }} else {{ "winget install -e --id $pkgId" }}
                                     if ($installCmd -match "^winget\\s+install" -and $installCmd -notmatch "--accept-source-agreements") {{
                                         $installCmd = "$installCmd --accept-source-agreements --accept-package-agreements"
                                     }}
-                                    $cmdList += "Write-Host '`n========================================' -ForegroundColor Cyan"
-                                    $cmdList += "Write-Host '[$stepNum/$total] Installing: $appName' -ForegroundColor Green"
-                                    $cmdList += "Write-Host 'Command: $installCmd' -ForegroundColor DarkGray"
-                                    $cmdList += "Write-Host '========================================' -ForegroundColor Cyan"
+                                    $cmdList += "Write-Host ('> [' + $stepNum + '/' + $total + '] Installing: ' + '$appName') -ForegroundColor Cyan"
+                                    $cmdList += "Write-Host ('Command: ' + '$installCmd') -ForegroundColor DarkGray"
                                     $cmdList += $installCmd
+                                    $cmdList += "if (`$LASTEXITCODE -eq 0 -or `$LASTEXITCODE -eq 2316632107 -or `$LASTEXITCODE -eq -1978335189) {{ Write-Host '[OK] Installed / Already up to date' -ForegroundColor Green; `$global:LASTEXITCODE = 0 }}"
                                 }}
                             }}
                             $fullBatchCmd = $cmdList -join "; "

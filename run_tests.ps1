@@ -46,6 +46,7 @@ if ($pwshInstalled) {
 # ----------------------------------------------------
 Write-Host "`n[3] Verifying HTML Catalog Data & UI Specifications..." -ForegroundColor Yellow
 $html = Get-Content -Raw -Encoding UTF8 "C:\Users\Administrator\.gemini\antigravity\scratch\powershell\clean_utility_launcher_gui.html"
+$launcherPs1 = Get-Content -Raw -Encoding UTF8 "C:\Users\Administrator\.gemini\antigravity\scratch\powershell\launcher.ps1"
 
 # 3.1 Check Dev category is removed
 $hasTopDev = $html -match "id:\s*'dev',\s*name:\s*\{\s*th:\s*'นักพัฒนาและรันไทม์'"
@@ -201,6 +202,21 @@ Assert-Test ($html.Contains('html.dark #mainActionToolbar button.theme-input')) 
 
 # 7.7 GitHub Profile Button
 Assert-Test ($html.Contains('id="githubBtn"') -and $html.Contains('https://github.com/phwyverysad')) "GitHub profile button exists before theme toggle button with link to https://github.com/phwyverysad"
+
+# 7.8 TargetCursor Component
+Assert-Test ($html.Contains('target-cursor') -and $html.Contains('initTargetCursor') -and $html.Contains('cursor-target')) "TargetCursor component from React Bits integrated with high-performance spring physics"
+
+# 7.9 A-Z Sort Prioritizes Letters Over Numbers
+Assert-Test ($html.Contains('/^[a-zA-Z]/.test') -and $html.Contains('isLetterA !== isLetterB')) "A-Z sorting prioritizes pure letters A-Z before numbers/symbols (7-Zip placed after Z)"
+
+# 7.10 Dynamic Sort Button Label
+Assert-Test ($html.Contains("btnLabel.textContent = t.sortAZ") -and $html.Contains("btnLabel.textContent = t.sortZA")) "Sort button label dynamically updates to reflect selected sort mode"
+
+# 7.11 Clean Log Output (No '==========')
+Assert-Test (-not $launcherPs1.Contains("========================================") -and $launcherPs1.Contains("> [")) "Log output formatted cleanly with no '==========' dividers"
+
+# 7.12 Automated App Status & AppX Scanning
+Assert-Test ($launcherPs1.Contains('AppModel\Repository\Packages') -and $html.Contains('item.appxPackageName')) "Automatic installed status scanning supports AppX packages and updates dynamically"
 
 $sw.Stop()
 Write-Host "`n====================================================" -ForegroundColor Cyan
