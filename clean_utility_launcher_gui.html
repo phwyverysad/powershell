@@ -799,6 +799,26 @@
                         </svg>
                     </button>
 
+                    <!-- ปุ่มเปิด/ปิด Target Cursor -->
+                    <button
+                        id="cursorToggleBtn"
+                        onclick="toggleTargetCursor(event)"
+                        title="เปิด/ปิด Target Cursor"
+                        class="w-8 h-8 rounded-xl border theme-input theme-hover flex items-center justify-center theme-text-secondary transition-all active:scale-95 cursor-pointer"
+                    >
+                        <!-- ไอคอน Reticle เมื่อเปิดใช้งาน -->
+                        <svg id="cursorActiveIcon" class="w-4 h-4 text-blue-500 dark:text-blue-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M3 12h3M18 12h3M12 3v3M12 18v3"></path>
+                            <path d="M6 6L4 4M18 18l2 2M6 18l-2 2M18 6l2-2" stroke-width="1.5"></path>
+                        </svg>
+                        <!-- ไอคอนเมื่อปิดใช้งาน (ขีดฆ่า) -->
+                        <svg id="cursorInactiveIcon" class="w-4 h-4 theme-text-muted hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="3"></circle>
+                            <path d="M3 12h3M18 12h3M12 3v3M12 18v3M4 4l16 16"></path>
+                        </svg>
+                    </button>
+
                     <!-- ปุ่มสลับธีมมืด / สว่าง -->
                     <button
                         id="themeToggleBtn"
@@ -8865,7 +8885,7 @@
             const QUARTER = Math.PI / 2;
 
             const spring = (state, goal, stiffness, damping, dt) => {
-                const steps = 2;
+                const steps = 4;
                 const h = dt / steps;
                 for (let i = 0; i < steps; i++) {
                     state.v += (stiffness * (goal - state.x) - damping * state.v) * h;
@@ -8925,6 +8945,7 @@
             const lock = { x: 0, v: 0 };
             const press = { x: 0, v: 0 };
             const presence = { x: 0, v: 0 };
+            const tilt = { x: 0, v: 0 };
             let target = null;
             let targetRadius = 0;
             let quarter = 0;
@@ -8932,8 +8953,47 @@
             let raf = 0;
             let last = 0;
             let lastLabel = '';
+            let isCursorEnabled = localStorage.getItem('target_cursor_enabled') !== 'false';
+
+            const updateCursorToggleVisuals = () => {
+                const btn = document.getElementById('cursorToggleBtn');
+                const activeIcon = document.getElementById('cursorActiveIcon');
+                const inactiveIcon = document.getElementById('cursorInactiveIcon');
+                const isTh = (typeof currentLang !== 'undefined' ? currentLang : 'th') === 'th';
+                if (btn) {
+                    btn.title = isCursorEnabled ? (isTh ? 'ปิด Target Cursor' : 'Disable Target Cursor') : (isTh ? 'เปิด Target Cursor' : 'Enable Target Cursor');
+                }
+                if (activeIcon && inactiveIcon) {
+                    if (isCursorEnabled) {
+                        activeIcon.classList.remove('hidden');
+                        inactiveIcon.classList.add('hidden');
+                    } else {
+                        activeIcon.classList.add('hidden');
+                        inactiveIcon.classList.remove('hidden');
+                    }
+                }
+                if (!isCursorEnabled) {
+                    root.style.display = 'none';
+                    if (style) style.textContent = '';
+                } else {
+                    root.style.display = '';
+                    hideCursor();
+                }
+            };
+
+            window.toggleTargetCursor = function(event) {
+                if (event) event.stopPropagation();
+                isCursorEnabled = !isCursorEnabled;
+                localStorage.setItem('target_cursor_enabled', isCursorEnabled ? 'true' : 'false');
+                updateCursorToggleVisuals();
+                if (isCursorEnabled) wake();
+            };
 
             const hideCursor = () => {
+                if (!isCursorEnabled) {
+                    if (style && style.textContent !== '') style.textContent = '';
+                    return;
+                }
                 const rule = s.hideDefaultCursor && pointer.inside ? 'html, html * { cursor: none !important; }' : '';
                 if (style.textContent !== rule) style.textContent = rule;
             };
@@ -9049,6 +9109,9 @@
                 if (el.id === 'githubBtn') {
                     return 'GitHub (phwyverysad)';
                 }
+                if (el.id === 'cursorToggleBtn' || el.closest('#cursorToggleBtn')) {
+                    return isCursorEnabled ? (isTh ? 'ปิด Target Cursor' : 'Disable Target Cursor') : (isTh ? 'เปิด Target Cursor' : 'Enable Target Cursor');
+                }
                 if (el.id === 'themeToggleBtn') {
                     return isTh ? 'สลับธีม สว่าง/มืด' : 'Toggle Theme';
                 }
@@ -9087,12 +9150,15 @@
                 return '';
             };
 
+            let cardinalTurn = 0;
+
             const lockOn = next => {
                 if (next === target) return;
                 target = next;
                 if (target) {
                     const angle = turn.x;
-                    quarter = Math.round(angle / QUARTER);
+                    // Snap straight to nearest upright cardinal cycle (0, 2π, etc.) to keep rectangular cards straight
+                    cardinalTurn = Math.round(angle / (Math.PI * 2)) * (Math.PI * 2);
                     const computed = getComputedStyle(target);
                     let corner = parseFloat(computed.borderTopLeftRadius) || 0;
                     const rect = target.getBoundingClientRect();
@@ -9107,15 +9173,18 @@
 
             const frame = now => {
                 raf = 0;
+                if (!isCursorEnabled) return;
                 const dt = last ? Math.min(0.05, (now - last) / 1000) : 1 / 60;
                 last = now;
 
                 if (target && !target.isConnected) lockOn(null);
                 const rect = target ? target.getBoundingClientRect() : null;
                 const locked = !!rect && pointer.inside;
-                const snapW = 4.6 / s.hoverDuration;
+                const snapW = 4.4 / s.hoverDuration;
                 const snapK = snapW * snapW;
-                const snapC = 2 * 0.62 * snapW;
+                const snapC = 2 * 0.96 * snapW;
+                const roamK = 800;
+                const roamC = 2 * 0.96 * Math.sqrt(roamK);
 
                 spring(presence, pointer.inside ? 1 : 0, 260, 32, dt);
                 spring(lock, locked ? 1 : 0, snapK, 2 * snapW, dt);
@@ -9126,18 +9195,28 @@
                 let goalW = s.size / 2;
                 let goalH = s.size / 2;
                 let goalR = Math.min(2, s.cornerSize / 4);
+                let naturalTilt = 0;
                 if (locked) {
                     const cx = rect.left + rect.width / 2;
                     const cy = rect.top + rect.height / 2;
-                    const lean = s.parallaxOn ? 0.08 : 0;
-                    goalX = cx + (pointer.x - cx) * lean;
-                    goalY = cy + (pointer.y - cy) * lean;
-                    const odd = Math.abs(quarter) % 2 === 1;
-                    const w = rect.width / 2 + s.padding;
-                    const h = rect.height / 2 + s.padding;
-                    goalW = odd ? h : w;
-                    goalH = odd ? w : h;
+                    const dx = pointer.x - cx;
+                    const dy = pointer.y - cy;
+                    const lean = s.parallaxOn ? 0.05 : 0;
+                    goalX = cx + dx * lean;
+                    goalY = cy + dy * lean;
+
+                    // Always align width along horizontal and height along vertical (straight card selection)
+                    goalW = rect.width / 2 + s.padding;
+                    goalH = rect.height / 2 + s.padding;
                     goalR = s.matchRadius ? (targetRadius > 0 ? targetRadius + Math.max(0, s.padding) : 0) : 0;
+
+                    // Subtle natural dynamic tilt toward cursor approach angle (~1.2 deg max)
+                    if (s.parallaxOn && rect.width > 0 && rect.height > 0) {
+                        const normDx = Math.max(-1, Math.min(1, dx / (rect.width / 2)));
+                        const normDy = Math.max(-1, Math.min(1, dy / (rect.height / 2)));
+                        const maxTiltRad = (1.2 * Math.PI) / 180;
+                        naturalTilt = (normDx * 0.65 - normDy * 0.35) * maxTiltRad;
+                    }
                 }
 
                 if (!pointer.inside && presence.x < 0.01) pointer.seen = false;
@@ -9149,16 +9228,20 @@
                     pointer.seen = pointer.inside;
                 }
 
-                const follow = locked ? snapK : 2200;
-                const followC = locked ? snapC : 2 * Math.sqrt(2200);
+                const follow = locked ? snapK : roamK;
+                const followC = locked ? snapC : roamC;
                 spring(centerX, goalX, follow, followC, dt);
                 spring(centerY, goalY, follow, followC, dt);
                 spring(halfW, goalW, snapK, snapC, dt);
                 spring(halfH, goalH, snapK, snapC, dt);
-                spring(radius, goalR, snapK, 2 * snapW, dt);
+                spring(radius, goalR, snapK, snapC, dt);
+
+                // Smooth natural tilt through critically damped spring filter (zero jitter/vibration)
+                spring(tilt, locked ? naturalTilt : 0, 160, 25, dt);
 
                 if (locked) {
-                    spring(turn, quarter * QUARTER, snapK, snapC, dt);
+                    const targetAngle = cardinalTurn + tilt.x;
+                    spring(turn, targetAngle, snapK, snapC, dt);
                 } else {
                     const speed = s.spinDuration > 0 ? (Math.PI * 2) / s.spinDuration : 0;
                     spinSpeed += (speed - spinSpeed) * (1 - Math.exp(-dt * 3));
@@ -9338,10 +9421,12 @@
             });
 
             window.addEventListener('scroll', () => {
-                if (!pointer.inside) return;
+                if (!isCursorEnabled || !pointer.inside) return;
                 lockOn(findTarget(pointer.x, pointer.y));
                 wake();
             }, { passive: true, capture: true });
+
+            updateCursorToggleVisuals();
         })();
 
     </script>
