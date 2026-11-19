@@ -584,14 +584,31 @@
         }
     
         /* ============================================================
-           TARGET CURSOR (React Bits Component - Vanilla JS Port)
+           TARGET CURSOR THEME INTEGRATION (Matches App Typography & Palette)
            ============================================================ */
+        :root {
+            --target-cursor-color: #0f172a;
+            --target-cursor-label-color: #0f172a;
+            --target-cursor-label-bg: rgba(255, 255, 255, 0.94);
+            --target-cursor-label-border: rgba(203, 213, 225, 0.85);
+            --target-cursor-label-shadow: 0 4px 14px rgba(15, 23, 42, 0.10);
+            --target-cursor-shadow: drop-shadow(0 1px 2px rgba(15, 23, 42, 0.18));
+        }
+
+        html.dark {
+            --target-cursor-color: #fafafa;
+            --target-cursor-label-color: #fafafa;
+            --target-cursor-label-bg: rgba(30, 31, 35, 0.94);
+            --target-cursor-label-border: rgba(255, 255, 255, 0.14);
+            --target-cursor-label-shadow: 0 6px 20px rgba(0, 0, 0, 0.65);
+            --target-cursor-shadow: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.7));
+        }
+
         .target-cursor {
             position: fixed;
             inset: 0;
             z-index: 2147483647;
             pointer-events: none;
-            mix-blend-mode: difference;
         }
         .target-cursor__corner {
             position: absolute;
@@ -599,7 +616,8 @@
             left: 0;
             box-sizing: border-box;
             border-style: solid;
-            border-color: var(--target-cursor-color, #ffffff);
+            border-color: var(--target-cursor-color);
+            filter: var(--target-cursor-shadow);
             transform-origin: 0 0;
             will-change: transform;
         }
@@ -608,24 +626,30 @@
             top: 0;
             left: 0;
             border-radius: 50%;
-            background: var(--target-cursor-color, #ffffff);
+            background: var(--target-cursor-color);
+            filter: var(--target-cursor-shadow);
             will-change: transform;
         }
         .target-cursor__label {
             position: absolute;
             top: 0;
             left: 0;
-            color: #ffffff;
-            font-size: 11px;
+            font-family: 'Plus Jakarta Sans', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--target-cursor-label-color);
+            background: var(--target-cursor-label-bg);
+            border: 1px solid var(--target-cursor-label-border);
+            box-shadow: var(--target-cursor-label-shadow);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            font-size: 11.5px;
             font-weight: 600;
+            letter-spacing: -0.01em;
             line-height: 1;
             white-space: nowrap;
+            padding: 4px 8px;
+            border-radius: 6px;
             opacity: 0;
             will-change: transform, opacity;
-            padding: 3px 7px;
-            border-radius: 5px;
-            background: rgba(15, 23, 42, 0.85);
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
             pointer-events: none;
         }
 
@@ -8914,9 +8938,153 @@
                 if (style.textContent !== rule) style.textContent = rule;
             };
 
+            // Comprehensive target detection across cards, buttons, tabs, pills, inputs, and modals
             const findTarget = (x, y, element) => {
                 const node = element || document.elementFromPoint(x, y);
-                return node?.closest?.(s.targetSelector) || null;
+                if (!node || node === document.body || node === document.documentElement) return null;
+
+                // Priority 1: explicitly designated cursor target or custom label
+                const explicit = node.closest('[data-cursor-label], .cursor-target');
+                if (explicit) return explicit;
+
+                // Priority 2: inner controls inside cards (external link button, checkbox)
+                const innerBtn = node.closest('.card-ext-btn, .card-checkbox');
+                if (innerBtn) return innerBtn;
+
+                // Priority 3: app card item
+                const card = node.closest('.app-card-item');
+                if (card) return card;
+
+                // Priority 4: tabs, pills, and toolbar buttons
+                const interactive = node.closest('.sub-pill, #mainCategoryBar button, #mainActionToolbar button, #mainActionToolbar input, #header button, #header input, #batchConfirmModal button, #installLogModal button');
+                if (interactive) return interactive;
+
+                // Priority 5: any general button, anchor with href, or input
+                const general = node.closest('button, a[href], input:not([type="hidden"]), select');
+                if (general) return general;
+
+                return null;
+            };
+
+            // Intelligent context-aware descriptive label generation (Thai & English)
+            const getElementLabel = el => {
+                if (!el) return '';
+                const explicit = el.getAttribute('data-cursor-label');
+                if (explicit) return explicit;
+
+                const isTh = (typeof currentLang !== 'undefined' ? currentLang : 'th') === 'th';
+
+                // App card inner controls
+                if (el.classList.contains('card-ext-btn')) {
+                    return isTh ? 'เปิดเว็บไซต์ทางการ' : 'Official Website';
+                }
+                if (el.classList.contains('card-checkbox')) {
+                    const card = el.closest('.app-card-item');
+                    const isSel = card && card.classList.contains('is-selected');
+                    return isSel ? (isTh ? 'ยกเลิกเลือก' : 'Deselect') : (isTh ? 'เลือกรายการ' : 'Select');
+                }
+
+                // App Card Item
+                if (el.classList.contains('app-card-item')) {
+                    const titleEl = el.querySelector('.card-title');
+                    const name = titleEl ? titleEl.textContent.trim() : '';
+                    const isSel = el.classList.contains('is-selected');
+                    const shortName = name.length > 20 ? name.substring(0, 18) + '...' : name;
+                    if (name) {
+                        return isSel ? (isTh ? `ยกเลิก ${shortName}` : `Deselect ${shortName}`) : (isTh ? `เลือก ${shortName}` : `Select ${shortName}`);
+                    }
+                    return isTh ? 'เลือกโปรแกรม' : 'Select Program';
+                }
+
+                // Subcategory Pills
+                if (el.classList.contains('sub-pill')) {
+                    const text = el.textContent.trim();
+                    return isTh ? `หมวด: ${text}` : `Category: ${text}`;
+                }
+
+                // Main Category Bar Buttons
+                if (el.closest('#mainCategoryBar')) {
+                    const text = el.textContent.trim();
+                    return isTh ? `แท็บ: ${text}` : `Tab: ${text}`;
+                }
+
+                // Toolbar Actions
+                if (el.id === 'btnInstallSelected') {
+                    const count = (typeof selectedItems !== 'undefined' && selectedItems.size) ? selectedItems.size : 0;
+                    return count > 0 ? (isTh ? `ติดตั้งที่เลือก (${count})` : `Install Selected (${count})`) : (isTh ? 'ติดตั้งที่เลือก' : 'Install Selected');
+                }
+                if (el.id === 'btnUninstallSelected') {
+                    const count = (typeof selectedItems !== 'undefined' && selectedItems.size) ? selectedItems.size : 0;
+                    return count > 0 ? (isTh ? `ถอนการติดตั้งที่เลือก (${count})` : `Uninstall Selected (${count})`) : (isTh ? 'ถอนการติดตั้งที่เลือก' : 'Uninstall Selected');
+                }
+                if (el.id === 'btnClearSelection') {
+                    return isTh ? 'ล้างที่เลือก' : 'Clear Selection';
+                }
+                if (el.id === 'sortBtn' || el.closest('#sortDropdownWrapper')) {
+                    return isTh ? 'เรียงลำดับ' : 'Sort Items';
+                }
+
+                // Quick Select Buttons
+                const onclickAttr = el.getAttribute('onclick') || '';
+                if (onclickAttr.includes('toggleSelectAll')) {
+                    return isTh ? 'เลือกทั้งหมด' : 'Select All';
+                }
+                if (onclickAttr.includes('toggleSelectInstalled')) {
+                    return isTh ? 'เลือกที่ติดตั้งแล้ว' : 'Select Installed';
+                }
+                if (onclickAttr.includes('toggleSelectNotInstalled')) {
+                    return isTh ? 'เลือกที่ยังไม่ได้ติดตั้ง' : 'Select Not Installed';
+                }
+
+                // Header Controls
+                if (el.id === 'searchInput') {
+                    return isTh ? 'ค้นหาโปรแกรม...' : 'Search programs...';
+                }
+                if (el.id === 'clearSearchBtn') {
+                    return isTh ? 'ล้างคำค้นหา' : 'Clear search';
+                }
+                if (el.id === 'langDropdownBtn') {
+                    return isTh ? 'เปลี่ยนภาษา' : 'Language';
+                }
+                if (el.id === 'githubBtn') {
+                    return 'GitHub (phwyverysad)';
+                }
+                if (el.id === 'themeToggleBtn') {
+                    return isTh ? 'สลับธีม สว่าง/มืด' : 'Toggle Theme';
+                }
+                if (el.id === 'minimizeBtn') {
+                    return isTh ? 'ย่อหน้าต่าง' : 'Minimize';
+                }
+                if (el.id === 'maximizeBtn') {
+                    return (typeof isMaximized !== 'undefined' && isMaximized) ? (isTh ? 'คืนขนาดเดิม' : 'Restore') : (isTh ? 'ขยายเต็มจอ' : 'Maximize');
+                }
+                if (el.id === 'closeBtn') {
+                    return isTh ? 'ปิดโปรแกรม' : 'Close';
+                }
+
+                // Modals
+                if (el.id === 'batchConfirmContinueBtn') {
+                    return isTh ? 'ดำเนินการต่อ' : 'Continue';
+                }
+                if (el.id === 'batchConfirmCancelBtn') {
+                    return isTh ? 'ยกเลิก' : 'Cancel';
+                }
+                if (el.id === 'copyLogBtn') {
+                    return isTh ? 'คัดลอก Log' : 'Copy Log';
+                }
+                if (el.id === 'logDoneBtn' || el.id === 'closeLogModalBtn') {
+                    return isTh ? 'เสร็จสิ้น' : 'Done';
+                }
+
+                // Fallbacks: title or aria-label or brief text
+                const title = el.getAttribute('title');
+                if (title && title.length <= 30) return title;
+                const aria = el.getAttribute('aria-label');
+                if (aria && aria.length <= 30) return aria;
+                const text = el.textContent?.trim();
+                if (text && text.length <= 20) return text;
+
+                return '';
             };
 
             const lockOn = next => {
@@ -8925,7 +9093,13 @@
                 if (target) {
                     const angle = turn.x;
                     quarter = Math.round(angle / QUARTER);
-                    const corner = parseFloat(getComputedStyle(target).borderTopLeftRadius) || 0;
+                    const computed = getComputedStyle(target);
+                    let corner = parseFloat(computed.borderTopLeftRadius) || 0;
+                    const rect = target.getBoundingClientRect();
+                    // Accurately detect circular / pill elements (e.g. 50% or rounded-full)
+                    if ((computed.borderTopLeftRadius && computed.borderTopLeftRadius.includes('%')) || corner >= Math.min(rect.width, rect.height) / 2 - 1) {
+                        corner = Math.min(rect.width, rect.height) / 2;
+                    }
                     targetRadius = corner;
                     spinSpeed = 0;
                 }
@@ -8963,11 +9137,11 @@
                     const h = rect.height / 2 + s.padding;
                     goalW = odd ? h : w;
                     goalH = odd ? w : h;
-                    goalR = s.matchRadius ? Math.min(targetRadius + Math.max(0, s.padding), s.cornerSize) : 0;
+                    goalR = s.matchRadius ? (targetRadius > 0 ? targetRadius + Math.max(0, s.padding) : 0) : 0;
                 }
 
                 if (!pointer.inside && presence.x < 0.01) pointer.seen = false;
-                if (!pointer.seen) {
+                if (!pointer.seen || Math.abs(goalX - centerX.x) > 350 || Math.abs(goalY - centerY.y) > 350) {
                     centerX.x = goalX;
                     centerY.x = goalY;
                     halfW.x = goalW;
@@ -9003,10 +9177,16 @@
                     [w, h],
                     [-w, h]
                 ];
-                const r = Math.max(0, Math.min(radius.x, s.cornerSize));
+                const r = Math.max(0, radius.x);
                 const degrees = (turn.x * 180) / Math.PI;
                 let left = Infinity;
                 let top = Infinity;
+
+                // Dynamic arm length that smoothly follows element size and border radius
+                const maxArm = Math.max(8, Math.min(w, h) * 0.75);
+                const curCornerSize = Math.min(maxArm, Math.max(s.cornerSize, r + 2));
+                const curR = Math.min(r, curCornerSize);
+
                 cornerEls.forEach((corner, i) => {
                     if (!corner) return;
                     const [lx, ly] = local[i];
@@ -9015,10 +9195,10 @@
                     left = Math.min(left, x);
                     top = Math.min(top, y);
                     corner.style.transform = `translate3d(${x.toFixed(2)}px, ${y.toFixed(2)}px, 0) rotate(${(CORNER_ANGLES[i] + degrees).toFixed(2)}deg)`;
-                    corner.style.width = `${s.cornerSize}px`;
-                    corner.style.height = `${s.cornerSize}px`;
+                    corner.style.width = `${curCornerSize.toFixed(2)}px`;
+                    corner.style.height = `${curCornerSize.toFixed(2)}px`;
                     corner.style.borderWidth = `${s.thickness}px 0 0 ${s.thickness}px`;
-                    corner.style.borderTopLeftRadius = `${r.toFixed(2)}px`;
+                    corner.style.borderTopLeftRadius = `${curR.toFixed(2)}px`;
                 });
 
                 if (dotEl) {
@@ -9029,11 +9209,79 @@
                 }
 
                 if (labelEl) {
-                    const text = s.showLabel && target ? target.getAttribute('data-cursor-label') || '' : '';
+                    const text = s.showLabel && target ? getElementLabel(target) : '';
                     if (text && text !== lastLabel) labelEl.textContent = text;
                     if (text) lastLabel = text;
                     const shown = text ? Math.max(0, Math.min(1, lock.x)) : 0;
-                    labelEl.style.transform = `translate3d(${left.toFixed(2)}px, ${(top - 8).toFixed(2)}px, 0) translateY(-100%) translateY(${((1 - shown) * 4).toFixed(2)}px)`;
+
+                    // ============================================================
+                    // SMART VIEWPORT & BLIND-SPOT DETECTION (มุมอับ / ขอบจอ)
+                    // ============================================================
+                    const vpW = window.innerWidth || document.documentElement.clientWidth || 1400;
+                    const vpH = window.innerHeight || document.documentElement.clientHeight || 900;
+                    const labelW = labelEl.offsetWidth || (text.length * 7.5 + 16);
+                    const labelH = 22;
+                    const isCompact = w < 35;
+                    const margin = 12;
+
+                    // 1. Vertical Positioning (Smart Flip for Top/Bottom Blind Spots)
+                    let idealY;
+                    let yTrans;
+                    let dirY;
+                    if (top - labelH - 8 < margin) {
+                        // Top edge blind spot -> flip label below target
+                        idealY = (centerY.y + h) + 8;
+                        yTrans = 'translateY(0%)';
+                        dirY = 1;
+                    } else if (top + labelH > vpH - margin) {
+                        // Bottom edge blind spot -> keep above target
+                        idealY = top - 7;
+                        yTrans = 'translateY(-100%)';
+                        dirY = -1;
+                    } else {
+                        // Normal position: right above top bracket
+                        idealY = top - 7;
+                        yTrans = 'translateY(-100%)';
+                        dirY = -1;
+                    }
+
+                    // 2. Horizontal Positioning (Smart Alignment for Left/Right Blind Spots)
+                    let idealX;
+                    let xTrans;
+                    if (isCompact) {
+                        // Compact button / circle -> default to centered
+                        idealX = centerX.x;
+                        xTrans = 'translateX(-50%)';
+
+                        // Check right blind spot
+                        if (idealX + labelW / 2 > vpW - margin) {
+                            idealX = vpW - margin;
+                            xTrans = 'translateX(-100%)';
+                        }
+                        // Check left blind spot
+                        else if (idealX - labelW / 2 < margin) {
+                            idealX = margin;
+                            xTrans = 'translateX(0%)';
+                        }
+                    } else {
+                        // Wide elements (Cards, Tabs, Pills) -> align with top-left bracket + 4px
+                        idealX = left + 4;
+                        xTrans = 'translateX(0%)';
+
+                        // Check right blind spot: if label would overflow right window border
+                        if (idealX + labelW > vpW - margin) {
+                            // Flip alignment to right edge of element
+                            idealX = (centerX.x + w) - 4;
+                            xTrans = 'translateX(-100%)';
+                        }
+                        // Check left blind spot
+                        if (idealX < margin && xTrans === 'translateX(0%)') {
+                            idealX = margin;
+                        }
+                    }
+
+                    const floatOffset = (1 - shown) * 4 * (dirY > 0 ? -1 : 1);
+                    labelEl.style.transform = `translate3d(${idealX.toFixed(2)}px, ${idealY.toFixed(2)}px, 0) ${xTrans} ${yTrans} translateY(${floatOffset.toFixed(2)}px)`;
                     labelEl.style.opacity = shown.toFixed(3);
                 }
 
