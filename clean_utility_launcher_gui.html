@@ -608,7 +608,12 @@
             position: fixed;
             inset: 0;
             z-index: 2147483647;
-            pointer-events: none;
+            pointer-events: none !important;
+            user-select: none !important;
+        }
+        .target-cursor * {
+            pointer-events: none !important;
+            user-select: none !important;
         }
         .target-cursor__corner {
             position: absolute;
@@ -8953,7 +8958,17 @@
             let raf = 0;
             let last = 0;
             let lastLabel = '';
-            let isCursorEnabled = localStorage.getItem('target_cursor_enabled') !== 'false';
+            let isCursorEnabled = true;
+            try {
+                const stored = localStorage.getItem('target_cursor_enabled');
+                if (stored === 'false') {
+                    isCursorEnabled = false;
+                } else {
+                    isCursorEnabled = true;
+                }
+            } catch (e) {
+                isCursorEnabled = true;
+            }
 
             const updateCursorToggleVisuals = () => {
                 const btn = document.getElementById('cursorToggleBtn');
@@ -8984,7 +8999,9 @@
             window.toggleTargetCursor = function(event) {
                 if (event) event.stopPropagation();
                 isCursorEnabled = !isCursorEnabled;
-                localStorage.setItem('target_cursor_enabled', isCursorEnabled ? 'true' : 'false');
+                try {
+                    localStorage.setItem('target_cursor_enabled', isCursorEnabled ? 'true' : 'false');
+                } catch (e) {}
                 updateCursorToggleVisuals();
                 if (isCursorEnabled) wake();
             };
@@ -9000,8 +9017,18 @@
 
             // Comprehensive target detection across cards, buttons, tabs, pills, inputs, and modals
             const findTarget = (x, y, element) => {
-                const node = element || document.elementFromPoint(x, y);
-                if (!node || node === document.body || node === document.documentElement) return null;
+                let node = element;
+                if (node && node.nodeType === 3) node = node.parentElement;
+                if (!node || typeof node.closest !== 'function') {
+                    try {
+                        node = document.elementFromPoint(x, y);
+                    } catch (e) {
+                        node = null;
+                    }
+                }
+                if (node && node.nodeType === 3) node = node.parentElement;
+                if (!node || typeof node.closest !== 'function') return null;
+                if (node === document.body || node === document.documentElement) return null;
 
                 // Priority 1: explicitly designated cursor target or custom label
                 const explicit = node.closest('[data-cursor-label], .cursor-target');
@@ -9389,8 +9416,7 @@
                 if (!raf) raf = requestAnimationFrame(frame);
             };
 
-            window.addEventListener('pointermove', e => {
-                if (e.pointerType && e.pointerType !== 'mouse') return;
+            const onPointerMove = e => {
                 pointer.x = e.clientX;
                 pointer.y = e.clientY;
                 if (!pointer.inside) {
@@ -9399,26 +9425,33 @@
                 }
                 lockOn(findTarget(pointer.x, pointer.y, e.target));
                 wake();
-            }, { passive: true });
+            };
+            window.addEventListener('pointermove', onPointerMove, { passive: true });
+            window.addEventListener('mousemove', onPointerMove, { passive: true });
 
-            window.addEventListener('pointerdown', e => {
-                if (e.pointerType && e.pointerType !== 'mouse') return;
+            const onPointerDown = () => {
                 pointer.pressed = true;
                 wake();
-            }, { passive: true });
+            };
+            window.addEventListener('pointerdown', onPointerDown, { passive: true });
+            window.addEventListener('mousedown', onPointerDown, { passive: true });
 
-            window.addEventListener('pointerup', () => {
+            const onPointerUp = () => {
                 pointer.pressed = false;
                 wake();
-            }, { passive: true });
+            };
+            window.addEventListener('pointerup', onPointerUp, { passive: true });
+            window.addEventListener('mouseup', onPointerUp, { passive: true });
 
-            document.documentElement.addEventListener('pointerleave', () => {
+            const onPointerLeave = () => {
                 pointer.inside = false;
                 pointer.pressed = false;
                 lockOn(null);
                 hideCursor();
                 wake();
-            });
+            };
+            document.documentElement.addEventListener('pointerleave', onPointerLeave);
+            document.documentElement.addEventListener('mouseleave', onPointerLeave);
 
             window.addEventListener('scroll', () => {
                 if (!isCursorEnabled || !pointer.inside) return;
