@@ -1,0 +1,2180 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All-in-One Launcher</title>
+    <!-- โหลด Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- โหลด Google Fonts: Plus Jakarta Sans, IBM Plex Sans Thai, JetBrains Mono และ Noto Sans JP -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Noto+Sans+JP:wght@400;500&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-outer: transparent;
+            --bg-window: #fbfbfb;
+            --bg-surface: rgba(255, 255, 255, 0.42);
+            --bg-modal: #ffffff;
+            --bg-card: rgba(255, 255, 255, 0.68);
+            --bg-subbar: rgba(248, 250, 252, 0.38);
+            --bg-input: rgba(248, 250, 252, 0.72);
+            --bg-hover: rgba(241, 245, 249, 0.78);
+            --border-color: rgba(226, 232, 240, 0.75);
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --accent-bg: #0f172a;
+            --accent-text: #ffffff;
+            --accent-hover: #1e293b;
+        }
+
+        html.dark {
+            --bg-outer: transparent; /* พื้นหลังเว็บภายนอกคงที่ ไม่ต้องเปลี่ยน */
+            --bg-window: #09090b;
+            --bg-surface: rgba(12, 12, 15, 0.42);
+            --bg-modal: #121215;
+            --bg-card: rgba(18, 18, 21, 0.68);
+            --bg-subbar: rgba(14, 14, 17, 0.38);
+            --bg-input: rgba(24, 24, 27, 0.72);
+            --bg-hover: rgba(34, 34, 38, 0.78);
+            --border-color: rgba(255, 255, 255, 0.09);
+            --text-primary: #fafafa;
+            --text-secondary: #a1a1aa;
+            --text-muted: #71717a;
+            --accent-bg: #fafafa;
+            --accent-text: #09090b;
+            --accent-hover: #e4e4e7;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
+            background-color: transparent !important;
+            color: var(--text-primary);
+            -webkit-font-smoothing: antialiased;
+            -webkit-user-select: none;
+            -moz-user-select: none;
+            -ms-user-select: none;
+            user-select: none;
+            margin: 0;
+            padding: 8px;
+            overflow: hidden;
+            width: 100vw;
+            height: 100vh;
+            box-sizing: border-box;
+            transition: color 0.3s ease;
+        }
+
+        /* อนุญาตให้เลือกและพิมพ์ข้อความได้เฉพาะในช่องค้นหาเท่านั้น */
+        input, textarea {
+            -webkit-user-select: text;
+            -moz-user-select: text;
+            -ms-user-select: text;
+            user-select: text;
+        }
+
+        #appWindow {
+            background-color: var(--bg-window);
+            border-color: var(--border-color);
+            transition: all 0.36s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        /* พื้นผิวกระจกฝ้าโปร่งแสง */
+        .theme-surface {
+            background-color: var(--bg-surface);
+            border-color: var(--border-color);
+            backdrop-filter: blur(4px);
+            -webkit-backdrop-filter: blur(4px);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        /* ส่วนหัวและแถบนำทางโปร่งใส เพื่อให้ตัวอักษร Matrix Rain ไหลจากในกรอบด้านบนสุดลงมาได้อย่างชัดเจนต่อเนื่อง */
+        header.app-header,
+        header.app-header nav {
+            background-color: transparent !important;
+            backdrop-filter: none !important;
+            -webkit-backdrop-filter: none !important;
+        }
+
+        .theme-modal {
+            background-color: var(--bg-modal);
+            border-color: var(--border-color);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-card {
+            background-color: var(--bg-card);
+            border-color: var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-subbar {
+            background-color: var(--bg-subbar);
+            border-color: var(--border-color);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-input {
+            background-color: var(--bg-input);
+            border-color: var(--border-color);
+            color: var(--text-primary);
+            transition: background-color 0.3s ease, border-color 0.3s ease, color 0.3s ease;
+        }
+
+        .theme-text-primary { color: var(--text-primary); }
+        .theme-text-secondary { color: var(--text-secondary); }
+        .theme-text-muted { color: var(--text-muted); }
+        .theme-border { border-color: var(--border-color); }
+
+        .theme-hover:hover {
+            background-color: var(--bg-hover);
+        }
+
+        .theme-btn-accent {
+            background-color: var(--accent-bg);
+            color: var(--accent-text);
+            transition: all 0.2s cubic-bezier(0.22, 1, 0.36, 1);
+        }
+
+        .theme-btn-accent:hover:not(:disabled) {
+            background-color: var(--accent-hover);
+            transform: translateY(-1px);
+        }
+
+        .theme-btn-accent:active:not(:disabled) {
+            transform: scale(0.96);
+        }
+
+        /* ซ่อน Scrollbar แนวนอนของแถบหมวดหมู่ */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Scrollbar คลีนๆ ภายในหน้าต่างแอป */
+        .app-scroll::-webkit-scrollbar {
+            width: 6px;
+        }
+        .app-scroll::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .app-scroll::-webkit-scrollbar-thumb {
+            background: rgba(148, 163, 184, 0.35);
+            border-radius: 9999px;
+        }
+        html.dark .app-scroll::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.14);
+        }
+        .app-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(148, 163, 184, 0.55);
+        }
+        html.dark .app-scroll::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.26);
+        }
+
+        /* อนิเมชั่นการ์ดค่อยๆ ลอยขึ้นเมื่อแสดงผลหรือเปลี่ยนหมวดหมู่ */
+        @keyframes cardFadeUp {
+            0% {
+                opacity: 0;
+                transform: translateY(12px) scale(0.985);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        .animate-card {
+            animation: cardFadeUp 0.38s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            opacity: 0;
+        }
+
+        /* อนิเมชั่นเลื่อนของแถบเส้นใต้หมวดหมู่หลัก */
+        .tab-indicator {
+            background-color: var(--text-primary);
+            transform-origin: left center;
+            transition: left 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                        width 0.35s cubic-bezier(0.22, 1, 0.36, 1),
+                        transform 0.42s cubic-bezier(0.22, 1, 0.36, 1),
+                        background-color 0.3s ease;
+        }
+
+        /* เอฟเฟกต์ Hover การ์ด */
+        .card-hover {
+            transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                        box-shadow 0.25s cubic-bezier(0.22, 1, 0.36, 1),
+                        border-color 0.25s ease,
+                        background-color 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 24px -8px rgba(15, 23, 42, 0.08);
+        }
+        html.dark .card-hover:hover {
+            box-shadow: 0 14px 28px -8px rgba(0, 0, 0, 0.75);
+            border-color: rgba(255, 255, 255, 0.18);
+        }
+
+        /* อนิเมชั่นย่อและปิดหน้าต่างแอป */
+        .window-minimized {
+            opacity: 0 !important;
+            transform: translateY(45vh) scale(0.15) !important;
+            pointer-events: none !important;
+        }
+        .window-closed {
+            opacity: 0 !important;
+            transform: scale(0.92) !important;
+            pointer-events: none !important;
+        }
+
+        /* อนิเมชั่น Log Overlay & Modal */
+        .log-backdrop-hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .log-backdrop-visible {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        .log-modal-hidden {
+            opacity: 0;
+            transform: translateY(18px) scale(0.96);
+        }
+        .log-modal-visible {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+        }
+        @keyframes logLineEnter {
+            0% {
+                opacity: 0;
+                transform: translateX(-8px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+        .animate-log-line {
+            animation: logLineEnter 0.25s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        /* อนิเมชั่น View Transitions สลับธีมเฉพาะในกรอบหน้าต่างแอปพลิเคชัน #appWindow */
+        :root {
+            view-transition-name: none;
+        }
+
+        #appWindow {
+            view-transition-name: app-window;
+        }
+
+        ::view-transition,
+        ::view-transition-group(app-window),
+        ::view-transition-image-pair(app-window),
+        ::view-transition-old(app-window),
+        ::view-transition-new(app-window) {
+            pointer-events: none !important;
+        }
+
+        ::view-transition-group(app-window) {
+            border-radius: 24px;
+            overflow: hidden;
+        }
+
+        ::view-transition-old(app-window),
+        ::view-transition-new(app-window) {
+            animation: none;
+            mix-blend-mode: normal;
+            border-radius: 24px;
+        }
+
+        ::view-transition-old(app-window) {
+            z-index: 1;
+        }
+
+        ::view-transition-new(app-window) {
+            z-index: 9999;
+        }
+
+        /* พื้นหลัง Matrix Rain ครอบคลุมทั้งกรอบหน้าต่างแอปตั้งแต่ส่วนหัวด้านบนสุด */
+        #matrixCanvas {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            display: block;
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen overflow-hidden flex items-center justify-center p-2 select-none bg-transparent">
+
+    <!-- หน้าต่างแอปพลิเคชันหลัก (Desktop App Window Frame แนวนอน) -->
+    <div id="appWindow" class="w-full h-full rounded-[24px] shadow-[0_24px_60px_-15px_rgba(15,23,42,0.35)] border flex flex-col overflow-hidden relative">
+
+        <!-- Canvas ตัวอักษรไหลครอบคลุมทั้งหน้าต่างแอปตั้งแต่ขอบบนสุดจนถึงด้านล่างสุด -->
+        <canvas id="matrixCanvas"></canvas>
+
+        <!-- Title Bar ของหน้าต่างแอป + ช่องค้นหา + เปลี่ยนภาษา + สลับธีม + ปุ่ม ย่อ ขยาย ปิด -->
+        <header class="app-header border-b theme-border z-20 shrink-0 relative bg-transparent">
+            <div class="px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+                <!-- โลโก้ SVG และชื่อแอป -->
+                <div class="flex items-center gap-3 min-w-0">
+                    <div class="w-8 h-8 rounded-xl theme-btn-accent flex items-center justify-center shadow-sm shrink-0">
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="4 17 10 11 4 5"></polyline>
+                            <line x1="12" y1="19" x2="20" y2="19"></line>
+                        </svg>
+                    </div>
+                    <h1 id="appTitle" class="text-[15px] font-semibold tracking-tight theme-text-primary truncate">All-in-One Launcher</h1>
+                </div>
+
+                <!-- ช่องค้นหา + ปุ่มเปลี่ยนภาษา + ปุ่มเปลี่ยนธีม + ปุ่มควบคุมหน้าต่าง -->
+                <div class="flex items-center gap-2 sm:gap-2.5">
+                    <!-- ช่องค้นหาด่วน + กล่องเดาคำค้นหาอัตโนมัติ (Autocomplete) -->
+                    <div id="searchContainer" class="relative w-44 sm:w-64 transition-all duration-200 focus-within:w-52 sm:focus-within:w-72">
+                        <svg class="w-3.5 h-3.5 theme-text-muted absolute left-3 top-1/2 -translate-y-1/2 pointer-events-none" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                        <input
+                            id="searchInput"
+                            type="text"
+                            autocomplete="off"
+                            placeholder="ค้นหาโปรแกรม..."
+                            class="w-full pl-8 pr-7 py-1.5 text-xs theme-input border rounded-xl focus:outline-none focus:ring-2 focus:ring-slate-400/20 transition-all"
+                        >
+                        <!-- ปุ่มล้างคำค้นหา -->
+                        <button
+                            id="clearSearchBtn"
+                            type="button"
+                            onclick="clearSearch()"
+                            class="hidden absolute right-2 top-1/2 -translate-y-1/2 w-4 h-4 rounded-full flex items-center justify-center theme-text-muted theme-hover transition-colors"
+                        >
+                            <svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                            </svg>
+                        </button>
+
+                        <!-- กล่องเดาตัวอย่างคำค้นหา (Search Suggestions Dropdown) -->
+                        <div
+                            id="searchSuggestionsDropdown"
+                            class="hidden opacity-0 -translate-y-1.5 scale-[0.98] pointer-events-none absolute left-0 right-0 top-full mt-2 theme-modal border rounded-2xl shadow-xl py-1.5 z-50 transition-all duration-200 origin-top overflow-hidden"
+                        >
+                            <div class="px-3 py-1 flex items-center justify-between border-b theme-border">
+                                <span id="suggestionHeaderLabel" class="text-[10px] font-medium theme-text-muted tracking-wide">คำแนะนำการค้นหา</span>
+                                <span class="text-[10px] theme-text-muted">Enter</span>
+                            </div>
+                            <div id="searchSuggestionsList" class="max-h-56 overflow-y-auto app-scroll py-1">
+                                <!-- รายการคำแนะนำจะถูกสร้างผ่าน JS -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ดรอปดาวน์เปลี่ยนภาษา (Language Dropdown) -->
+                    <div class="relative" id="langDropdownWrapper">
+                        <button
+                            id="langDropdownBtn"
+                            onclick="toggleLangDropdown(event)"
+                            title="เปลี่ยนภาษา / Language"
+                            class="h-8 px-2.5 rounded-xl border theme-input theme-hover flex items-center gap-1.5 text-xs font-medium theme-text-primary transition-all active:scale-95"
+                        >
+                            <svg class="w-3.5 h-3.5 theme-text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="2" y1="12" x2="22" y2="12"></line>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path>
+                            </svg>
+                            <span id="currentLangLabel">TH</span>
+                            <svg id="langChevron" class="w-3 h-3 theme-text-muted transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="6 9 12 15 18 9"></polyline>
+                            </svg>
+                        </button>
+
+                        <!-- เมนูตัวเลือกภาษา -->
+                        <div
+                            id="langDropdownMenu"
+                            class="hidden opacity-0 scale-95 pointer-events-none absolute right-0 mt-1.5 w-36 rounded-xl theme-modal border shadow-lg py-1 z-50 transition-all duration-150 origin-top-right"
+                        >
+                            <button
+                                onclick="setLanguage('th')"
+                                id="langOptTh"
+                                class="w-full px-3 py-2 text-left text-xs flex items-center justify-between theme-hover transition-colors theme-text-primary font-medium"
+                            >
+                                <span>ไทย (TH)</span>
+                                <svg id="checkTh" class="w-3.5 h-3.5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </button>
+                            <button
+                                onclick="setLanguage('en')"
+                                id="langOptEn"
+                                class="w-full px-3 py-2 text-left text-xs flex items-center justify-between theme-hover transition-colors theme-text-secondary"
+                            >
+                                <span>English (EN)</span>
+                                <svg id="checkEn" class="w-3.5 h-3.5 theme-text-primary hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                    <polyline points="20 6 9 17 4 12"></polyline>
+                                </svg>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- ปุ่มสลับธีมมืด / สว่าง -->
+                    <button
+                        id="themeToggleBtn"
+                        onclick="toggleTheme(event)"
+                        title="สลับธีมมืด / สว่าง"
+                        class="w-8 h-8 rounded-xl border theme-input theme-hover flex items-center justify-center theme-text-secondary transition-all active:scale-95"
+                    >
+                        <!-- ไอคอนพระจันทร์ (แสดงตอนธีมสว่าง) -->
+                        <svg id="moonIcon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+                        </svg>
+                        <!-- ไอคอนพระอาทิตย์ (แสดงตอนธีมมืด) -->
+                        <svg id="sunIcon" class="w-3.5 h-3.5 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="12" cy="12" r="5"></circle>
+                            <line x1="12" y1="1" x2="12" y2="3"></line>
+                            <line x1="12" y1="21" x2="12" y2="23"></line>
+                            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                            <line x1="1" y1="12" x2="3" y2="12"></line>
+                            <line x1="21" y1="12" x2="23" y2="12"></line>
+                            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+                        </svg>
+                    </button>
+
+                    <!-- เส้นคั่นบางๆ -->
+                    <div class="h-4 w-[1px] theme-border border-r mx-0.5 hidden sm:block"></div>
+
+                    <!-- ปุ่มควบคุมหน้าต่าง: ย่อ / ขยาย / ปิด (SVG ล้วน) -->
+                    <div class="flex items-center gap-1">
+                        <!-- ปุ่มย่อ (Minimize) -->
+                        <button
+                            id="minimizeBtn"
+                            onclick="minimizeApp()"
+                            title="ย่อหน้าต่าง"
+                            class="w-8 h-8 rounded-xl flex items-center justify-center theme-text-secondary theme-hover transition-all active:scale-95"
+                        >
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <line x1="6" y1="12" x2="18" y2="12"></line>
+                            </svg>
+                        </button>
+
+                        <!-- ปุ่มขยาย / คืนขนาด (Maximize / Restore) -->
+                        <button
+                            id="maximizeBtn"
+                            onclick="toggleMaximizeApp()"
+                            title="ขยายเต็มจอ"
+                            class="w-8 h-8 rounded-xl flex items-center justify-center theme-text-secondary theme-hover transition-all active:scale-95"
+                        >
+                            <svg id="maximizeIcon" class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="4" y="4" width="16" height="16" rx="2.5"></rect>
+                            </svg>
+                        </button>
+
+                        <!-- ปุ่มปิด (Close) -->
+                        <button
+                            id="closeBtn"
+                            onclick="closeApp()"
+                            title="ปิดหน้าต่าง"
+                            class="w-8 h-8 rounded-xl flex items-center justify-center theme-text-secondary hover:bg-red-500/10 hover:text-red-500 transition-all active:scale-95"
+                        >
+                            <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                                <line x1="6" y1="6" x2="18" y2="18"></line>
+                                <line x1="18" y1="6" x2="6" y2="18"></line>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- แถบที่ 1: หมวดหมู่หลัก (Main Categories) พร้อมเส้นใต้เลื่อนตาม -->
+            <nav aria-label="หมวดหมู่หลัก" class="px-4 sm:px-6">
+                <div id="mainCategoryBar" class="relative flex items-center gap-6 overflow-x-auto no-scrollbar">
+                    <!-- ปุ่มหมวดหมู่หลักจะถูกสร้างผ่าน JS -->
+                </div>
+            </nav>
+
+            <!-- แถบที่ 2: หมวดหมู่ย่อย (Sub-categories) -->
+            <nav aria-label="หมวดหมู่ย่อย" class="border-t theme-border bg-transparent">
+                <div class="px-4 sm:px-6 py-2.5">
+                    <div id="subCategoryBar" class="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                        <!-- ปุ่มหมวดหมู่ย่อยจะถูกสร้างผ่าน JS -->
+                    </div>
+                </div>
+            </nav>
+        </header>
+
+        <!-- พื้นที่เนื้อหาหลักภายในหน้าต่างแอป -->
+        <div id="appContentWrapper" class="relative z-10 flex-1 overflow-hidden flex flex-col">
+            <main class="relative z-10 flex-1 overflow-y-auto app-scroll px-4 sm:px-6 py-6">
+            <div class="flex items-center justify-between mb-4">
+                <div class="flex items-center gap-2 text-xs theme-text-secondary">
+                    <span id="breadcrumbMain" class="font-medium theme-text-primary">ทั้งหมด</span>
+                    <svg class="w-3.5 h-3.5 theme-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                    <span id="breadcrumbSub">ทั้งหมด</span>
+                </div>
+                <span id="itemCount" class="text-xs theme-text-muted">0 รายการ</span>
+            </div>
+
+            <!-- กริดแสดงการ์ดโปรแกรม -->
+            <div id="programGrid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-3.5 pb-2">
+                <!-- การ์ดโปรแกรมจะถูกสร้างผ่าน JS -->
+            </div>
+
+            <!-- สถานะไม่พบข้อมูล -->
+            <div id="emptyState" class="hidden py-16 text-center">
+                <div class="w-12 h-12 rounded-2xl theme-card border mx-auto flex items-center justify-center theme-text-muted mb-3">
+                    <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </div>
+                <p id="emptyTitle" class="text-sm font-medium theme-text-primary">ไม่พบรายการที่ตรงกัน</p>
+                <p id="emptyDesc" class="text-xs theme-text-muted mt-1">ลองเปลี่ยนคำค้นหาหรือเลือกหมวดหมู่อื่น</p>
+            </div>
+        </main>
+
+        <!-- หน้าต่าง Log แสดงอนิเมชั่นกำลังติดตั้ง / รันโปรแกรม (อยู่ภายในขอบหน้าต่างแอป) -->
+        <div
+            id="installLogBackdrop"
+            class="log-backdrop-hidden absolute inset-0 z-40 bg-slate-900/35 dark:bg-black/65 backdrop-blur-[3px] flex items-center justify-center p-4 sm:p-6 transition-opacity duration-300"
+        >
+            <div
+                id="installLogModal"
+                class="log-modal-hidden w-full max-w-xl rounded-[20px] theme-modal border shadow-2xl overflow-hidden flex flex-col transition-all duration-300"
+            >
+                <!-- ส่วนหัวของหน้าต่าง Log -->
+                <div class="px-5 py-4 border-b theme-border flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3 min-w-0">
+                        <!-- ไอคอนสถานะหมุนตอนกำลังติดตั้ง / เปลี่ยนเป็นเครื่องหมายถูกเมื่อเสร็จ -->
+                        <div id="logStatusIconBox" class="w-9 h-9 rounded-xl theme-btn-accent flex items-center justify-center shrink-0 transition-colors duration-300">
+                            <svg id="logSpinnerIcon" class="w-4 h-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle>
+                                <path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                            </svg>
+                            <svg id="logDoneIcon" class="w-4 h-4 hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="20 6 9 17 4 12"></polyline>
+                            </svg>
+                        </div>
+                        <div class="min-w-0">
+                            <div class="flex items-center gap-2">
+                                <h3 id="logAppName" class="text-sm font-semibold theme-text-primary truncate">Program Name</h3>
+                                <span id="logStatusBadge" class="text-[10px] font-medium px-2 py-0.5 rounded-full theme-subbar border theme-border theme-text-primary shrink-0">กำลังติดตั้ง</span>
+                            </div>
+                            <p id="logSubStatus" class="text-xs theme-text-secondary truncate mt-0.5">กำลังเตรียมสภาพแวดล้อม...</p>
+                        </div>
+                    </div>
+
+                    <!-- ปุ่มปิดหน้าต่าง Log (หากกำลังติดตั้งอยู่จะยกเลิกทันที) -->
+                    <button
+                        id="closeLogBtn"
+                        onclick="handleLogCloseOrCancel()"
+                        title="ยกเลิกและปิด"
+                        class="w-8 h-8 rounded-xl flex items-center justify-center theme-text-secondary theme-hover transition-all active:scale-95 shrink-0"
+                    >
+                        <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+                            <line x1="6" y1="6" x2="18" y2="18"></line>
+                            <line x1="18" y1="6" x2="6" y2="18"></line>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- แถบความคืบหน้า (Progress Bar) -->
+                <div class="px-5 pt-3.5 pb-1">
+                    <div class="flex items-center justify-between text-[11px] mb-1.5">
+                        <span id="logProgressLabel" class="theme-text-secondary font-medium">ความคืบหน้าการดำเนินการ</span>
+                        <span id="logProgressPercent" class="theme-text-primary font-semibold tabular-nums">0%</span>
+                    </div>
+                    <div class="w-full h-1.5 rounded-full theme-input overflow-hidden">
+                        <div id="logProgressBar" class="h-full rounded-full theme-btn-accent transition-all duration-300 ease-out" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- กล่องแสดงข้อความ Log แบบเรียลไทม์ -->
+                <div class="px-5 py-3.5">
+                    <div
+                        id="logOutputBox"
+                        class="w-full h-44 rounded-2xl theme-input border p-3.5 overflow-y-auto app-scroll font-mono text-[11.5px] leading-relaxed space-y-1.5"
+                    >
+                        <!-- บรรทัด Log จะถูกเพิ่มผ่าน JS -->
+                    </div>
+                </div>
+
+                <!-- ส่วนท้ายของหน้าต่าง Log -->
+                <div class="px-5 py-3 border-t theme-border theme-subbar flex items-center justify-between">
+                    <span id="logFooterHint" class="text-[11px] theme-text-muted">ระบบกำลังดำเนินการติดตั้งอัตโนมัติ...</span>
+                    <button
+                        id="logDoneBtn"
+                        onclick="handleLogCloseOrCancel()"
+                        class="px-4 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95"
+                    >
+                        ยกเลิกการติดตั้ง
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- แถบ Dock ด้านล่างเมื่อกดย่อหน้าต่าง (Minimize) -->
+    <div id="minimizedDock" class="fixed bottom-5 left-1/2 -translate-x-1/2 opacity-0 translate-y-4 pointer-events-none transition-all duration-300 z-30">
+        <button
+            onclick="restoreApp()"
+            class="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl theme-surface border shadow-xl hover:scale-105 active:scale-95 transition-all"
+        >
+            <div class="w-6 h-6 rounded-lg theme-btn-accent flex items-center justify-center">
+                <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+            </div>
+            <span id="dockTitle" class="text-xs font-medium theme-text-primary">All-in-One Launcher</span>
+        </button>
+    </div>
+
+    <!-- ปุ่มเปิดแอปใหม่เมื่อกดปิดหน้าต่าง (Close) -->
+    <div id="closedLauncher" class="fixed inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-20">
+        <button
+            onclick="reopenApp()"
+            class="group flex flex-col items-center gap-3 p-6 rounded-3xl theme-surface border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
+        >
+            <div class="w-14 h-14 rounded-2xl theme-btn-accent flex items-center justify-center shadow-md group-hover:scale-105 transition-transform">
+                <svg class="w-7 h-7" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="4 17 10 11 4 5"></polyline>
+                    <line x1="12" y1="19" x2="20" y2="19"></line>
+                </svg>
+            </div>
+            <span id="reopenText" class="text-xs font-medium theme-text-primary">เปิด All-in-One Launcher</span>
+        </button>
+    </div>
+
+    <!-- แจ้งเตือนแบบมินิมอลเมื่อยกเลิกหรือดำเนินการเสร็จ -->
+    <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 pointer-events-none opacity-0 translate-y-2 transition-all duration-200 z-50">
+        <div class="theme-btn-accent text-xs px-4 py-2.5 rounded-2xl shadow-lg flex items-center gap-2.5 border theme-border">
+            <svg class="w-3.5 h-3.5 opacity-80 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            <span id="toastMessage" class="font-medium">ดำเนินการเรียบร้อย</span>
+        </div>
+    </div>
+
+    <script>
+        // ลิงก์สคริปต์ต้นทางสำหรับซิงค์หมวดหมู่และรายการอัตโนมัติ
+        const GITHUB_RAW_URL = 'https://raw.githubusercontent.com/phwyverysad/-/refs/heads/main/All_in_one.ps1';
+
+        // ชุดไอคอน SVG สไตล์มินิมอล (ไม่มีอิโมจิ)
+        const SVG_ICONS = {
+            apps: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>`,
+            dev: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
+            system: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
+            network: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+            play: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
+            box: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`,
+            spinner: `<svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`
+        };
+
+        // พจนานุกรมข้อความ UI รองรับ 2 ภาษา (ไทย / อังกฤษ)
+        const UI_STRINGS = {
+            th: {
+                searchPlaceholder: 'ค้นหาโปรแกรม...',
+                allSub: 'ทั้งหมด',
+                itemsSuffix: 'รายการ',
+                runBtn: 'รันโปรแกรม',
+                runningBtn: 'กำลังติดตั้ง...',
+                emptyTitle: 'ไม่พบรายการที่ตรงกัน',
+                emptyDesc: 'ลองเปลี่ยนคำค้นหาหรือเลือกหมวดหมู่อื่น',
+                reopenText: 'เปิด All-in-One Launcher',
+                minTitle: 'ย่อหน้าต่าง',
+                maxTitle: 'ขยายเต็มจอ',
+                restoreTitle: 'คืนขนาดหน้าต่าง',
+                closeTitle: 'ปิดหน้าต่าง',
+                themeTitle: 'สลับธีมมืด / สว่าง',
+                langTitle: 'เปลี่ยนภาษา',
+                toastRunning: 'กำลังรัน:',
+                toastCancelled: 'ยกเลิกการติดตั้ง:',
+                logInstallingBadge: 'กำลังติดตั้ง',
+                logCompletedBadge: 'ติดตั้งสำเร็จ',
+                logCancelledBadge: 'ยกเลิกแล้ว',
+                logInitSub: 'กำลังเริ่มต้นสภาพแวดล้อม...',
+                logDoneSub: 'ดำเนินการติดตั้งและกำหนดค่าเสร็จสมบูรณ์',
+                logProgressLabel: 'ความคืบหน้าการดำเนินการ',
+                logFooterRunning: 'ระบบกำลังดำเนินการติดตั้งอัตโนมัติ...',
+                logFooterDone: 'พร้อมใช้งานเรียบร้อยแล้ว',
+                logCancelBtn: 'ยกเลิกการติดตั้ง',
+                logDoneBtn: 'เสร็จสิ้น',
+                suggestionHeader: 'คำแนะนำการค้นหา',
+                suggestionNoMatch: 'ไม่พบคำแนะนำที่ตรงกัน',
+                logSteps: [
+                    'เริ่มต้นตัวจัดการแพ็กเกจและตรวจสอบสิทธิ์ผู้ดูแลระบบ...',
+                    'กำลังเชื่อมต่อเซิร์ฟเวอร์และตรวจสอบเวอร์ชันล่าสุด...',
+                    'กำลังดาวน์โหลดไฟล์ติดตั้งแพ็กเกจ...',
+                    'กำลังแตกไฟล์และกำหนดค่าพื้นฐานของโปรแกรม...',
+                    'ติดตั้งเสร็จสมบูรณ์ พร้อมใช้งานแล้ว'
+                ]
+            },
+            en: {
+                searchPlaceholder: 'Search programs...',
+                allSub: 'All',
+                itemsSuffix: 'items',
+                runBtn: 'Run Program',
+                runningBtn: 'Installing...',
+                emptyTitle: 'No matching items found',
+                emptyDesc: 'Try changing your search query or selecting another category',
+                reopenText: 'Open All-in-One Launcher',
+                minTitle: 'Minimize',
+                maxTitle: 'Maximize',
+                restoreTitle: 'Restore',
+                closeTitle: 'Close',
+                themeTitle: 'Toggle Dark / Light Theme',
+                langTitle: 'Change Language',
+                toastRunning: 'Running:',
+                toastCancelled: 'Cancelled installation:',
+                logInstallingBadge: 'Installing',
+                logCompletedBadge: 'Completed',
+                logCancelledBadge: 'Cancelled',
+                logInitSub: 'Initializing environment...',
+                logDoneSub: 'Installation and configuration completed successfully',
+                logProgressLabel: 'Execution Progress',
+                logFooterRunning: 'Executing automated installation pipeline...',
+                logFooterDone: 'Ready to use',
+                logCancelBtn: 'Cancel Installation',
+                logDoneBtn: 'Done',
+                suggestionHeader: 'Search Suggestions',
+                suggestionNoMatch: 'No matching suggestions',
+                logSteps: [
+                    'Initializing package manager and verifying privileges...',
+                    'Connecting to repository and checking latest version...',
+                    'Downloading installer package payload...',
+                    'Extracting files and configuring application settings...',
+                    'Installation completed successfully.'
+                ]
+            }
+        };
+
+        // โครงสร้างหมวดหมู่หลัก และหมวดหมู่ย่อย (รองรับ 2 ภาษา)
+        let catalogData = [
+            {
+                id: 'install',
+                name: { th: 'ติดตั้งโปรแกรม', en: 'Install Programs' },
+                icon: 'apps',
+                subCategories: [
+                    {
+                        id: 'browsers',
+                        name: { th: 'เบราว์เซอร์', en: 'Browsers' },
+                        items: [
+                            { name: 'Google Chrome', desc: { th: 'เว็บเบราว์เซอร์มาตรฐานจาก Google', en: 'Fast and standard web browser by Google' }, cmd: 'winget install -e --id Google.Chrome' },
+                            { name: 'Brave Browser', desc: { th: 'เบราว์เซอร์เน้นความเป็นส่วนตัวและบล็อกโฆษณา', en: 'Privacy-focused browser with built-in ad blocker' }, cmd: 'winget install -e --id Brave.Brave' },
+                            { name: 'Mozilla Firefox', desc: { th: 'เบราว์เซอร์โอเพนซอร์สประสิทธิภาพสูง', en: 'High-performance open-source web browser' }, cmd: 'winget install -e --id Mozilla.Firefox' }
+                        ]
+                    },
+                    {
+                        id: 'communication',
+                        name: { th: 'แชทและการสื่อสาร', en: 'Communication' },
+                        items: [
+                            { name: 'Discord', desc: { th: 'แพลตฟอร์มพูดคุยด้วยเสียง วิดีโอ และข้อความ', en: 'Voice, video, and text communication platform' }, cmd: 'winget install -e --id Discord.Discord' },
+                            { name: 'LINE', desc: { th: 'แอปพลิเคชันแชทสำหรับเดสก์ท็อป', en: 'Desktop messaging and calling application' }, cmd: 'winget install -e --id LINE.LINE' },
+                            { name: 'Telegram Desktop', desc: { th: 'ระบบส่งข้อความที่รวดเร็วและปลอดภัย', en: 'Fast and secure cloud-based desktop messaging' }, cmd: 'winget install -e --id Telegram.TelegramDesktop' }
+                        ]
+                    },
+                    {
+                        id: 'utilities',
+                        name: { th: 'เครื่องมือพื้นฐาน', en: 'Utilities' },
+                        items: [
+                            { name: '7-Zip', desc: { th: 'โปรแกรมบีบอัดและแตกไฟล์ความเร็วสูง', en: 'High-compression open-source file archiver' }, cmd: 'winget install -e --id 7zip.7zip' },
+                            { name: 'WinRAR', desc: { th: 'จัดการไฟล์บีบอัด RAR และ ZIP', en: 'Powerful archive manager for RAR and ZIP files' }, cmd: 'winget install -e --id RARLab.WinRAR' },
+                            { name: 'Everything', desc: { th: 'ค้นหาไฟล์ในเครื่องแบบทันที', en: 'Instant file and folder search utility for Windows' }, cmd: 'winget install -e --id voidtools.Everything' },
+                            { name: 'PowerToys', desc: { th: 'ชุดเครื่องมือเสริมประสิทธิภาพสำหรับ Windows', en: 'System utilities to streamline Windows workflow' }, cmd: 'winget install -e --id Microsoft.PowerToys' }
+                        ]
+                    },
+                    {
+                        id: 'media',
+                        name: { th: 'มัลติมีเดีย', en: 'Multimedia' },
+                        items: [
+                            { name: 'VLC Media Player', desc: { th: 'โปรแกรมเล่นไฟล์วิดีโอและเสียงครอบจักรวาล', en: 'Versatile open-source multimedia player' }, cmd: 'winget install -e --id VideoLAN.VLC' },
+                            { name: 'OBS Studio', desc: { th: 'ซอฟต์แวร์บันทึกหน้าจอและสตรีมมิง', en: 'Free software for video recording and live streaming' }, cmd: 'winget install -e --id OBSProject.OBSStudio' },
+                            { name: 'Spotify', desc: { th: 'สตรีมมิงเพลงและพอดแคสต์', en: 'Digital music and podcast streaming service' }, cmd: 'winget install -e --id Spotify.Spotify' }
+                        ]
+                    },
+                    {
+                        id: 'gaming',
+                        name: { th: 'เกมและแพลตฟอร์ม', en: 'Gaming' },
+                        items: [
+                            { name: 'Steam', desc: { th: 'แพลตฟอร์มร้านค้าและคลังเกมหลัก', en: 'Digital game distribution storefront and launcher' }, cmd: 'winget install -e --id Valve.Steam' },
+                            { name: 'Epic Games Launcher', desc: { th: 'ตัวจัดการเกมจาก Epic Games', en: 'Official game launcher from Epic Games' }, cmd: 'winget install -e --id EpicGames.EpicGamesLauncher' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'dev',
+                name: { th: 'นักพัฒนาและรันไทม์', en: 'Developer & Runtimes' },
+                icon: 'dev',
+                subCategories: [
+                    {
+                        id: 'editors',
+                        name: { th: 'เครื่องมือเขียนโค้ด', en: 'Code Editors & Git' },
+                        items: [
+                            { name: 'Visual Studio Code', desc: { th: 'ตัวแก้ไขโค้ดยอดนิยมจาก Microsoft', en: 'Lightweight and extensible code editor by Microsoft' }, cmd: 'winget install -e --id Microsoft.VisualStudioCode' },
+                            { name: 'Git', desc: { th: 'ระบบควบคุมเวอร์ชันซอร์สโค้ด', en: 'Distributed version control system' }, cmd: 'winget install -e --id Git.Git' },
+                            { name: 'Node.js LTS', desc: { th: 'รันไทม์ JavaScript เวอร์ชันเสถียร', en: 'Long-Term Support JavaScript runtime environment' }, cmd: 'winget install -e --id OpenJS.NodeJS.LTS' },
+                            { name: 'Python 3', desc: { th: 'ภาษาโปรแกรมและสภาพแวดล้อม Python', en: 'Python programming language and interpreter' }, cmd: 'winget install -e --id Python.Python.3.12' }
+                        ]
+                    },
+                    {
+                        id: 'runtimes',
+                        name: { th: 'รันไทม์ที่จำเป็น', en: 'Essential Runtimes' },
+                        items: [
+                            { name: 'VC++ Redistributable AIO', desc: { th: 'ไลบรารีพื้นฐานสำหรับโปรแกรมและเกม', en: 'All-in-one Visual C++ runtime libraries' }, cmd: 'winget install -e --id Microsoft.VCRedist.2015+.x64' },
+                            { name: '.NET Desktop Runtime 8', desc: { th: 'สภาพแวดล้อมสำหรับแอปพลิเคชัน .NET', en: 'Runtime for running Windows .NET desktop apps' }, cmd: 'winget install -e --id Microsoft.DotNet.DesktopRuntime.8' },
+                            { name: 'DirectX End-User Runtime', desc: { th: 'ชุดไลบรารีกราฟิกและเสียงสำหรับเกม', en: 'Legacy multimedia and gaming runtime components' }, cmd: 'winget install -e --id Microsoft.DirectX' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'tweaks',
+                name: { th: 'ปรับแต่งระบบ', en: 'System Tweaks' },
+                icon: 'system',
+                subCategories: [
+                    {
+                        id: 'performance',
+                        name: { th: 'ประสิทธิภาพและความเร็ว', en: 'Performance' },
+                        items: [
+                            { name: 'Ultimate Performance Plan', desc: { th: 'เปิดใช้งานโหมดพลังงานสูงสุดของ Windows', en: 'Unlock and activate Ultimate Performance power scheme' }, cmd: 'powercfg -duplicatescheme e9a42b02-d5df-448d-aa00-03f14749eb61' },
+                            { name: 'Disable Telemetry', desc: { th: 'ลดการส่งข้อมูลวินิจฉัยเบื้องหลัง', en: 'Minimize background Windows diagnostic telemetry' }, cmd: 'reg add "HKLM\\SOFTWARE\\Policies\\Microsoft\\Windows\\DataCollection" /v AllowTelemetry /t REG_DWORD /d 0 /f' },
+                            { name: 'Clean Temp Files', desc: { th: 'ล้างไฟล์ชั่วคราวและแคชของระบบ', en: 'Remove temporary system and user cache files' }, cmd: 'Remove-Item -Path "$env:TEMP\\*" -Recurse -Force -ErrorAction SilentlyContinue' }
+                        ]
+                    },
+                    {
+                        id: 'appearance',
+                        name: { th: 'หน้าตาและการใช้งาน', en: 'UI & Appearance' },
+                        items: [
+                            { name: 'Classic Context Menu', desc: { th: 'กู้คืนเมนูคลิกขวาแบบดั้งเดิมใน Windows 11', en: 'Restore classic full context menu in Windows 11' }, cmd: 'reg add "HKCU\\Software\\Classes\\CLSID\\{86ca1aa0-34aa-4e8b-a509-50c905bae2a2}\\InprocServer32" /f /ve' },
+                            { name: 'Show File Extensions', desc: { th: 'แสดงนามสกุลไฟล์ทั้งหมดใน File Explorer', en: 'Always display file name extensions in Explorer' }, cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Explorer\\Advanced" /v HideFileExt /t REG_DWORD /d 0 /f' },
+                            { name: 'Dark Mode System', desc: { th: 'สลับธีมระบบและแอปเป็นโหมดมืด', en: 'Enable system-wide dark theme for Windows and apps' }, cmd: 'reg add "HKCU\\Software\\Microsoft\\Windows\\CurrentVersion\\Themes\\Personalize" /v AppsUseLightTheme /t REG_DWORD /d 0 /f' }
+                        ]
+                    }
+                ]
+            },
+            {
+                id: 'network',
+                name: { th: 'เครือข่ายและการซ่อมแซม', en: 'Network & Repair' },
+                icon: 'network',
+                subCategories: [
+                    {
+                        id: 'net-tools',
+                        name: { th: 'จัดการเครือข่าย', en: 'Network Tools' },
+                        items: [
+                            { name: 'Flush DNS Cache', desc: { th: 'ล้างค่าแคช DNS เพื่อแก้ปัญหาเข้าเว็บไม่ได้', en: 'Clear DNS resolver cache to fix connection issues' }, cmd: 'ipconfig /flushdns' },
+                            { name: 'Reset Winsock & TCP/IP', desc: { th: 'รีเซ็ตการตั้งค่าเครือข่ายกลับเป็นค่าเริ่มต้น', en: 'Reset network stack and Winsock catalog' }, cmd: 'netsh winsock reset; netsh int ip reset' },
+                            { name: 'Cloudflare DNS (1.1.1.1)', desc: { th: 'ตั้งค่า DNS ความเร็วสูงและปลอดภัย', en: 'Configure fast and privacy-first 1.1.1.1 DNS' }, cmd: 'Set-DnsClientServerAddress -InterfaceAlias "Ethernet" -ServerAddresses ("1.1.1.1","1.0.0.1")' }
+                        ]
+                    },
+                    {
+                        id: 'repair',
+                        name: { th: 'ซ่อมแซมระบบ', en: 'System Repair' },
+                        items: [
+                            { name: 'SFC /Scannow', desc: { th: 'ตรวจสอบและซ่อมแซมไฟล์ระบบที่เสียหาย', en: 'Scan and repair corrupted Windows system files' }, cmd: 'sfc /scannow' },
+                            { name: 'DISM RestoreHealth', desc: { th: 'ซ่อมแซม Windows Image ด้วยเครื่องมือ DISM', en: 'Repair Windows component store health via DISM' }, cmd: 'DISM /Online /Cleanup-Image /RestoreHealth' }
+                        ]
+                    }
+                ]
+            }
+        ];
+
+        // สถานะเริ่มต้นของแอปพลิเคชัน
+        let activeMainId = 'install';
+        let activeSubId = 'all';
+        let searchQuery = '';
+        let currentLang = 'th';
+        let isDarkMode = false;
+        let isMaximized = false;
+        let isInitialTabLoad = true;
+        let isInstalling = false;
+        let logTimers = [];
+        let activeRunButton = null;
+        let currentSuggestions = [];
+        let selectedSuggestionIndex = -1;
+
+        // ตัวช่วยดึงข้อความตามภาษาที่เลือก
+        function getLocalizedText(field) {
+            if (!field) return '';
+            if (typeof field === 'string') return field;
+            return field[currentLang] || field.th || field.en || '';
+        }
+
+        let isThemeTransitioning = false;
+
+        // ค้นหาองค์ประกอบที่สามารถคลิกได้ ณ พิกัด (x, y) ภายในกรอบแอป เพื่อให้คลิกได้ทันทีแม้อยู่ระหว่างอนิเมชั่น
+        function findClickableTarget(x, y) {
+            const appWin = document.getElementById('appWindow');
+            if (!appWin) return null;
+            const candidates = appWin.querySelectorAll('button, input, select, textarea, a, [role="button"], .theme-hover');
+            for (let i = candidates.length - 1; i >= 0; i--) {
+                const el = candidates[i];
+                if (el.disabled || el.offsetParent === null) continue;
+                const rect = el.getBoundingClientRect();
+                if (x >= rect.left && x <= rect.right && y >= rect.top && y <= rect.bottom) {
+                    return el;
+                }
+            }
+            return null;
+        }
+
+        // ตัวดักจับคลิกขณะเปลี่ยนธีม เพื่อส่งต่อการกดไปยังปุ่ม/ช่องค้นหา/แท็บทันที ไม่ถูกบล็อก
+        window.addEventListener('click', (e) => {
+            if (!isThemeTransitioning) return;
+            if (e.target === document.documentElement || e.target === document.body) {
+                const target = findClickableTarget(e.clientX, e.clientY);
+                if (target) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                    if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA') {
+                        target.focus();
+                    } else {
+                        target.click();
+                    }
+                }
+            }
+        }, true);
+
+        // ฟังก์ชันสร้างรูปทรงโพลีกอนคลื่นมนๆ ที่มีมูฟเม้นกระเพื่อมไหลอย่างนุ่มนวล
+        function generateWavyPolygon(cx, cy, radius, phase, amplitudeRatio, numPoints = 84) {
+            const points = [];
+            for (let i = 0; i < numPoints; i++) {
+                const angle = (i / numPoints) * Math.PI * 2;
+                const wave = amplitudeRatio > 0.001
+                    ? (Math.sin(angle * 3 + phase) * 0.72 + Math.sin(angle * 5 - phase * 1.3) * 0.28)
+                    : 0;
+                const r = Math.max(0, radius * (1 + wave * amplitudeRatio));
+                const px = Math.round((cx + Math.cos(angle) * r) * 10) / 10;
+                const py = Math.round((cy + Math.sin(angle) * r) * 10) / 10;
+                points.push(`${px}px ${py}px`);
+            }
+            return `polygon(${points.join(', ')})`;
+        }
+
+        // ฟังก์ชันสลับธีมมืด / สว่าง พร้อมอนิเมชั่นคลื่นมนๆ จบแบบคลีนๆ ไม่ดุ๊กดิ๊ก และคลิกสิ่งอื่นได้ตลอดเวลา
+        function toggleTheme(event) {
+            const btn = document.getElementById('themeToggleBtn');
+            const appWin = document.getElementById('appWindow');
+            const appRect = appWin ? appWin.getBoundingClientRect() : { left: 0, top: 0, width: window.innerWidth, height: window.innerHeight };
+            const btnRect = btn ? btn.getBoundingClientRect() : null;
+
+            // พิกัดศูนย์กลางคลื่น สัมพัทธ์กับกรอบ #appWindow
+            const cx = btnRect ? (btnRect.left + btnRect.width / 2) - appRect.left : appRect.width - 140;
+            const cy = btnRect ? (btnRect.top + btnRect.height / 2) - appRect.top : 28;
+
+            const applyThemeDOM = () => {
+                isDarkMode = !isDarkMode;
+                const html = document.documentElement;
+                const moonIcon = document.getElementById('moonIcon');
+                const sunIcon = document.getElementById('sunIcon');
+
+                if (isDarkMode) {
+                    html.classList.add('dark');
+                    moonIcon.classList.add('hidden');
+                    sunIcon.classList.remove('hidden');
+                    matrixConfig.theme = 'dark';
+                } else {
+                    html.classList.remove('dark');
+                    moonIcon.classList.remove('hidden');
+                    sunIcon.classList.add('hidden');
+                    matrixConfig.theme = 'light';
+                }
+            };
+
+            if (!document.startViewTransition) {
+                applyThemeDOM();
+                return;
+            }
+
+            // คำนวณระยะทางสูงสุดไปยังมุมทั้งสี่ของกรอบหน้าต่างแอป ให้เลยขอบออกไปอย่างเหลือเฟือ (1.5x)
+            const maxCornerDist = Math.hypot(
+                Math.max(cx, appRect.width - cx),
+                Math.max(cy, appRect.height - cy)
+            );
+            const maxR = maxCornerDist * 1.5;
+
+            // สร้างเฟรมอนิเมชั่นคลื่นมนๆ โดยให้คลื่นหมุนเฉพาะช่วงแรก และคลายตัวเรียบสนิทก่อนจบ เพื่อให้จบคลีนไม่มีดุ๊กดิ๊ก
+            const steps = 28;
+            const keyframes = [];
+            for (let s = 0; s <= steps; s++) {
+                const progress = s / steps;
+                const r = progress * maxR;
+
+                // การหมุนกระเพื่อมจะหยุดนิ่งสนิทตั้งแต่ 60% ของทาง ไม่หมุนวนตอนท้าย
+                const phaseProgress = Math.min(1, progress / 0.60);
+                const phase = Math.sin(phaseProgress * (Math.PI / 2)) * Math.PI * 2.8;
+
+                // คลื่นลอนมนจะค่อยๆ คลายตัวเรียบสนิทเป็นวงโค้งมนบริสุทธิ์ก่อนเลยกรอบแอป
+                let amp = 0;
+                if (progress < 0.52) {
+                    amp = 0.25;
+                } else if (progress <= 0.80) {
+                    const taper = (progress - 0.52) / 0.28;
+                    amp = 0.25 * (1 - taper * taper);
+                } else {
+                    amp = 0; // เรียบเนียน 100% ครอบคลุมกรอบทั้งหมด ไร้รอยกระตุกหรือดุ๊กดิ๊ก
+                }
+
+                keyframes.push({
+                    clipPath: generateWavyPolygon(cx, cy, r, phase, amp, 84)
+                });
+            }
+
+            isThemeTransitioning = true;
+            const transition = document.startViewTransition(() => {
+                applyThemeDOM();
+            });
+
+            transition.finished.finally(() => {
+                isThemeTransitioning = false;
+            });
+
+            transition.ready.then(() => {
+                const anim = document.documentElement.animate(
+                    keyframes,
+                    {
+                        duration: 1250, // ช้าลงพอดีๆ เห็นมูฟเม้นต์คลื่นชัดเจน และจบคลีน
+                        easing: 'cubic-bezier(0.16, 1, 0.3, 1)',
+                        pseudoElement: '::view-transition-new(app-window)'
+                    }
+                );
+                anim.onfinish = () => {
+                    isThemeTransitioning = false;
+                };
+            });
+        }
+
+        // ฟังก์ชันเปิด/ปิด ดรอปดาวน์เปลี่ยนภาษา
+        function toggleLangDropdown(event) {
+            if (event) event.stopPropagation();
+            const menu = document.getElementById('langDropdownMenu');
+            const chevron = document.getElementById('langChevron');
+            const isHidden = menu.classList.contains('hidden');
+
+            if (isHidden) {
+                menu.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    menu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+                    chevron.classList.add('rotate-180');
+                });
+            } else {
+                closeLangDropdown();
+            }
+        }
+
+        function closeLangDropdown() {
+            const menu = document.getElementById('langDropdownMenu');
+            const chevron = document.getElementById('langChevron');
+            if (!menu || menu.classList.contains('hidden')) return;
+            menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            chevron.classList.remove('rotate-180');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+            }, 150);
+        }
+
+        // ฟังก์ชันตั้งค่าภาษา
+        function setLanguage(lang) {
+            currentLang = lang;
+            document.documentElement.lang = lang;
+
+            const t = UI_STRINGS[lang];
+            document.getElementById('currentLangLabel').textContent = lang.toUpperCase();
+            document.getElementById('searchInput').placeholder = t.searchPlaceholder;
+            document.getElementById('emptyTitle').textContent = t.emptyTitle;
+            document.getElementById('emptyDesc').textContent = t.emptyDesc;
+            document.getElementById('reopenText').textContent = t.reopenText;
+            document.getElementById('minimizeBtn').title = t.minTitle;
+            document.getElementById('maximizeBtn').title = isMaximized ? t.restoreTitle : t.maxTitle;
+            document.getElementById('closeBtn').title = t.closeTitle;
+            document.getElementById('themeToggleBtn').title = t.themeTitle;
+            document.getElementById('langDropdownBtn').title = t.langTitle;
+            document.getElementById('logProgressLabel').textContent = t.logProgressLabel;
+            document.getElementById('suggestionHeaderLabel').textContent = t.suggestionHeader;
+
+            const checkTh = document.getElementById('checkTh');
+            const checkEn = document.getElementById('checkEn');
+            const optTh = document.getElementById('langOptTh');
+            const optEn = document.getElementById('langOptEn');
+
+            if (lang === 'th') {
+                checkTh.classList.remove('hidden');
+                checkEn.classList.add('hidden');
+                optTh.classList.add('font-medium', 'theme-text-primary');
+                optTh.classList.remove('theme-text-secondary');
+                optEn.classList.remove('font-medium', 'theme-text-primary');
+                optEn.classList.add('theme-text-secondary');
+            } else {
+                checkTh.classList.add('hidden');
+                checkEn.classList.remove('hidden');
+                optEn.classList.add('font-medium', 'theme-text-primary');
+                optEn.classList.remove('theme-text-secondary');
+                optTh.classList.remove('font-medium', 'theme-text-primary');
+                optTh.classList.add('theme-text-secondary');
+            }
+
+            closeLangDropdown();
+            renderAll();
+        }
+
+        // ปิดดรอปดาวน์เมื่อคลิกพื้นที่อื่นนอกเมนู
+        document.addEventListener('click', (e) => {
+            const wrapper = document.getElementById('langDropdownWrapper');
+            if (wrapper && !wrapper.contains(e.target)) {
+                closeLangDropdown();
+            }
+            const searchContainer = document.getElementById('searchContainer');
+            if (searchContainer && !searchContainer.contains(e.target)) {
+                hideSearchSuggestions();
+            }
+        });
+
+        // ฟังก์ชันควบคุมหน้าต่างแอป (ย่อ / ขยาย / ปิด) - เชื่อมต่อไปยัง Desktop OS
+        function minimizeApp() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage({ type: 'minimize' });
+            } else {
+                const win = document.getElementById('appWindow');
+                const dock = document.getElementById('minimizedDock');
+                if (win && dock) {
+                    win.classList.add('window-minimized');
+                    dock.classList.remove('opacity-0', 'translate-y-4', 'pointer-events-none');
+                }
+            }
+        }
+
+        function restoreApp() {
+            const win = document.getElementById('appWindow');
+            const dock = document.getElementById('minimizedDock');
+            if (win && dock) {
+                win.classList.remove('window-minimized');
+                dock.classList.add('opacity-0', 'translate-y-4', 'pointer-events-none');
+            }
+            setTimeout(() => {
+                updateMainTabIndicator();
+                initMatrixGrid();
+            }, 360);
+        }
+
+        function toggleMaximizeApp() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage({ type: 'maximize' });
+            } else {
+                const win = document.getElementById('appWindow');
+                const icon = document.getElementById('maximizeIcon');
+                const btn = document.getElementById('maximizeBtn');
+                const t = UI_STRINGS[currentLang];
+
+                isMaximized = !isMaximized;
+
+                if (isMaximized) {
+                    btn.title = t.restoreTitle;
+                    icon.innerHTML = `<rect x="7" y="4" width="13" height="13" rx="2"></rect><path d="M4 8v10a2 2 0 0 0 2 2h10"></path>`;
+                } else {
+                    btn.title = t.maxTitle;
+                    icon.innerHTML = `<rect x="4" y="4" width="16" height="16" rx="2.5"></rect>`;
+                }
+
+                setTimeout(() => {
+                    updateMainTabIndicator();
+                    initMatrixGrid();
+                }, 360);
+            }
+        }
+
+        function closeApp() {
+            if (window.chrome && window.chrome.webview) {
+                window.chrome.webview.postMessage({ type: 'close' });
+            } else {
+                const win = document.getElementById('appWindow');
+                const launcher = document.getElementById('closedLauncher');
+                if (win && launcher) {
+                    win.classList.add('window-closed');
+                    launcher.classList.remove('opacity-0', 'pointer-events-none');
+                }
+            }
+        }
+
+        function reopenApp() {
+            const win = document.getElementById('appWindow');
+            const launcher = document.getElementById('closedLauncher');
+            win.classList.remove('window-closed');
+            launcher.classList.add('opacity-0', 'pointer-events-none');
+            setTimeout(() => {
+                updateMainTabIndicator();
+                initMatrixGrid();
+            }, 360);
+        }
+
+        // ดึงข้อมูลสคริปต์จริงจาก GitHub Raw
+        async function syncFromGitHub() {
+            try {
+                const response = await fetch(GITHUB_RAW_URL);
+                if (!response.ok) throw new Error('Network error');
+                const scriptText = await response.text();
+                const parsedCategories = parsePowerShellCategories(scriptText);
+                if (parsedCategories && parsedCategories.length > 0) {
+                    catalogData = parsedCategories;
+                    if (!catalogData.some(c => c.id === activeMainId)) {
+                        activeMainId = catalogData[0].id;
+                        activeSubId = 'all';
+                    }
+                    renderAll();
+                }
+            } catch (err) {
+                // คงค่าโครงสร้างตั้งต้นไว้หากดึงข้อมูลจากภายนอกไม่สำเร็จ
+            }
+        }
+
+        // แยกหมวดหมู่และรายการจากไฟล์ PowerShell
+        function parsePowerShellCategories(psText) {
+            const lines = psText.split(/\r?\n/);
+            const extracted = [];
+            let currentCat = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                const regionMatch = line.match(/^#(?:region|===|---)\s*([A-Za-z0-9ก-๙\s&_-]+)/i);
+                if (regionMatch && regionMatch[1].trim().length > 2) {
+                    const title = regionMatch[1].replace(/[-=]/g, '').trim();
+                    if (!title.toLowerCase().includes('end')) {
+                        currentCat = {
+                            id: 'gh-' + extracted.length,
+                            name: { th: title, en: title },
+                            icon: extracted.length % 2 === 0 ? 'apps' : 'system',
+                            subCategories: [{ id: 'general', name: { th: 'ทั่วไป', en: 'General' }, items: [] }]
+                        };
+                        extracted.push(currentCat);
+                    }
+                }
+                const wingetMatch = line.match(/winget\s+install[^\r\n"']*/i);
+                if (wingetMatch && currentCat) {
+                    const cmd = wingetMatch[0].trim();
+                    const idMatch = cmd.match(/--id\s+([^\s]+)/i);
+                    const appName = idMatch ? idMatch[1].split('.').pop() : 'Utility Tool';
+                    currentCat.subCategories[0].items.push({
+                        name: appName,
+                        desc: { th: 'ติดตั้งผ่านตัวจัดการแพ็กเกจอัตโนมัติ', en: 'Automated package manager installation' },
+                        cmd: cmd
+                    });
+                }
+            }
+
+            const validCats = extracted.filter(c => c.subCategories[0].items.length > 0);
+            return validCats.length >= 2 ? validCats : null;
+        }
+
+        // แสดงแถบหมวดหมู่หลัก (แถวบน) โดยรักษา DOM ของเส้นใต้ไว้ไม่ให้สร้างซ้ำ
+        function renderMainCategories() {
+            const container = document.getElementById('mainCategoryBar');
+
+            // สร้างหรือเก็บตัวเส้นใต้ไว้ไม่ให้ถูกทำลายเวลาอัปเดตปุ่ม
+            let indicator = document.getElementById('mainTabIndicator');
+            if (!indicator) {
+                indicator = document.createElement('div');
+                indicator.id = 'mainTabIndicator';
+                indicator.className = 'tab-indicator absolute bottom-0 h-[2px] rounded-full pointer-events-none';
+                indicator.style.transform = 'scaleX(0)';
+            }
+
+            // ล้างเฉพาะปุ่มหมวดหมู่เดิม
+            Array.from(container.querySelectorAll('button')).forEach(btn => btn.remove());
+
+            catalogData.forEach(cat => {
+                const isActive = cat.id === activeMainId;
+                const btn = document.createElement('button');
+                btn.dataset.catId = cat.id;
+                btn.onclick = () => selectMainCategory(cat.id);
+                btn.className = `relative py-3 text-sm font-medium whitespace-nowrap flex items-center gap-2 transition-colors duration-200 ${
+                    isActive
+                        ? 'theme-text-primary'
+                        : 'theme-text-secondary hover:opacity-80'
+                }`;
+                btn.innerHTML = `
+                    <span class="${isActive ? 'theme-text-primary' : 'theme-text-muted'} transition-colors">${SVG_ICONS[cat.icon] || SVG_ICONS.apps}</span>
+                    <span>${getLocalizedText(cat.name)}</span>
+                `;
+                container.appendChild(btn);
+            });
+
+            if (!indicator.parentElement) {
+                container.appendChild(indicator);
+            }
+
+            requestAnimationFrame(() => updateMainTabIndicator());
+        }
+
+        // อัปเดตตำแหน่งและอนิเมชั่นของแถบเส้นใต้หมวดหมู่หลัก
+        function updateMainTabIndicator() {
+            const container = document.getElementById('mainCategoryBar');
+            const indicator = document.getElementById('mainTabIndicator');
+            if (!container || !indicator) return;
+            const activeBtn = container.querySelector(`button[data-cat-id="${activeMainId}"]`);
+            if (!activeBtn) return;
+
+            indicator.style.left = `${activeBtn.offsetLeft}px`;
+            indicator.style.width = `${activeBtn.offsetWidth}px`;
+
+            if (isInitialTabLoad) {
+                isInitialTabLoad = false;
+                requestAnimationFrame(() => {
+                    indicator.style.transform = 'scaleX(1)';
+                });
+            } else {
+                indicator.style.transform = 'scaleX(1)';
+            }
+        }
+
+        // แสดงแถบหมวดหมู่ย่อย (แถวล่าง)
+        function renderSubCategories() {
+            const container = document.getElementById('subCategoryBar');
+            const currentMain = catalogData.find(c => c.id === activeMainId);
+            if (!currentMain) return;
+            const t = UI_STRINGS[currentLang];
+
+            const subs = [
+                { id: 'all', name: t.allSub },
+                ...currentMain.subCategories.map(s => ({ id: s.id, name: getLocalizedText(s.name) }))
+            ];
+
+            container.innerHTML = subs.map(sub => {
+                const isActive = sub.id === activeSubId;
+                return `
+                    <button
+                        onclick="selectSubCategory('${sub.id}')"
+                        class="px-3.5 py-1.5 rounded-full text-xs font-medium whitespace-nowrap transition-all duration-200 active:scale-95 ${
+                            isActive
+                                ? 'theme-btn-accent shadow-sm'
+                                : 'theme-surface theme-text-secondary border theme-hover'
+                        }"
+                    >
+                        ${sub.name}
+                    </button>
+                `;
+            }).join('');
+        }
+
+        // แสดงรายการการ์ดโปรแกรม
+        function renderPrograms() {
+            const grid = document.getElementById('programGrid');
+            const emptyState = document.getElementById('emptyState');
+            const breadcrumbMain = document.getElementById('breadcrumbMain');
+            const breadcrumbSub = document.getElementById('breadcrumbSub');
+            const itemCount = document.getElementById('itemCount');
+            const t = UI_STRINGS[currentLang];
+
+            const currentMain = catalogData.find(c => c.id === activeMainId);
+            if (!currentMain) return;
+
+            breadcrumbMain.textContent = getLocalizedText(currentMain.name);
+
+            let itemsToDisplay = [];
+            if (activeSubId === 'all') {
+                breadcrumbSub.textContent = t.allSub;
+                currentMain.subCategories.forEach(sub => {
+                    const subLabel = getLocalizedText(sub.name);
+                    sub.items.forEach(item => {
+                        itemsToDisplay.push({ ...item, subName: subLabel });
+                    });
+                });
+            } else {
+                const currentSub = currentMain.subCategories.find(s => s.id === activeSubId);
+                const subLabel = currentSub ? getLocalizedText(currentSub.name) : t.allSub;
+                breadcrumbSub.textContent = subLabel;
+                if (currentSub) {
+                    itemsToDisplay = currentSub.items.map(item => ({ ...item, subName: subLabel }));
+                }
+            }
+
+            if (searchQuery.trim() !== '') {
+                const q = searchQuery.toLowerCase();
+                itemsToDisplay = itemsToDisplay.filter(item => {
+                    const descText = getLocalizedText(item.desc).toLowerCase();
+                    return item.name.toLowerCase().includes(q) ||
+                           descText.includes(q) ||
+                           item.subName.toLowerCase().includes(q);
+                });
+            }
+
+            itemCount.textContent = `${itemsToDisplay.length} ${t.itemsSuffix}`;
+
+            if (itemsToDisplay.length === 0) {
+                grid.innerHTML = '';
+                emptyState.classList.remove('hidden');
+                return;
+            }
+
+            emptyState.classList.add('hidden');
+            grid.innerHTML = itemsToDisplay.map((item, idx) => {
+                const safeName = item.name.replace(/'/g, "\\'");
+                const safeCmd = item.cmd.replace(/'/g, "\\'");
+                const descText = getLocalizedText(item.desc);
+                const delay = Math.min(idx * 25, 250);
+                return `
+                    <div style="animation-delay: ${delay}ms;" class="animate-card card-hover group theme-card border rounded-2xl p-4 flex flex-col justify-between">
+                        <div>
+                            <div class="flex items-start justify-between gap-2 mb-2.5">
+                                <div class="flex items-center gap-2.5 min-w-0 flex-1">
+                                    <div class="w-8 h-8 rounded-xl theme-input border flex items-center justify-center theme-text-secondary shrink-0 transition-colors">
+                                        ${SVG_ICONS.box}
+                                    </div>
+                                    <h2 class="text-[13.5px] font-semibold theme-text-primary leading-snug truncate">${item.name}</h2>
+                                </div>
+                                <span class="text-[10px] font-medium theme-text-secondary theme-input border px-2 py-0.5 rounded-full shrink-0 max-w-[105px] truncate" title="${item.subName}">
+                                    ${item.subName}
+                                </span>
+                            </div>
+                            <p class="text-xs theme-text-secondary leading-relaxed mb-4 line-clamp-2">${descText}</p>
+                        </div>
+
+                        <div class="flex items-center justify-end pt-3 border-t theme-border">
+                            <button
+                                onclick="runAction('${safeName}', '${safeCmd}', this)"
+                                class="flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl text-xs font-medium theme-btn-accent shadow-sm"
+                            >
+                                ${SVG_ICONS.play}
+                                <span>${t.runBtn}</span>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // เปลี่ยนหมวดหมู่หลัก (ป้องกันการทำงานซ้ำหากกดหมวดหมู่เดิมที่เลือกอยู่แล้ว)
+        function selectMainCategory(id) {
+            if (activeMainId === id) return;
+            activeMainId = id;
+            activeSubId = 'all';
+            renderAll();
+        }
+
+        // เปลี่ยนหมวดหมู่ย่อย (ป้องกันการทำงานซ้ำหากกดหมวดหมู่ย่อยเดิม)
+        function selectSubCategory(id) {
+            if (activeSubId === id) return;
+            activeSubId = id;
+            renderSubCategories();
+            renderPrograms();
+        }
+
+        // จำลองการรันโปรแกรมและเปิดหน้าต่างอนิเมชั่น Log กำลังติดตั้ง
+        function runAction(name, cmd, btnEl) {
+            if (isInstalling) return;
+            isInstalling = true;
+            activeRunButton = btnEl;
+
+            const t = UI_STRINGS[currentLang];
+
+            if (btnEl) {
+                btnEl.disabled = true;
+                btnEl.classList.add('opacity-90');
+                btnEl.innerHTML = `${SVG_ICONS.spinner}<span>${t.runningBtn}</span>`;
+            }
+
+            openInstallLogModal(name, cmd);
+        }
+
+        // เปิดหน้าต่าง Log แสดงขั้นตอนการติดตั้งแบบเรียลไทม์
+        function openInstallLogModal(appName, cmd) {
+            const t = UI_STRINGS[currentLang];
+            const backdrop = document.getElementById('installLogBackdrop');
+            const modal = document.getElementById('installLogModal');
+            const statusIconBox = document.getElementById('logStatusIconBox');
+            const spinnerIcon = document.getElementById('logSpinnerIcon');
+            const doneIcon = document.getElementById('logDoneIcon');
+            const logAppName = document.getElementById('logAppName');
+            const logStatusBadge = document.getElementById('logStatusBadge');
+            const logSubStatus = document.getElementById('logSubStatus');
+            const logProgressBar = document.getElementById('logProgressBar');
+            const logProgressPercent = document.getElementById('logProgressPercent');
+            const logOutputBox = document.getElementById('logOutputBox');
+            const logFooterHint = document.getElementById('logFooterHint');
+            const logDoneBtn = document.getElementById('logDoneBtn');
+
+            logTimers.forEach(timer => clearTimeout(timer));
+            logTimers = [];
+
+            logAppName.textContent = appName;
+            logStatusBadge.textContent = t.logInstallingBadge;
+            logStatusBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full theme-subbar border theme-border theme-text-primary shrink-0';
+            logSubStatus.textContent = t.logInitSub;
+            logProgressBar.style.width = '0%';
+            logProgressBar.className = 'h-full rounded-full theme-btn-accent transition-all duration-300 ease-out';
+            logProgressPercent.textContent = '0%';
+            logOutputBox.innerHTML = '';
+            logFooterHint.textContent = t.logFooterRunning;
+
+            // ตั้งปุ่มด้านล่างเป็นโหมด "ยกเลิกการติดตั้ง"
+            logDoneBtn.textContent = t.logCancelBtn;
+            logDoneBtn.className = 'px-4 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95';
+
+            statusIconBox.className = 'w-9 h-9 rounded-xl theme-btn-accent flex items-center justify-center shrink-0 transition-colors duration-300';
+            spinnerIcon.classList.remove('hidden');
+            doneIcon.classList.add('hidden');
+
+            backdrop.classList.remove('log-backdrop-hidden');
+            backdrop.classList.add('log-backdrop-visible');
+            requestAnimationFrame(() => {
+                modal.classList.remove('log-modal-hidden');
+                modal.classList.add('log-modal-visible');
+            });
+
+            if (window.chrome && window.chrome.webview) {
+                // รันคำสั่งจริงบนระบบ Windows ผ่าน PowerShell
+                window.chrome.webview.postMessage({
+                    type: 'run',
+                    appName: appName,
+                    cmd: cmd
+                });
+            } else {
+                // โหมดจำลองเมื่อเปิดทดสอบผ่านเว็บเบราว์เซอร์ปกติ
+                const steps = [
+                    { delay: 120, progress: 12, text: t.logSteps[0] },
+                    { delay: 650, progress: 34, text: t.logSteps[1] },
+                    { delay: 1300, progress: 62, text: t.logSteps[2] },
+                    { delay: 2050, progress: 88, text: t.logSteps[3] },
+                    { delay: 2700, progress: 100, text: t.logSteps[4], done: true }
+                ];
+
+                steps.forEach(step => {
+                    const timer = setTimeout(() => {
+                        if (!isInstalling) return;
+
+                        logProgressBar.style.width = `${step.progress}%`;
+                        logProgressPercent.textContent = `${step.progress}%`;
+                        logSubStatus.textContent = step.text;
+                        appendLogLine(step.text, step.done);
+
+                        if (step.done) {
+                            window.desktopBridge.setComplete(true, t.logDoneSub);
+                        }
+                    }, step.delay);
+                    logTimers.push(timer);
+                });
+            }
+        }
+
+        // คืนค่าปุ่มบนการ์ดโปรแกรมกลับเป็นปกติ
+        function resetActiveRunButton() {
+            if (!activeRunButton) return;
+            const t = UI_STRINGS[currentLang];
+            activeRunButton.disabled = false;
+            activeRunButton.classList.remove('opacity-90');
+            activeRunButton.innerHTML = `${SVG_ICONS.play}<span>${t.runBtn}</span>`;
+            activeRunButton = null;
+        }
+
+        // เพิ่มบรรทัดข้อความพร้อมเวลาลงในกล่อง Log
+        function appendLogLine(message, isSuccess = false) {
+            const logOutputBox = document.getElementById('logOutputBox');
+            const now = new Date();
+            const timeStr = now.toTimeString().split(' ')[0];
+
+            const line = document.createElement('div');
+            line.className = 'animate-log-line flex items-start gap-2';
+            line.innerHTML = `
+                <span class="theme-text-muted shrink-0">[${timeStr}]</span>
+                <span class="${isSuccess ? 'text-emerald-500 font-medium' : 'theme-text-primary'}">${message}</span>
+            `;
+            logOutputBox.appendChild(line);
+            logOutputBox.scrollTop = logOutputBox.scrollHeight;
+        }
+
+        // จัดการเมื่อกดปุ่ม "ยกเลิกการติดตั้ง" หรือปุ่มกากบาท (X) หรือปุ่ม "เสร็จสิ้น"
+        function handleLogCloseOrCancel() {
+            const wasInstalling = isInstalling;
+            const appName = document.getElementById('logAppName').textContent;
+            const t = UI_STRINGS[currentLang];
+
+            // หยุดคิวติดตั้งทั้งหมดทันที ไม่ทำงานต่อในเบื้องหลัง
+            isInstalling = false;
+            logTimers.forEach(timer => clearTimeout(timer));
+            logTimers = [];
+
+            // คืนค่าปุ่มบนการ์ดโปรแกรมกลับเป็น "รันโปรแกรม"
+            resetActiveRunButton();
+
+            // ปิดหน้าต่าง Log Modal
+            const backdrop = document.getElementById('installLogBackdrop');
+            const modal = document.getElementById('installLogModal');
+
+            modal.classList.remove('log-modal-visible');
+            modal.classList.add('log-modal-hidden');
+            backdrop.classList.remove('log-backdrop-visible');
+            backdrop.classList.add('log-backdrop-hidden');
+
+            if (wasInstalling) {
+                if (window.chrome && window.chrome.webview) {
+                    window.chrome.webview.postMessage({ type: 'cancel' });
+                }
+                showToast(`${t.toastCancelled} ${appName}`);
+            }
+        }
+
+        // แสดงแถบแจ้งเตือนด้านล่าง
+        let toastTimeout;
+        function showToast(message) {
+            const toast = document.getElementById('toast');
+            const toastMessage = document.getElementById('toastMessage');
+            toastMessage.textContent = message;
+
+            toast.classList.remove('opacity-0', 'translate-y-2');
+            clearTimeout(toastTimeout);
+            toastTimeout = setTimeout(() => {
+                toast.classList.add('opacity-0', 'translate-y-2');
+            }, 2200);
+        }
+
+        // ค้นหาแบบเรียลไทม์ + ระบบเดาคำค้นหาอัตโนมัติ (Search Autocomplete)
+        const searchInputEl = document.getElementById('searchInput');
+
+        function getAllCatalogItems() {
+            const allItems = [];
+            catalogData.forEach(cat => {
+                const catName = getLocalizedText(cat.name);
+                cat.subCategories.forEach(sub => {
+                    const subName = getLocalizedText(sub.name);
+                    sub.items.forEach(item => {
+                        allItems.push({
+                            ...item,
+                            mainId: cat.id,
+                            mainName: catName,
+                            subId: sub.id,
+                            subName: subName
+                        });
+                    });
+                });
+            });
+            return allItems;
+        }
+
+        function highlightMatchedText(text, query) {
+            if (!query) return text;
+            const escaped = query.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            const regex = new RegExp(`(${escaped})`, 'gi');
+            return text.replace(regex, '<mark class="bg-slate-900/10 dark:bg-white/15 theme-text-primary font-semibold rounded px-0.5">$1</mark>');
+        }
+
+        function updateSearchSuggestions(query) {
+            const dropdown = document.getElementById('searchSuggestionsDropdown');
+            const listEl = document.getElementById('searchSuggestionsList');
+            const clearBtn = document.getElementById('clearSearchBtn');
+            const t = UI_STRINGS[currentLang];
+
+            if (query.trim().length > 0) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+
+            const allItems = getAllCatalogItems();
+            const q = query.trim().toLowerCase();
+
+            if (q === '') {
+                currentSuggestions = allItems.slice(0, 5);
+            } else {
+                const startsWithMatches = [];
+                const containsMatches = [];
+
+                allItems.forEach(item => {
+                    const nameLower = item.name.toLowerCase();
+                    const descLower = getLocalizedText(item.desc).toLowerCase();
+                    const subLower = item.subName.toLowerCase();
+
+                    if (nameLower.startsWith(q)) {
+                        startsWithMatches.push(item);
+                    } else if (nameLower.includes(q) || descLower.includes(q) || subLower.includes(q)) {
+                        containsMatches.push(item);
+                    }
+                });
+
+                currentSuggestions = [...startsWithMatches, ...containsMatches].slice(0, 6);
+            }
+
+            selectedSuggestionIndex = -1;
+
+            if (currentSuggestions.length === 0) {
+                listEl.innerHTML = `<div class="px-3 py-3 text-center text-[11px] theme-text-muted">${t.suggestionNoMatch}</div>`;
+            } else {
+                listEl.innerHTML = currentSuggestions.map((item, idx) => {
+                    const highlightedName = highlightMatchedText(item.name, query.trim());
+                    return `
+                        <button
+                            type="button"
+                            data-suggestion-idx="${idx}"
+                            onclick="selectSearchSuggestion(${idx})"
+                            class="suggestion-item w-full px-3 py-2 text-left flex items-center justify-between gap-2 theme-hover transition-colors"
+                        >
+                            <div class="flex items-center gap-2 min-w-0">
+                                <span class="theme-text-muted shrink-0">${SVG_ICONS.box}</span>
+                                <span class="text-xs theme-text-primary truncate">${highlightedName}</span>
+                            </div>
+                            <span class="text-[10px] theme-text-muted shrink-0 truncate max-w-[90px]">${item.subName}</span>
+                        </button>
+                    `;
+                }).join('');
+            }
+
+            showSearchSuggestions();
+        }
+
+        function showSearchSuggestions() {
+            const dropdown = document.getElementById('searchSuggestionsDropdown');
+            if (!dropdown) return;
+            dropdown.classList.remove('hidden');
+            requestAnimationFrame(() => {
+                dropdown.classList.remove('opacity-0', '-translate-y-1.5', 'scale-[0.98]', 'pointer-events-none');
+            });
+        }
+
+        function hideSearchSuggestions() {
+            const dropdown = document.getElementById('searchSuggestionsDropdown');
+            if (!dropdown || dropdown.classList.contains('hidden')) return;
+            dropdown.classList.add('opacity-0', '-translate-y-1.5', 'scale-[0.98]', 'pointer-events-none');
+            setTimeout(() => {
+                dropdown.classList.add('hidden');
+            }, 180);
+        }
+
+        function selectSearchSuggestion(idx) {
+            const selected = currentSuggestions[idx];
+            if (!selected) return;
+
+            searchInputEl.value = selected.name;
+            searchQuery = selected.name;
+            document.getElementById('clearSearchBtn').classList.remove('hidden');
+
+            if (activeMainId !== selected.mainId) {
+                activeMainId = selected.mainId;
+            }
+            activeSubId = 'all';
+
+            hideSearchSuggestions();
+            renderAll();
+        }
+
+        function clearSearch() {
+            searchInputEl.value = '';
+            searchQuery = '';
+            document.getElementById('clearSearchBtn').classList.add('hidden');
+            updateSearchSuggestions('');
+            renderPrograms();
+            searchInputEl.focus();
+        }
+
+        function highlightActiveSuggestionItem() {
+            const items = document.querySelectorAll('.suggestion-item');
+            items.forEach((el, idx) => {
+                if (idx === selectedSuggestionIndex) {
+                    el.style.backgroundColor = 'var(--bg-hover)';
+                    el.scrollIntoView({ block: 'nearest' });
+                } else {
+                    el.style.backgroundColor = '';
+                }
+            });
+        }
+
+        searchInputEl.addEventListener('focus', () => {
+            updateSearchSuggestions(searchInputEl.value);
+        });
+
+        searchInputEl.addEventListener('input', (e) => {
+            searchQuery = e.target.value;
+            updateSearchSuggestions(searchQuery);
+            renderPrograms();
+        });
+
+        searchInputEl.addEventListener('keydown', (e) => {
+            const dropdown = document.getElementById('searchSuggestionsDropdown');
+            const isOpen = dropdown && !dropdown.classList.contains('hidden');
+
+            if (e.key === 'ArrowDown' && isOpen && currentSuggestions.length > 0) {
+                e.preventDefault();
+                selectedSuggestionIndex = (selectedSuggestionIndex + 1) % currentSuggestions.length;
+                highlightActiveSuggestionItem();
+            } else if (e.key === 'ArrowUp' && isOpen && currentSuggestions.length > 0) {
+                e.preventDefault();
+                selectedSuggestionIndex = (selectedSuggestionIndex - 1 + currentSuggestions.length) % currentSuggestions.length;
+                highlightActiveSuggestionItem();
+            } else if (e.key === 'Enter' && isOpen && selectedSuggestionIndex >= 0) {
+                e.preventDefault();
+                selectSearchSuggestion(selectedSuggestionIndex);
+            } else if (e.key === 'Escape') {
+                hideSearchSuggestions();
+            }
+        });
+
+        function renderAll() {
+            renderMainCategories();
+            renderSubCategories();
+            renderPrograms();
+        }
+
+        // ปรับตำแหน่งเส้นใต้หมวดหมู่เมื่อขยาย/ย่อหน้าจอ
+        window.addEventListener('resize', () => {
+            updateMainTabIndicator();
+            initMatrixGrid();
+        });
+
+        // ==========================================
+        // Minimalist Falling Characters (Matrix Rain)
+        // แสดงครอบคลุมทั้งกรอบหน้าต่างแอปตั้งแต่ส่วนหัวด้านบนสุด
+        // ==========================================
+        const matrixCanvas = document.getElementById('matrixCanvas');
+        let matrixCtx = null;
+        let matrixAnimId = null;
+
+        const GLYPHS = (
+            "ｱｲｳｴｵｶｷｸｹｺｻｼｽｾｿﾀﾁﾂﾃﾄﾅﾆﾇﾈﾉﾊﾋﾌﾍﾎﾏﾐﾑﾒﾓﾔﾕﾖﾗﾘﾙﾚﾛﾜﾝ" +
+            "ABCDEFGHIKLMNOPRSTUVWXYZ" +
+            "ЯƎИƧꓘꓷ∀" +
+            "012345789" +
+            "=+:.*⊥⊤-"
+        ).split("");
+
+        const matrixConfig = {
+            theme: 'light',
+            speed: 0.85,
+            maxAlpha: 0.48,
+            fontSize: 13,
+            fontWeight: 400,
+            mouseClear: true
+        };
+
+        const matrixThemes = {
+            light: {
+                bg: '#fbfbfb',
+                headRgb: [71, 85, 105],
+                tailRgb: [148, 163, 184]
+            },
+            dark: {
+                bg: '#09090b',
+                headRgb: [228, 228, 231],
+                tailRgb: [82, 82, 91]
+            }
+        };
+
+        let mWidth = 0, mHeight = 0, mDpr = 1, mCols = 0, mRows = 0;
+        let mColSpacing = 20, mRowSpacing = 19;
+        let mColumns = [];
+        const mMouse = { x: -9999, y: -9999, smoothX: -9999, smoothY: -9999, active: false };
+
+        function mRandomGlyph() {
+            return GLYPHS[(Math.random() * GLYPHS.length) | 0];
+        }
+
+        function mCreateStream(initialRandomY = true) {
+            const length = 8 + Math.random() * 18;
+            return {
+                y: initialRandomY ? (Math.random() * (mRows + length * 2)) - length : -Math.random() * 15,
+                speed: (0.045 + Math.random() * 0.065),
+                length: length,
+                intensity: 0.65 + Math.random() * 0.35
+            };
+        }
+
+        function initMatrixGrid() {
+            const appWin = document.getElementById('appWindow');
+            if (!matrixCanvas || !appWin) return;
+            const rect = appWin.getBoundingClientRect();
+            if (rect.width === 0 || rect.height === 0) return;
+
+            matrixCtx = matrixCanvas.getContext('2d', { alpha: false });
+            mDpr = Math.min(window.devicePixelRatio || 1, 2);
+
+            mWidth = rect.width;
+            mHeight = rect.height;
+
+            matrixCanvas.width = mWidth * mDpr;
+            matrixCanvas.height = mHeight * mDpr;
+            matrixCtx.setTransform(mDpr, 0, 0, mDpr, 0, 0);
+
+            mColSpacing = Math.round(matrixConfig.fontSize * 1.55);
+            mRowSpacing = Math.round(matrixConfig.fontSize * 1.45);
+
+            mCols = Math.ceil(mWidth / mColSpacing) + 1;
+            mRows = Math.ceil(mHeight / mRowSpacing) + 2;
+
+            mColumns = [];
+            for (let c = 0; c < mCols; c++) {
+                const columnActivity = Math.random();
+                const cellChars = [];
+                const cellMirrored = [];
+                const cellMutateRate = [];
+
+                for (let r = 0; r < mRows; r++) {
+                    cellChars.push(mRandomGlyph());
+                    cellMirrored.push(Math.random() < 0.16);
+                    cellMutateRate.push(0.001 + Math.random() * 0.004);
+                }
+
+                const streams = [];
+                const streamCount = columnActivity > 0.6 ? 2 : 1;
+                for (let s = 0; s < streamCount; s++) {
+                    const st = mCreateStream(true);
+                    if (s === 1) st.y -= mRows * 0.6;
+                    streams.push(st);
+                }
+
+                mColumns.push({
+                    x: c * mColSpacing + mColSpacing * 0.5,
+                    chars: cellChars,
+                    mirrored: cellMirrored,
+                    mutateRate: cellMutateRate,
+                    streams: streams,
+                    densityScale: columnActivity < 0.12 ? 0.45 : 1.0
+                });
+            }
+        }
+
+        function getMatrixVisibilityMask(x, y) {
+            let mask = 1.0;
+
+            if (matrixConfig.mouseClear && mMouse.active) {
+                const mdx = x - mMouse.smoothX;
+                const mdy = y - mMouse.smoothY;
+                const mRadius = Math.min(mWidth, mHeight) * 0.22;
+                const mDistSq = mdx * mdx + mdy * mdy;
+                const mRadSq = mRadius * mRadius;
+
+                if (mDistSq < mRadSq) {
+                    const mt = Math.sqrt(mDistSq / mRadSq);
+                    const mSmooth = mt * mt * (3 - 2 * mt);
+                    mask *= (0.15 + 0.85 * mSmooth);
+                }
+            }
+            return mask;
+        }
+
+        let mLastMatrixTime = performance.now();
+        function animateMatrix(now) {
+            const dt = Math.min((now - mLastMatrixTime) / 16.6667, 3.0);
+            mLastMatrixTime = now;
+
+            if (matrixCtx && mWidth > 0 && mHeight > 0) {
+                if (mMouse.active) {
+                    mMouse.smoothX += (mMouse.x - mMouse.smoothX) * 0.12 * dt;
+                    mMouse.smoothY += (mMouse.y - mMouse.smoothY) * 0.12 * dt;
+                }
+
+                const theme = matrixThemes[matrixConfig.theme] || matrixThemes.light;
+
+                matrixCtx.fillStyle = theme.bg;
+                matrixCtx.fillRect(0, 0, mWidth, mHeight);
+
+                matrixCtx.font = `${matrixConfig.fontWeight} ${matrixConfig.fontSize}px "JetBrains Mono", "Noto Sans JP", monospace`;
+                matrixCtx.textAlign = 'center';
+                matrixCtx.textBaseline = 'middle';
+
+                const headR = theme.headRgb[0], headG = theme.headRgb[1], headB = theme.headRgb[2];
+                const tailR = theme.tailRgb[0], tailG = theme.tailRgb[1], tailB = theme.tailRgb[2];
+
+                for (let c = 0; c < mCols; c++) {
+                    const col = mColumns[c];
+                    const x = col.x;
+
+                    for (let s = 0; s < col.streams.length; s++) {
+                        const stream = col.streams[s];
+                        stream.y += stream.speed * matrixConfig.speed * dt;
+
+                        if (stream.y - stream.length > mRows + 2) {
+                            stream.y = -Math.random() * 12;
+                            stream.length = 8 + Math.random() * 18;
+                            stream.speed = 0.045 + Math.random() * 0.065;
+                        }
+                    }
+
+                    for (let r = 0; r < mRows; r++) {
+                        let cellAlpha = 0;
+                        let isHeadFactor = 0;
+
+                        for (let s = 0; s < col.streams.length; s++) {
+                            const stream = col.streams[s];
+                            const dist = stream.y - r;
+
+                            if (dist >= -1.2 && dist < 0) {
+                                const fadeIn = (dist + 1.2) / 1.2;
+                                const smoothIn = fadeIn * fadeIn * (3 - 2 * fadeIn);
+                                const a = smoothIn * stream.intensity;
+                                if (a > cellAlpha) {
+                                    cellAlpha = a;
+                                    isHeadFactor = smoothIn;
+                                }
+                            } else if (dist >= 0 && dist <= stream.length) {
+                                const norm = 1.0 - (dist / stream.length);
+                                const smoothTail = Math.pow(norm, 1.45);
+                                const a = smoothTail * stream.intensity;
+                                if (a > cellAlpha) {
+                                    cellAlpha = a;
+                                    isHeadFactor = dist < 1.5 ? (1.0 - dist / 1.5) : 0;
+                                }
+                            }
+                        }
+
+                        if (cellAlpha <= 0.015) continue;
+
+                        const y = r * mRowSpacing + mRowSpacing * 0.5;
+                        const mask = getMatrixVisibilityMask(x, y);
+                        const finalAlpha = cellAlpha * matrixConfig.maxAlpha * col.densityScale * mask;
+
+                        if (finalAlpha <= 0.015) continue;
+
+                        if (Math.random() < col.mutateRate[r] * (1 + isHeadFactor * 5) * dt) {
+                            col.chars[r] = mRandomGlyph();
+                        }
+
+                        const cr = (tailR + (headR - tailR) * isHeadFactor) | 0;
+                        const cg = (tailG + (headG - tailG) * isHeadFactor) | 0;
+                        const cb = (tailB + (headB - tailB) * isHeadFactor) | 0;
+
+                        matrixCtx.fillStyle = `rgba(${cr},${cg},${cb},${finalAlpha.toFixed(3)})`;
+
+                        if (col.mirrored[r]) {
+                            matrixCtx.save();
+                            matrixCtx.translate(x, y);
+                            matrixCtx.scale(-1, 1);
+                            matrixCtx.fillText(col.chars[r], 0, 0);
+                            matrixCtx.restore();
+                        } else {
+                            matrixCtx.fillText(col.chars[r], x, y);
+                        }
+                    }
+                }
+            }
+
+            matrixAnimId = requestAnimationFrame(animateMatrix);
+        }
+
+        function startMatrixAnimation() {
+            if (matrixAnimId) cancelAnimationFrame(matrixAnimId);
+            initMatrixGrid();
+            mLastMatrixTime = performance.now();
+            matrixAnimId = requestAnimationFrame(animateMatrix);
+        }
+
+        const appWindowEl = document.getElementById('appWindow');
+        if (appWindowEl) {
+            appWindowEl.addEventListener('mousemove', (e) => {
+                const rect = appWindowEl.getBoundingClientRect();
+                const relX = e.clientX - rect.left;
+                const relY = e.clientY - rect.top;
+                if (!mMouse.active) {
+                    mMouse.smoothX = relX;
+                    mMouse.smoothY = relY;
+                    mMouse.active = true;
+                }
+                mMouse.x = relX;
+                mMouse.y = relY;
+            });
+
+            appWindowEl.addEventListener('mouseleave', () => {
+                mMouse.active = false;
+            });
+        }
+
+        // เริ่มต้นทำงาน
+        window.addEventListener('DOMContentLoaded', () => {
+            renderAll();
+            startMatrixAnimation();
+            syncFromGitHub();
+        });
+
+        // Desktop Bridge สำหรับรับคำสั่งและ Log สตรีมสดจาก PowerShell
+        window.desktopBridge = {
+            appendLog: function(message, isSuccess) {
+                appendLogLine(message, isSuccess);
+            },
+            setProgress: function(percent, statusText) {
+                const logProgressBar = document.getElementById('logProgressBar');
+                const logProgressPercent = document.getElementById('logProgressPercent');
+                const logSubStatus = document.getElementById('logSubStatus');
+                if (logProgressBar) logProgressBar.style.width = percent + '%';
+                if (logProgressPercent) logProgressPercent.textContent = percent + '%';
+                if (logSubStatus && statusText) logSubStatus.textContent = statusText;
+            },
+            setComplete: function(success, message) {
+                isInstalling = false;
+                const spinnerIcon = document.getElementById('logSpinnerIcon');
+                const doneIcon = document.getElementById('logDoneIcon');
+                const statusIconBox = document.getElementById('logStatusIconBox');
+                const logProgressBar = document.getElementById('logProgressBar');
+                const logProgressPercent = document.getElementById('logProgressPercent');
+                const logStatusBadge = document.getElementById('logStatusBadge');
+                const logSubStatus = document.getElementById('logSubStatus');
+                const logFooterHint = document.getElementById('logFooterHint');
+                const logDoneBtn = document.getElementById('logDoneBtn');
+                const t = UI_STRINGS[currentLang];
+
+                if (spinnerIcon) spinnerIcon.classList.add('hidden');
+                if (doneIcon) doneIcon.classList.remove('hidden');
+
+                if (success) {
+                    if (statusIconBox) statusIconBox.className = 'w-9 h-9 rounded-xl bg-emerald-500/15 text-emerald-500 flex items-center justify-center shrink-0 transition-colors duration-300';
+                    if (logProgressBar) {
+                        logProgressBar.style.width = '100%';
+                        logProgressBar.className = 'h-full rounded-full bg-emerald-500 transition-all duration-300 ease-out';
+                    }
+                    if (logProgressPercent) logProgressPercent.textContent = '100%';
+                    if (logStatusBadge) {
+                        logStatusBadge.textContent = t.logCompletedBadge;
+                        logStatusBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-500 shrink-0';
+                    }
+                    if (logSubStatus) logSubStatus.textContent = message || t.logDoneSub;
+                    if (logFooterHint) logFooterHint.textContent = t.logFooterDone;
+                } else {
+                    if (statusIconBox) statusIconBox.className = 'w-9 h-9 rounded-xl bg-red-500/15 text-red-500 flex items-center justify-center shrink-0 transition-colors duration-300';
+                    if (logProgressBar) {
+                        logProgressBar.style.width = '100%';
+                        logProgressBar.className = 'h-full rounded-full bg-red-500 transition-all duration-300 ease-out';
+                    }
+                    if (logProgressPercent) logProgressPercent.textContent = '100%';
+                    if (logStatusBadge) {
+                        logStatusBadge.textContent = 'ล้มเหลว';
+                        logStatusBadge.className = 'text-[10px] font-medium px-2 py-0.5 rounded-full bg-red-500/15 text-red-500 shrink-0';
+                    }
+                    if (logSubStatus) logSubStatus.textContent = message || 'การติดตั้งล้มเหลว';
+                    if (logFooterHint) logFooterHint.textContent = 'พบข้อผิดพลาด';
+                }
+
+                if (logDoneBtn) {
+                    logDoneBtn.textContent = t.logDoneBtn;
+                    logDoneBtn.className = 'px-4 py-1.5 rounded-xl text-xs font-medium theme-btn-accent shadow-sm transition-all active:scale-95';
+                }
+                resetActiveRunButton();
+            }
+        };
+
+        // ผูกการลากหน้าต่าง (Drag Window) บน Desktop
+        document.addEventListener('DOMContentLoaded', () => {
+            const appHeader = document.querySelector('.app-header');
+            if (appHeader) {
+                appHeader.addEventListener('mousedown', (e) => {
+                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, nav, [role="button"]')) {
+                        return;
+                    }
+                    if (window.chrome && window.chrome.webview) {
+                        window.chrome.webview.postMessage({ type: 'drag' });
+                    }
+                });
+            }
+        });
+
+    </script>
+</body>
+</html>
