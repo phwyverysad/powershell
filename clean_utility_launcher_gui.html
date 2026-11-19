@@ -629,9 +629,9 @@
                 </nav>
 
                 <!-- แถบเครื่องมือจัดการโปรแกรม (Black Box Toolbar Layer) - ติดหนึบอยู่ด้านบนเสมอ (Sticky) ไม่ซ่อนเมื่อสกอร์ล -->
-                <div class="sticky top-0 z-30 theme-surface border theme-border rounded-2xl px-4 py-2.5 mb-4 flex flex-wrap items-center justify-between gap-3 shadow-md backdrop-blur-md">
+                <div class="sticky top-0 z-30 theme-surface border theme-border rounded-2xl px-4 py-2.5 mb-4 flex items-center justify-between gap-3 shadow-md backdrop-blur-md overflow-x-auto no-scrollbar">
                 <!-- ฝั่งซ้าย: Breadcrumbs และ ปุ่มเลือกรายการ (กรอบสีฟ้า) -->
-                <div class="flex flex-wrap items-center gap-3">
+                <div class="flex items-center gap-2.5 shrink-0">
                     <div class="flex items-center gap-2 text-xs theme-text-secondary">
                         <span id="breadcrumbMain" class="font-medium theme-text-primary">ทั้งหมด</span>
                         <svg class="w-3.5 h-3.5 theme-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
@@ -643,7 +643,7 @@
                     <div class="h-4 w-px bg-zinc-300 dark:bg-zinc-700/60 hidden sm:block"></div>
 
                     <!-- ปุ่มกรอบสีฟ้า: Select All, Select All Installed, Select All Not Installed -->
-                    <div class="flex items-center gap-1.5 flex-wrap">
+                    <div class="flex items-center gap-1.5 shrink-0">
                         <button
                             type="button"
                             onclick="toggleSelectAll()"
@@ -684,7 +684,7 @@
                 </div>
 
                 <!-- ฝั่งขวา: ปุ่มจัดการเป็นกลุ่ม (กรอบสีเหลือง) และจำนวนรายการ -->
-                <div class="flex items-center gap-2.5 flex-wrap">
+                <div class="flex items-center gap-2.5 shrink-0">
                     <!-- ปุ่มกรอบสีเหลือง: Install Selected Items และ Uninstall Selected Items -->
                     <div class="flex items-center gap-2">
                         <button

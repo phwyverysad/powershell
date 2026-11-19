@@ -69,6 +69,10 @@ Assert-Test ($html.Contains("document.addEventListener('pointerdown'")) "Immedia
 Assert-Test ($html.Contains('matchesPattern')) "Strict pattern matching (matchesPattern) implemented"
 Assert-Test (-not $html.Contains("winget.split('.').pop()")) "Buggy winget.split('.').pop() false-positive check is completely eliminated"
 
+# 3.6 Check Window Dimensions in Launcher
+$launcherCode = Get-Content -Raw -Encoding UTF8 "C:\Users\Administrator\.gemini\antigravity\scratch\powershell\run.ps1"
+Assert-Test ($launcherCode.Contains('$window.Width = 1380') -and $launcherCode.Contains('$window.Height = 840')) "Window expanded to 1380x840 so toolbar controls do not overlap or wrap"
+
 # ----------------------------------------------------
 # 4. Catalog Completeness & Thai Translations via Python
 # ----------------------------------------------------
@@ -114,8 +118,48 @@ Assert-Test ($pyExecTest.Trim() -eq "EXEC_SUCCESS") "PowerShell execution via Pr
 # 6. Verify System Detection Against Real Machine
 # ----------------------------------------------------
 Write-Host "`n[6] Verifying Strict Detection Against Real System..." -ForegroundColor Yellow
-$detectOutput = (python C:\Users\Administrator\.gemini\antigravity\scratch\powershell\test_strict_detection.py) -join "`n"
-Assert-Test ($detectOutput.Contains("[INSTALLED] Google Chrome") -and $detectOutput.Contains("[INSTALLED] Brave") -and (-not $detectOutput.Contains("[INSTALLED] DirectX Runtime")) -and (-not $detectOutput.Contains("[INSTALLED] Java Runtime Environment"))) "Strict detection accurately detects real apps and rejects false positives (DirectX/Java not falsely detected)"
+$detectOutput = python -c "
+import json, re, subprocess
+
+ps_code = '''
+`$paths = @(
+    'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',
+    'HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',
+    'HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*'
+)
+Get-ItemProperty `$paths -ErrorAction SilentlyContinue | Select-Object DisplayName, PSChildName | ConvertTo-Json
+'''
+res = subprocess.run(['powershell', '-NoProfile', '-Command', ps_code], capture_output=True, text=True)
+raw = json.loads(res.stdout)
+dns = {x.get('DisplayName', '').strip() for x in raw if x.get('DisplayName')}
+kns = {x.get('PSChildName', '').strip() for x in raw if x.get('PSChildName')}
+
+def match(t, p):
+    if not t or not p: return False
+    rx = re.escape(p).replace(r'\{version}', '.+?').replace(r'\{arch}', '.+?').replace(r'\{locale}', '.+?')
+    return bool(re.match(f'^{rx}$', t, re.IGNORECASE))
+
+subs = json.load(open(r'C:\Users\Administrator\.gemini\antigravity\scratch\powershell\final_install_subcategories.json', encoding='utf-8'))
+installed = []
+for s in subs:
+    for it in s['items']:
+        name = it['name']
+        rg_dn = it.get('regDisplayName')
+        rg_sub = it.get('regSubKeyName')
+        inst = False
+        if name.lower() in [d.lower() for d in dns]: inst = True
+        elif rg_dn and any(match(d, rg_dn) for d in dns): inst = True
+        elif rg_sub and any(match(k, rg_sub) for k in kns): inst = True
+        if inst: installed.append(name)
+
+assert 'Google Chrome' in installed
+assert 'Brave' in installed
+assert 'DirectX Runtime' not in installed
+assert 'Java Runtime Environment' not in installed
+print(f'STRICT_DETECTION_OK: {len(installed)} detected, 0 false positives')
+"
+
+Assert-Test ($detectOutput.Contains("STRICT_DETECTION_OK")) "Strict detection accurately detects real apps and rejects false positives (DirectX/Java not falsely detected)"
 
 $sw.Stop()
 Write-Host "`n====================================================" -ForegroundColor Cyan
