@@ -1441,8 +1441,8 @@
 
             emptyState.classList.add('hidden');
             grid.innerHTML = itemsToDisplay.map((item, idx) => {
-                const safeName = item.name.replace(/'/g, "\\'");
-                const safeCmd = item.cmd.replace(/'/g, "\\'");
+                const safeName = encodeURIComponent(item.name);
+                const safeCmd = encodeURIComponent(item.cmd);
                 const descText = getLocalizedText(item.desc);
                 const delay = Math.min(idx * 25, 250);
                 return `
@@ -1493,7 +1493,9 @@
         }
 
         // จำลองการรันโปรแกรมและเปิดหน้าต่างอนิเมชั่น Log กำลังติดตั้ง
-        function runAction(name, cmd, btnEl) {
+        function runAction(encodedName, encodedCmd, btnEl) {
+            const name = decodeURIComponent(encodedName);
+            const cmd = decodeURIComponent(encodedCmd);
             if (isInstalling) return;
             isInstalling = true;
             activeRunButton = btnEl;
@@ -2116,6 +2118,13 @@
 
         // Desktop Bridge สำหรับรับคำสั่งและ Log สตรีมสดจาก PowerShell
         window.desktopBridge = {
+            setStatus: function(status) {
+                if (status === 'completed') {
+                    this.setComplete(true, (UI_STRINGS[currentLang] && UI_STRINGS[currentLang].logDoneSub) || 'เสร็จสิ้นเรียบร้อย');
+                } else {
+                    this.setComplete(false, 'การติดตั้งหรือรันคำสั่งล้มเหลว');
+                }
+            },
             appendLog: function(message, isSuccess) {
                 appendLogLine(message, isSuccess);
             },
