@@ -299,8 +299,12 @@ function Start-LauncherApp {{
     # WPF Window configuration: Non-topmost, custom clean chrome, rounded region
     $window = New-Object System.Windows.Window
     $window.Title = "All-in-One Launcher"
-    $window.Width = 1380
-    $window.Height = 840
+    $workArea = [System.Windows.SystemParameters]::WorkArea
+    $idealWidth = 1460
+    $idealHeight = 880
+    $window.Width = [Math]::Min($idealWidth, [Math]::Max(1100, $workArea.Width - 40))
+    $window.Height = [Math]::Min($idealHeight, [Math]::Max(700, $workArea.Height - 40))
+    $window.WindowStartupLocation = [System.Windows.WindowStartupLocation]::CenterScreen
     $window.WindowStyle = "None"
     $window.AllowsTransparency = $false
     $window.Background = [System.Windows.Media.Brushes]::White
@@ -325,8 +329,8 @@ function Start-LauncherApp {{
     $script:isMaximized = $false
     $script:normalLeft = 0
     $script:normalTop = 0
-    $script:normalWidth = 1380
-    $script:normalHeight = 840
+    $script:normalWidth = $window.Width
+    $script:normalHeight = $window.Height
     $script:logTimer = $null
 
     function script:Update-WindowRegion([bool]$maximized) {{

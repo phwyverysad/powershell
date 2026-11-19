@@ -71,7 +71,15 @@ Assert-Test (-not $html.Contains("winget.split('.').pop()")) "Buggy winget.split
 
 # 3.6 Check Window Dimensions in Launcher
 $launcherCode = Get-Content -Raw -Encoding UTF8 "C:\Users\Administrator\.gemini\antigravity\scratch\powershell\run.ps1"
-Assert-Test ($launcherCode.Contains('$window.Width = 1380') -and $launcherCode.Contains('$window.Height = 840')) "Window expanded to 1380x840 so toolbar controls do not overlap or wrap"
+Assert-Test ($launcherCode.Contains('$idealWidth = 1460') -and $launcherCode.Contains('$idealHeight = 880')) "Window configured with responsive wide layout ($idealWidth = 1460) so controls never wrap"
+
+
+# 3.7 Check Sort Dropdown Animation & Live Sorting
+Assert-Test ($html.Contains('id="sortChevron"') -and $html.Contains('transition-transform duration-200')) "Sort dropdown chevron has smooth 200ms rotation transition"
+Assert-Test ($html.Contains('opacity-0 scale-95 pointer-events-none') -and $html.Contains('duration-150 origin-top-right')) "Sort dropdown menu has smooth 150ms scale and opacity animation identical to language dropdown"
+Assert-Test ($html.Contains('bInst - aInst') -and $html.Contains("currentSortMode === 'installedFirst'")) "getCurrentlyDisplayedItems() implements live sorting for installedFirst, az, and za"
+Assert-Test ($html.Contains('background-color: #1e293b !important; /* ทึบแสง 100%')) "Selected app cards in dark mode are 100% solid opaque (#1e293b) with zero transparency"
+Assert-Test ($html.Contains('#mainActionToolbar') -and $html.Contains('flex-wrap: nowrap !important;')) "#mainActionToolbar enforces strict single-row horizontal layout"
 
 # ----------------------------------------------------
 # 4. Catalog Completeness & Thai Translations via Python

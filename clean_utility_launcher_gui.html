@@ -374,10 +374,15 @@
             color: #ffffff !important;
             background-color: rgba(255, 255, 255, 0.08) !important;
         }
+                .app-card-item.is-selected {
+            border-color: #3b82f6 !important;
+            background-color: #f0f7ff !important; /* ทึบแสง 100% โทนสว่าง ไม่โปร่งใส */
+            box-shadow: 0 0 0 2px #3b82f6 !important;
+        }
         html.dark .app-card-item.is-selected {
             border-color: #3b82f6 !important;
-            background-color: rgba(30, 58, 138, 0.28) !important;
-            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.6) !important;
+            background-color: #1e293b !important; /* ทึบแสง 100% โทนมืด ไม่โปร่งใส ไม่เห็นพื้นหลัง */
+            box-shadow: 0 0 0 2px #3b82f6 !important;
         }
 
     
@@ -423,6 +428,25 @@
             background-color: rgba(63, 63, 70, 0.85) !important;
             border-color: rgba(82, 82, 91, 0.85) !important;
             color: #ffffff !important;
+        }
+
+    
+        /* แถบเครื่องมือแนวนอนแถวเดียวตลอดเวลา ไม่ซ้อนทับ ไม่ตกสองแถว */
+        #mainActionToolbar {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            overflow-x: auto !important;
+            white-space: nowrap !important;
+        }
+        #mainActionToolbar > div {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            flex-shrink: 0 !important;
         }
 
     </style>
@@ -629,7 +653,7 @@
                 </nav>
 
                 <!-- แถบเครื่องมือจัดการโปรแกรม (Black Box Toolbar Layer) - ติดหนึบอยู่ด้านบนเสมอ (Sticky) ไม่ซ่อนเมื่อสกอร์ล -->
-                <div class="sticky top-0 z-30 theme-surface border theme-border rounded-2xl px-4 py-2.5 mb-4 flex items-center justify-between gap-3 shadow-md backdrop-blur-md overflow-x-auto no-scrollbar">
+                <div id="mainActionToolbar" class="sticky top-0 z-30 theme-surface border theme-border rounded-2xl px-4 py-2.5 mb-4 flex flex-nowrap items-center justify-between gap-3 shadow-md backdrop-blur-md overflow-x-auto no-scrollbar">
                 <!-- ฝั่งซ้าย: Breadcrumbs และ ปุ่มเลือกรายการ (กรอบสีฟ้า) -->
                 <div class="flex items-center gap-2.5 shrink-0">
                     <div class="flex items-center gap-2 text-xs theme-text-secondary">
@@ -725,8 +749,8 @@
                             type="button"
                             id="sortDropdownBtn"
                             onclick="toggleSortDropdown(event)"
-                            class="px-2.5 py-1 text-xs font-medium rounded-lg theme-input border theme-border hover:theme-hover transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer"
-                            title="Sort"
+                            class="px-2.5 py-1 text-xs font-medium rounded-lg theme-input border theme-border hover:theme-hover transition-colors flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+                            title="เรียงลำดับ / Sort"
                         >
                             <svg class="w-3.5 h-3.5 theme-text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="m3 16 4 4 4-4"></path>
@@ -734,43 +758,49 @@
                                 <path d="m21 8-4-4-4 4"></path>
                                 <path d="M17 4v16"></path>
                             </svg>
-                            <span id="sortBtnLabel">Sort</span>
-                            <svg class="w-3 h-3 theme-text-muted" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <span id="sortBtnLabel">เรียงลำดับ</span>
+                            <svg id="sortChevron" class="w-3 h-3 theme-text-muted transition-transform duration-200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <polyline points="6 9 12 15 18 9"></polyline>
                             </svg>
                         </button>
                         <div
                             id="sortDropdownMenu"
-                            class="hidden absolute right-0 top-full mt-1.5 w-56 theme-modal border rounded-xl shadow-xl py-1 z-50 origin-top-right transition-all"
+                            class="hidden opacity-0 scale-95 pointer-events-none absolute right-0 top-full mt-1.5 w-56 theme-modal border rounded-xl shadow-xl py-1 z-50 origin-top-right transition-all duration-150"
                         >
                             <button
                                 type="button"
                                 onclick="setAppSortMode('installedFirst')"
-                                class="w-full px-3 py-2 text-left text-xs theme-hover flex items-center gap-2.5 cursor-pointer"
+                                class="w-full px-3 py-2 text-left text-xs theme-hover flex items-center gap-2 cursor-pointer transition-colors"
                             >
-                                <span id="sortDot-installedFirst" class="w-1.5 h-1.5 rounded-full bg-blue-500 shrink-0"></span>
-                                <span id="sortOpt-installedFirst" class="theme-text-primary">Name A-Z (Installed First)</span>
+                                <span class="w-2 flex items-center justify-center shrink-0">
+                                    <span id="sortDot-installedFirst" class="w-1.5 h-1.5 rounded-full bg-blue-500 transition-opacity"></span>
+                                </span>
+                                <span id="sortOpt-installedFirst" class="theme-text-primary">ชื่อ A-Z (ที่ติดตั้งก่อน)</span>
                             </button>
                             <button
                                 type="button"
                                 onclick="setAppSortMode('az')"
-                                class="w-full px-3 py-2 text-left text-xs theme-hover flex items-center gap-2.5 cursor-pointer"
+                                class="w-full px-3 py-2 text-left text-xs theme-hover flex items-center gap-2 cursor-pointer transition-colors"
                             >
-                                <span id="sortDot-az" class="w-1.5 h-1.5 rounded-full bg-transparent shrink-0"></span>
-                                <span id="sortOpt-az" class="theme-text-primary">Name A-Z</span>
+                                <span class="w-2 flex items-center justify-center shrink-0">
+                                    <span id="sortDot-az" class="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></span>
+                                </span>
+                                <span id="sortOpt-az" class="theme-text-primary">ชื่อ A-Z</span>
                             </button>
                             <button
                                 type="button"
                                 onclick="setAppSortMode('za')"
-                                class="w-full px-3 py-2 text-left text-xs theme-hover flex items-center gap-2.5 cursor-pointer"
+                                class="w-full px-3 py-2 text-left text-xs theme-hover flex items-center gap-2 cursor-pointer transition-colors"
                             >
-                                <span id="sortDot-za" class="w-1.5 h-1.5 rounded-full bg-transparent shrink-0"></span>
-                                <span id="sortOpt-za" class="theme-text-primary">Name Z-A</span>
+                                <span class="w-2 flex items-center justify-center shrink-0">
+                                    <span id="sortDot-za" class="w-1.5 h-1.5 rounded-full bg-blue-500 opacity-0 transition-opacity"></span>
+                                </span>
+                                <span id="sortOpt-za" class="theme-text-primary">ชื่อ Z-A</span>
                             </button>
                         </div>
                     </div>
 
-                    <span id="itemCount" class="text-xs theme-text-muted whitespace-nowrap">0 รายการ</span>
+                    <span id="itemCount"  class="text-xs theme-text-muted whitespace-nowrap">0 รายการ</span>
                 </div>
             </div>
 
@@ -5165,14 +5195,31 @@
         function toggleSortDropdown(event) {
             if (event) event.stopPropagation();
             const menu = document.getElementById('sortDropdownMenu');
-            if (menu) {
-                menu.classList.toggle('hidden');
+            const chevron = document.getElementById('sortChevron');
+            if (!menu) return;
+            const isHidden = menu.classList.contains('hidden');
+
+            if (isHidden) {
+                closeLangDropdown();
+                menu.classList.remove('hidden');
+                requestAnimationFrame(() => {
+                    menu.classList.remove('opacity-0', 'scale-95', 'pointer-events-none');
+                    if (chevron) chevron.classList.add('rotate-180');
+                });
+            } else {
+                closeSortDropdown();
             }
         }
 
         function closeSortDropdown() {
             const menu = document.getElementById('sortDropdownMenu');
-            if (menu) menu.classList.add('hidden');
+            const chevron = document.getElementById('sortChevron');
+            if (!menu || menu.classList.contains('hidden')) return;
+            menu.classList.add('opacity-0', 'scale-95', 'pointer-events-none');
+            if (chevron) chevron.classList.remove('rotate-180');
+            setTimeout(() => {
+                menu.classList.add('hidden');
+            }, 150);
         }
 
         function setAppSortMode(mode) {
@@ -5186,11 +5233,20 @@
             const dotInst = document.getElementById('sortDot-installedFirst');
             const dotAz = document.getElementById('sortDot-az');
             const dotZa = document.getElementById('sortDot-za');
-            if (dotInst) dotInst.className = 'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentSortMode === 'installedFirst' ? 'bg-blue-500' : 'bg-transparent');
-            if (dotAz) dotAz.className = 'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentSortMode === 'az' ? 'bg-blue-500' : 'bg-transparent');
-            if (dotZa) dotZa.className = 'w-1.5 h-1.5 rounded-full shrink-0 ' + (currentSortMode === 'za' ? 'bg-blue-500' : 'bg-transparent');
+            if (dotInst) {
+                if (currentSortMode === 'installedFirst') dotInst.classList.remove('opacity-0');
+                else dotInst.classList.add('opacity-0');
+            }
+            if (dotAz) {
+                if (currentSortMode === 'az') dotAz.classList.remove('opacity-0');
+                else dotAz.classList.add('opacity-0');
+            }
+            if (dotZa) {
+                if (currentSortMode === 'za') dotZa.classList.remove('opacity-0');
+                else dotZa.classList.add('opacity-0');
+            }
 
-            const t = UI_STRINGS[currentLang];
+            const t = UI_STRINGS[currentLang] || UI_STRINGS['th'];
             const btnLabel = document.getElementById('sortBtnLabel');
             const optInst = document.getElementById('sortOpt-installedFirst');
             const optAz = document.getElementById('sortOpt-az');
@@ -5748,6 +5804,23 @@
                            (item.subName && item.subName.toLowerCase().includes(q));
                 });
             }
+
+            // การเรียงลำดับโปรแกรมตามโหมดที่เลือก (Live Sorting Engine)
+            items.sort((a, b) => {
+                if (currentSortMode === 'installedFirst') {
+                    const aInst = a.installed ? 1 : 0;
+                    const bInst = b.installed ? 1 : 0;
+                    if (aInst !== bInst) {
+                        return bInst - aInst; // รายการที่ติดตั้งแล้ว (1) อยู่ก่อน รายการที่ยังไม่ได้ติดตั้ง (0)
+                    }
+                    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base', numeric: true });
+                } else if (currentSortMode === 'az') {
+                    return a.name.localeCompare(b.name, undefined, { sensitivity: 'base', numeric: true });
+                } else if (currentSortMode === 'za') {
+                    return b.name.localeCompare(a.name, undefined, { sensitivity: 'base', numeric: true });
+                }
+                return 0;
+            });
 
             return items;
         }
@@ -6409,6 +6482,7 @@
         });
 
         function renderAll() {
+            updateSortVisuals();
             renderMainCategories();
             renderSubCategories();
             renderPrograms();
@@ -6847,7 +6921,7 @@
                 titleBar.addEventListener('mousedown', (e) => {
                     if (e.button !== 0) return;
                     // หากคลิกที่ปุ่ม, ช่องค้นหา, หรือดรอปดาวน์ ให้ทำงานตามปกติ ไม่เริ่มลาก
-                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, [role="button"]')) {
+                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, #sortDropdownWrapper, [role="button"]')) {
                         return;
                     }
                     if (window.chrome && window.chrome.webview) {
@@ -6856,7 +6930,7 @@
                 });
 
                 titleBar.addEventListener('dblclick', (e) => {
-                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, [role="button"]')) {
+                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, #sortDropdownWrapper, [role="button"]')) {
                         return;
                     }
                     toggleMaximizeApp();
