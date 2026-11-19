@@ -218,6 +218,11 @@ Assert-Test (-not $launcherPs1.Contains("=======================================
 # 7.12 Automated App Status & AppX Scanning
 Assert-Test ($launcherPs1.Contains('AppModel\Repository\Packages') -and $html.Contains('item.appxPackageName')) "Automatic installed status scanning supports AppX packages and updates dynamically"
 
+# 7.13 Windows Defender Main Category
+Assert-Test ($html.Contains("id: 'defender'") -and $html.Contains("name: { th: 'Windows Defender'")) "Main category 'Windows Defender' (defender) exists in catalogData"
+Assert-Test ($html.Contains("id: 'def-scan'") -and $html.Contains("id: 'def-protection'") -and $html.Contains("id: 'def-asr'") -and $html.Contains("id: 'def-maintenance'")) "Windows Defender has 4 dedicated subcategories"
+Assert-Test ($html.Contains("Start-MpScan") -and $html.Contains("Set-MpPreference") -and $html.Contains("Add-MpPreference")) "Windows Defender items include PowerShell security management commands"
+
 $sw.Stop()
 Write-Host "`n====================================================" -ForegroundColor Cyan
 Write-Host " ALL $passCount / $testCount TESTS PASSED SUCCESSFULLY in $($sw.ElapsedMilliseconds) ms!" -ForegroundColor Green

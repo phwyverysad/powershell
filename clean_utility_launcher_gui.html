@@ -1382,6 +1382,7 @@
             dev: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
             system: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
             network: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+            shield: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
             play: `<svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>`,
             box: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path><polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline><line x1="12" y1="22.08" x2="12" y2="12"></line></svg>`,
             spinner: `<svg class="w-3.5 h-3.5 animate-spin" viewBox="0 0 24 24" fill="none"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3"></circle><path class="opacity-90" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>`,
@@ -6939,6 +6940,181 @@
 ]
 },
             {
+                id: 'defender',
+                name: { th: 'Windows Defender', en: 'Windows Defender' },
+                icon: 'shield',
+                subCategories: [
+                    {
+                        id: 'def-scan',
+                        name: { th: 'สแกนและอัปเดต', en: 'Scan & Intelligence' },
+                        items: [
+                            {
+                                id: 'def-quick-scan',
+                                name: 'Quick Scan',
+                                desc: { th: 'สแกนหน่วยความจำและโฟลเดอร์ระบบที่มักพบภัยคุกคามบ่อยที่สุดอย่างรวดเร็ว', en: 'Perform a fast scan of system memory and common infection spots' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m16 12-4-4-4 4M12 16V8"></path></svg>`,
+                                website: '',
+                                cmd: 'Start-MpScan -ScanType QuickScan',
+                                installed: false
+                            },
+                            {
+                                id: 'def-full-scan',
+                                name: 'Full System Scan',
+                                desc: { th: 'สแกนไฟล์และข้อมูลทุกไดรฟ์ในระบบอย่างละเอียดรอบคอบ', en: 'Perform comprehensive deep scan of all files and drives' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`,
+                                website: '',
+                                cmd: 'Start-MpScan -ScanType FullScan',
+                                installed: false
+                            },
+                            {
+                                id: 'def-update-sig',
+                                name: 'Update Signatures',
+                                desc: { th: 'ดาวน์โหลดและติดตั้งนิยามไวรัสและมัลแวร์เวอร์ชันล่าสุดจาก Microsoft ทันที', en: 'Download and install latest security intelligence updates' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>`,
+                                website: '',
+                                cmd: 'Update-MpSignature',
+                                installed: false
+                            },
+                            {
+                                id: 'def-open-security',
+                                name: 'Windows Security Center',
+                                desc: { th: 'เปิดหน้าต่างแอป Windows Security เพื่อดูสถานะภาพรวมความปลอดภัยของเครื่อง', en: 'Open the main Windows Security app dashboard' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
+                                website: '',
+                                cmd: 'Start-Process "windowsdefender:"',
+                                installed: false
+                            }
+                        ]
+                    },
+                    {
+                        id: 'def-protection',
+                        name: { th: 'การป้องกันเรียลไทม์', en: 'Real-Time Shields' },
+                        items: [
+                            {
+                                id: 'def-pua-enable',
+                                name: 'Enable PUA / PUP Protection',
+                                desc: { th: 'เปิดการบล็อกแอปที่อาจไม่พึงประสงค์ แอดแวร์ และโปรแกรมขุดเหรียญอัตโนมัติ', en: 'Block potentially unwanted applications (PUA/PUP), adware, and miners' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>`,
+                                website: '',
+                                cmd: 'Set-MpPreference -PUAProtection Enabled',
+                                installed: false
+                            },
+                            {
+                                id: 'def-cloud-protection',
+                                name: 'Cloud-Delivered Protection',
+                                desc: { th: 'เปิดใช้งานการตรวจจับภัยคุกคาม Zero-day และส่งตัวอย่างไฟล์ปลอดภัยไปยังคลาวด์', en: 'Enable advanced cloud-delivered protection and sample submission' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>`,
+                                website: '',
+                                cmd: 'Set-MpPreference -MAPSReporting Advanced; Set-MpPreference -SubmitSamplesConsent SendSafeSamples',
+                                installed: false
+                            },
+                            {
+                                id: 'def-network-protection',
+                                name: 'Network Protection',
+                                desc: { th: 'บล็อกการเชื่อมต่อไปยังเว็บไซต์ฟิชชิ่ง มัลแวร์ และโดเมนหลอกลวงระดับเครือข่าย', en: 'Block outbound network traffic to malicious and phishing domains' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
+                                website: '',
+                                cmd: 'Set-MpPreference -EnableNetworkProtection Enabled',
+                                installed: false
+                            },
+                            {
+                                id: 'def-behavior-monitoring',
+                                name: 'Real-Time & Behavior Monitoring',
+                                desc: { th: 'เปิดการสแกนแบบเรียลไทม์ ตรวจจับพฤติกรรมผิดปกติ และตรวจสอบไฟล์แนบดาวน์โหลด', en: 'Ensure real-time monitoring, behavioral analysis, and attachment scanning are enabled' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>`,
+                                website: '',
+                                cmd: 'Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -DisableBehaviorMonitoring $false; Set-MpPreference -DisableIOAVProtection $false',
+                                installed: false
+                            }
+                        ]
+                    },
+                    {
+                        id: 'def-asr',
+                        name: { th: 'กฎลดช่องโหว่ (ASR Rules)', en: 'Attack Surface Reduction' },
+                        items: [
+                            {
+                                id: 'def-asr-scripts',
+                                name: 'Block Malicious Scripts',
+                                desc: { th: 'บล็อกการรันสคริปต์ที่ซ่อนรูป (Obfuscated) และสคริปต์ที่พยายามดาวน์โหลดไฟล์อันตราย', en: 'Block obfuscated scripts and scripts that download executable payloads' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
+                                website: '',
+                                cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids 56a863a9-875e-4185-98a7-b882c60b3ce5,d3e037e1-3eb8-44c8-a917-57927947596d -AttackSurfaceReductionRules_Actions Enabled,Enabled',
+                                installed: false
+                            },
+                            {
+                                id: 'def-asr-office',
+                                name: 'Block Office Macro Exploits',
+                                desc: { th: 'ป้องกันไฟล์ Word และ Excel สร้างโปรเซสลูกหรือแทรกโค้ดอันตรายเพื่อโจมตีระบบ', en: 'Block Office applications from creating child processes and injecting code' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
+                                website: '',
+                                cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids d4f940ab-401b-4efc-aadc-ad5f3c50688a,3b576869-a4ec-4529-8536-b80a7769e899 -AttackSurfaceReductionRules_Actions Enabled,Enabled',
+                                installed: false
+                            },
+                            {
+                                id: 'def-asr-usb',
+                                name: 'Block Untrusted USB Executables',
+                                desc: { th: 'บล็อกการรันโปรแกรมที่ไม่น่าเชื่อถือและไม่มีลายเซ็นจากแฟลชไดรฟ์ USB', en: 'Block untrusted and unsigned executables from running on USB storage' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="12" x="8" y="8" rx="2"></rect><path d="M12 8V2"></path><path d="M9 2h6"></path><circle cx="12" cy="14" r="1"></circle></svg>`,
+                                website: '',
+                                cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4 -AttackSurfaceReductionRules_Actions Enabled',
+                                installed: false
+                            },
+                            {
+                                id: 'def-asr-credentials',
+                                name: 'Block LSASS Credential Stealing',
+                                desc: { th: 'ป้องกันเครื่องมืออย่าง Mimikatz แอบดัมป์หน่วยความจำ LSASS เพื่อขโมยรหัสผ่านเครื่อง', en: 'Block credential stealing from Local Security Authority Subsystem (LSASS)' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
+                                website: '',
+                                cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 -AttackSurfaceReductionRules_Actions Enabled',
+                                installed: false
+                            }
+                        ]
+                    },
+                    {
+                        id: 'def-maintenance',
+                        name: { th: 'การจัดการและบำรุงรักษา', en: 'Maintenance & Exclusions' },
+                        items: [
+                            {
+                                id: 'def-clear-history',
+                                name: 'Clear Detection History',
+                                desc: { th: 'ล้างแคชประวัติภัยคุกคามเก่าที่แจ้งเตือนซ้ำซากแม้กำจัดมัลแวร์ไปแล้ว', en: 'Purge old stuck detection history and resolved alert entries from Defender cache' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>`,
+                                website: '',
+                                cmd: 'Remove-Item -Path "$env:ProgramData\\Microsoft\\Windows Defender\\Scans\\History\\Service\\DetectionHistory\\*" -Recurse -Force -ErrorAction SilentlyContinue; Restart-Service WinDefend -ErrorAction SilentlyContinue; Write-Host "[OK] Protection history cache cleared successfully" -ForegroundColor Green',
+                                installed: false
+                            },
+                            {
+                                id: 'def-open-exclusions',
+                                name: 'Manage Exclusions',
+                                desc: { th: 'เปิดหน้าต่าง Exclusions เพื่อยกเว้นโฟลเดอร์หรือโปรแกรมจากการถูกสแกนผิดพลาด', en: 'Open Windows Security Exclusions settings page' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="9" y1="14" x2="15" y2="14"></line></svg>`,
+                                website: '',
+                                cmd: 'Start-Process "windowsdefender://threatsettings"',
+                                installed: false
+                            },
+                            {
+                                id: 'def-open-quarantine',
+                                name: 'View Quarantined Items',
+                                desc: { th: 'เปิดหน้าต่าง Protection History เพื่อกู้คืนหรือลบไฟล์ที่ถูกกักกันอย่างถาวร', en: 'Open Protection History to inspect or restore quarantined files' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>`,
+                                website: '',
+                                cmd: 'Start-Process "windowsdefender://history"',
+                                installed: false
+                            },
+                            {
+                                id: 'def-reset-defender',
+                                name: 'Restore Secure Defaults',
+                                desc: { th: 'รีเซ็ตการตั้งค่า Windows Defender กลับสู่ค่ามาตรฐานความปลอดภัยสูงสุดของระบบ', en: 'Reset all Windows Defender settings and preferences to secure defaults' },
+                                iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>`,
+                                website: '',
+                                cmd: 'Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -DisableBehaviorMonitoring $false; Set-MpPreference -DisableIOAVProtection $false; Set-MpPreference -DisableScriptScanning $false; Set-MpPreference -PUAProtection Enabled; Write-Host "[OK] Windows Defender reset to secure defaults" -ForegroundColor Green',
+                                installed: false
+                            }
+                        ]
+                    }
+                ]
+            },
+            {
                 id: 'tweaks',
                 name: { th: 'ปรับแต่งระบบ', en: 'System Tweaks' },
                 icon: 'system',
@@ -8112,7 +8288,7 @@
                                     onerror="this.onerror=null; this.parentElement.innerHTML = SVG_ICONS.box;"
                                     loading="lazy"
                                 />
-                            ` : SVG_ICONS.box}
+                            ` : (item.iconSvg || SVG_ICONS.box)}
                         </div>
 
                         <!-- เนื้อหารายละเอียดโปรแกรม -->
