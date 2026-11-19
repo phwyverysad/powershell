@@ -13,10 +13,10 @@ Add-Type -AssemblyName System.Web
 if (-not ([System.Management.Automation.PSTypeName]'WinUtil.ProcessRunner').Type) {
     $csharpCode = @'
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using System.Threading;
-using System.Windows.Threading;
 
 namespace WinUtil {
     [StructLayout(LayoutKind.Sequential)]
@@ -50,7 +50,11 @@ namespace WinUtil {
 
     public static class ProcessRunner {
         public static Process CurrentProcess = null;
-        private static object _lock = new object();
+        public static ConcurrentQueue<string> OutputQueue = new ConcurrentQueue<string>();
+        public static bool IsRunning = false;
+        public static bool HasExited = false;
+        public static int ExitCode = 0;
+        private static readonly object _lock = new object();
 
         public static void Stop() {
             lock (_lock) {
@@ -60,11 +64,19 @@ namespace WinUtil {
                     }
                 } catch {}
                 CurrentProcess = null;
+                IsRunning = false;
             }
         }
 
-        public static void RunAsync(string command, Dispatcher dispatcher, Action<string, bool> onLog, Action<int> onCompleted) {
+        public static void Start(string command) {
             Stop();
+            string dummy;
+            while (OutputQueue.TryDequeue(out dummy)) {}
+
+            IsRunning = true;
+            HasExited = false;
+            ExitCode = 0;
+
             ThreadPool.QueueUserWorkItem(state => {
                 try {
                     var psi = new ProcessStartInfo {
@@ -82,17 +94,11 @@ namespace WinUtil {
                     }
 
                     proc.OutputDataReceived += (s, e) => {
-                        if (e.Data != null) {
-                            string line = e.Data;
-                            dispatcher.BeginInvoke(new Action(() => onLog(line, false)));
-                        }
+                        if (e.Data != null) OutputQueue.Enqueue(e.Data);
                     };
 
                     proc.ErrorDataReceived += (s, e) => {
-                        if (e.Data != null) {
-                            string err = e.Data;
-                            dispatcher.BeginInvoke(new Action(() => onLog(err, true)));
-                        }
+                        if (e.Data != null) OutputQueue.Enqueue("[ERR] " + e.Data);
                     };
 
                     proc.Start();
@@ -100,25 +106,27 @@ namespace WinUtil {
                     proc.BeginErrorReadLine();
                     proc.WaitForExit();
 
-                    int exitCode = proc.ExitCode;
-                    dispatcher.BeginInvoke(new Action(() => onCompleted(exitCode)));
+                    ExitCode = proc.ExitCode;
                 } catch (Exception ex) {
-                    string msg = ex.Message;
-                    dispatcher.BeginInvoke(new Action(() => {
-                        onLog("Process error: " + msg, true);
-                        onCompleted(-1);
-                    }));
+                    OutputQueue.Enqueue("[ERR] " + ex.Message);
+                    ExitCode = -1;
                 } finally {
+                    HasExited = true;
+                    IsRunning = false;
                     lock (_lock) {
                         CurrentProcess = null;
                     }
                 }
             });
         }
+
+        public static bool TryDequeue(out string line) {
+            return OutputQueue.TryDequeue(out line);
+        }
     }
 }
 '@
-    Add-Type -TypeDefinition $csharpCode -ReferencedAssemblies "WindowsBase", "System"
+    Add-Type -TypeDefinition $csharpCode
 }
 
 function Start-LauncherApp {
@@ -200,6 +208,7 @@ function Start-LauncherApp {
     $script:normalTop = 0
     $script:normalWidth = 1180
     $script:normalHeight = 740
+    $script:logTimer = $null
 
     function script:Update-WindowRegion([bool]$maximized) {
         try {
@@ -310,11 +319,13 @@ function Start-LauncherApp {
                         }
                         "close" {
                             $window.Dispatcher.Invoke([Action]{
+                                if ($script:logTimer) { $script:logTimer.Stop() }
                                 [WinUtil.ProcessRunner]::Stop()
                                 $window.Close()
                             })
                         }
                         "cancel" {
+                            if ($script:logTimer) { $script:logTimer.Stop() }
                             [WinUtil.ProcessRunner]::Stop()
                         }
                         "run" {
@@ -329,30 +340,35 @@ function Start-LauncherApp {
                             $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setProgress(15, 'Starting...');") | Out-Null
                             $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.appendLog('Starting: $safeApp', false);") | Out-Null
 
-                            $onLog = [Action[string, bool]]{
-                                param($line, $isErr)
-                                try {
+                            [WinUtil.ProcessRunner]::Start($cmd)
+
+                            if ($script:logTimer) { $script:logTimer.Stop() }
+                            $script:logTimer = New-Object System.Windows.Threading.DispatcherTimer
+                            $script:logTimer.Interval = [TimeSpan]::FromMilliseconds(50)
+                            $script:logTimer.Add_Tick({
+                                $line = ""
+                                while ([WinUtil.ProcessRunner]::TryDequeue([ref]$line)) {
                                     if ($line) {
-                                        $safeLine = [System.Web.HttpUtility]::JavaScriptStringEncode($line)
+                                        $isErr = $line.StartsWith("[ERR] ")
+                                        $cleanLine = if ($isErr) { $line.Substring(6) } else { $line }
+                                        $safeLine = [System.Web.HttpUtility]::JavaScriptStringEncode($cleanLine)
                                         $isErrStr = if ($isErr) { "true" } else { "false" }
                                         $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.appendLog('$safeLine', $isErrStr);") | Out-Null
                                     }
-                                } catch {}
-                            }
+                                }
 
-                            $onCompleted = [Action[int]]{
-                                param($exitCode)
-                                try {
+                                if ([WinUtil.ProcessRunner]::HasExited -and -not [WinUtil.ProcessRunner]::IsRunning) {
+                                    $script:logTimer.Stop()
+                                    $exitCode = [WinUtil.ProcessRunner]::ExitCode
                                     $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setProgress(100, '');") | Out-Null
                                     if ($exitCode -eq 0) {
                                         $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(true, 'Installation finished (ExitCode: 0)');") | Out-Null
                                     } else {
                                         $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(false, 'Command finished with exit code $exitCode');") | Out-Null
                                     }
-                                } catch {}
-                            }
-
-                            [WinUtil.ProcessRunner]::RunAsync($cmd, $window.Dispatcher, $onLog, $onCompleted)
+                                }
+                            })
+                            $script:logTimer.Start()
                         }
                     }
                 } catch {}
