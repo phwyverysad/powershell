@@ -263,12 +263,16 @@ function Start-LauncherApp {
     $window.ResizeMode = "NoResize"
     $window.Topmost = $false
 
-    $chrome = New-Object System.Windows.Shell.WindowChrome
-    $chrome.CaptionHeight = 0
-    $chrome.ResizeBorderThickness = New-Object System.Windows.Thickness(0)
-    $chrome.GlassFrameThickness = New-Object System.Windows.Thickness(0)
-    $chrome.CornerRadius = New-Object System.Windows.CornerRadius(0)
-    [System.Windows.Shell.WindowChrome]::SetWindowChrome($window, $chrome)
+    try {
+        $chrome = New-Object System.Windows.Shell.WindowChrome -ErrorAction SilentlyContinue
+        if ($chrome) {
+            $chrome.CaptionHeight = 0
+            $chrome.ResizeBorderThickness = New-Object System.Windows.Thickness(0)
+            $chrome.GlassFrameThickness = New-Object System.Windows.Thickness(0)
+            $chrome.CornerRadius = New-Object System.Windows.CornerRadius(0)
+            [System.Windows.Shell.WindowChrome]::SetWindowChrome($window, $chrome)
+        }
+    } catch {}
 
     $wv = New-Object Microsoft.Web.WebView2.Wpf.WebView2
     $window.Content = $wv
