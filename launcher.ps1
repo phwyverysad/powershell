@@ -1,10 +1,3 @@
-﻿<#
-    .SYNOPSIS
-    All-in-One Utility Launcher (Transparent Modern Desktop GUI)
-    Run directly via:
-    irm https://raw.githubusercontent.com/phwyverysad/powershell/main/launcher.ps1 | iex
-#>
-
 try {
     [System.Net.ServicePointManager]::SecurityProtocol = [System.Net.SecurityProtocolType]3072 -bor [System.Net.SecurityProtocolType]768 -bor [System.Net.SecurityProtocolType]192
 } catch {}
@@ -14,7 +7,7 @@ try {
     $OutputEncoding = [System.Text.Encoding]::UTF8
 } catch {}
 
-# ซ่อนหน้าต่าง PowerShell Console ทันทีที่เริ่มต้นทำงาน
+# Hide PowerShell console window immediately
 try {
     if (-not ([System.Management.Automation.PSTypeName]'WinUtil.LauncherWinUtil').Type) {
         Add-Type -Name LauncherWinUtil -Namespace WinUtil -MemberDefinition @"
@@ -41,7 +34,6 @@ function Start-LauncherApp {
         [void][System.IO.Directory]::CreateDirectory($binDir)
     }
 
-    # ตรวจสอบหาไฟล์ Binaries ในโฟลเดอร์ปัจจุบันก่อน ถ้าไม่มีให้ใช้ใน Cache
     $localBin = $null
     if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "bin\Microsoft.Web.WebView2.Wpf.dll"))) {
         $localBin = (Join-Path $PSScriptRoot "bin")
@@ -52,7 +44,6 @@ function Start-LauncherApp {
 
     $activeBinDir = if ($localBin) { $localBin } else { $binDir }
 
-    # รายการ DLLs ของ WebView2 ที่จำเป็น
     $dlls = @("Microsoft.Web.WebView2.Core.dll", "Microsoft.Web.WebView2.Wpf.dll", "WebView2Loader.dll")
     foreach ($dll in $dlls) {
         $dest = Join-Path $activeBinDir $dll
@@ -65,7 +56,6 @@ function Start-LauncherApp {
         }
     }
 
-    # ค้นหาไฟล์ HTML
     $htmlContent = $null
     $localHtml = $null
     if ($PSScriptRoot -and (Test-Path (Join-Path $PSScriptRoot "clean_utility_launcher_gui.html"))) {
@@ -95,14 +85,12 @@ function Start-LauncherApp {
         $htmlContent = "<html><body style='background:transparent;color:white;font-family:sans-serif;'><div style='background:#1e1f22;padding:24px;border-radius:16px;'>Cannot load GUI template. Check internet connection.</div></body></html>"
     }
 
-    # โหลดไลบรารี WPF และ WebView2
     Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, System.Web
     [System.Reflection.Assembly]::LoadFrom((Join-Path $activeBinDir "Microsoft.Web.WebView2.Core.dll")) | Out-Null
     [System.Reflection.Assembly]::LoadFrom((Join-Path $activeBinDir "Microsoft.Web.WebView2.Wpf.dll")) | Out-Null
 
     $env:WEBVIEW2_USER_DATA_FOLDER = Join-Path $cacheDir "WebView2Data"
 
-    # สร้างหน้าต่าง WPF แบบโปร่งใสสมบูรณ์ (ไม่มีกรอบเดิมของ OS)
     $window = New-Object System.Windows.Window
     $window.Title = "All-in-One Launcher"
     $window.Width = 1180
@@ -113,14 +101,12 @@ function Start-LauncherApp {
     $window.WindowStartupLocation = "CenterScreen"
     $window.ResizeMode = "CanResize"
 
-    # สร้าง Control WebView2 ที่ตั้งค่าพื้นหลังเป็น Transparent
     $wv = New-Object Microsoft.Web.WebView2.Wpf.WebView2
     $wv.DefaultBackgroundColor = [System.Drawing.Color]::Transparent
     $window.Content = $wv
 
     $script:activeProcess = $null
 
-    # ผูกคำสั่งจาก JavaScript (WebMessage) สู่ระบบ Windows
     $wv.Add_CoreWebView2InitializationCompleted({
         param($s, $e)
         if ($e.IsSuccess) {
@@ -173,8 +159,8 @@ function Start-LauncherApp {
                                 try {
                                     $safeApp = [System.Web.HttpUtility]::JavaScriptStringEncode($appName)
                                     $window.Dispatcher.Invoke([Action]{
-                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setProgress(15, 'กำลังเตรียมสภาพแวดล้อม...');") | Out-Null
-                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.appendLog('เริ่มดำเนินการ: $safeApp', false);") | Out-Null
+                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setProgress(15, '');") | Out-Null
+                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.appendLog('Starting: $safeApp', false);") | Out-Null
                                     })
 
                                     $psi = New-Object System.Diagnostics.ProcessStartInfo
@@ -189,10 +175,9 @@ function Start-LauncherApp {
                                     $script:activeProcess = $proc
 
                                     $window.Dispatcher.Invoke([Action]{
-                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setProgress(35, 'กำลังรันคำสั่ง...');") | Out-Null
+                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setProgress(35, '');") | Out-Null
                                     })
 
-                                    # สตรีมข้อความ Output แบบเรียลไทม์
                                     while (-not $proc.HasExited) {
                                         $line = $proc.StandardOutput.ReadLine()
                                         if ($line) {
@@ -208,7 +193,6 @@ function Start-LauncherApp {
                                         }
                                     }
 
-                                    # อ่านข้อความที่เหลือทั้งหมด
                                     $remOut = $proc.StandardOutput.ReadToEnd()
                                     if ($remOut) {
                                         foreach ($l in ($remOut -split "`r?`n")) {
@@ -240,9 +224,9 @@ function Start-LauncherApp {
 
                                     $window.Dispatcher.Invoke([Action]{
                                         if ($exitCode -eq 0) {
-                                            $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(true, 'ดำเนินการติดตั้งสำเร็จ');") | Out-Null
+                                            $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(true, '');") | Out-Null
                                         } else {
-                                            $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(false, 'คำสั่งเสร็จสิ้นด้วย Exit Code: $exitCode');") | Out-Null
+                                            $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(false, 'Exit Code: $exitCode');") | Out-Null
                                         }
                                     })
                                 } catch {
@@ -250,7 +234,7 @@ function Start-LauncherApp {
                                     $errText = [System.Web.HttpUtility]::JavaScriptStringEncode($_.Exception.Message)
                                     $window.Dispatcher.Invoke([Action]{
                                         $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.appendLog('Error: $errText', false);") | Out-Null
-                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(false, 'เกิดข้อผิดพลาดในการประมวลผล');") | Out-Null
+                                        $wv.ExecuteScriptAsync("window.desktopBridge && window.desktopBridge.setComplete(false, 'Failed');") | Out-Null
                                     })
                                 }
                             })
@@ -259,7 +243,6 @@ function Start-LauncherApp {
                 } catch {}
             })
 
-            # นำทางเข้าสู่หน้าเว็บ UI
             $wv.NavigateToString($htmlContent)
         }
     })
