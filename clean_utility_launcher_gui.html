@@ -326,7 +326,7 @@
 
         <!-- Title Bar ของหน้าต่างแอป + ช่องค้นหา + เปลี่ยนภาษา + สลับธีม + ปุ่ม ย่อ ขยาย ปิด -->
         <header class="app-header border-b theme-border z-20 shrink-0 relative bg-transparent">
-            <div class="px-4 sm:px-6 h-14 flex items-center justify-between gap-3">
+            <div id="appTitleBar" class="px-4 sm:px-6 h-14 flex items-center justify-between gap-3 select-none">
                 <!-- โลโก้ SVG และชื่อแอป -->
                 <div class="flex items-center gap-3 min-w-0">
                     <div class="w-8 h-8 rounded-xl theme-btn-accent flex items-center justify-center shadow-sm shrink-0">
@@ -2159,18 +2159,26 @@
             }
         };
 
-        // ผูกการลากหน้าต่าง (Drag Window) บน Desktop ให้คลิกได้ทุกปุ่ม 100%
+        // ผูกการลากหน้าต่าง (Drag Window) บริเวณแถบบนสุด (Red box header) เลื่อนตำแหน่งโปรแกรมได้อย่างราบรื่น
         document.addEventListener('DOMContentLoaded', () => {
-            const appHeader = document.querySelector('.app-header');
-            if (appHeader) {
-                appHeader.addEventListener('mousedown', (e) => {
+            const titleBar = document.getElementById('appTitleBar') || document.querySelector('.app-header > div:first-child');
+            if (titleBar) {
+                titleBar.addEventListener('mousedown', (e) => {
                     if (e.button !== 0) return;
-                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, nav, #mainCategoryBar, #subCategoryBar, .tab-indicator, [role="button"]')) {
+                    // หากคลิกที่ปุ่ม, ช่องค้นหา, หรือดรอปดาวน์ ให้ทำงานตามปกติ ไม่เริ่มลาก
+                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, [role="button"]')) {
                         return;
                     }
                     if (window.chrome && window.chrome.webview) {
                         window.chrome.webview.postMessage({ type: 'drag' });
                     }
+                });
+
+                titleBar.addEventListener('dblclick', (e) => {
+                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, [role="button"]')) {
+                        return;
+                    }
+                    toggleMaximizeApp();
                 });
             }
         });

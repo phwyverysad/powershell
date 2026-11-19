@@ -17,8 +17,14 @@ public static extern bool ShowWindow(System.IntPtr hWnd, int nCmdShow);
 public static extern bool SetForegroundWindow(System.IntPtr hWnd);
 [System.Runtime.InteropServices.DllImport("kernel32.dll")]
 public static extern System.IntPtr GetConsoleWindow();
-[System.Runtime.InteropServices.DllImport("dwmapi.dll")]
-public static extern int DwmSetWindowAttribute(System.IntPtr hwnd, int attr, ref int attrValue, int attrSize);
+[System.Runtime.InteropServices.DllImport("gdi32.dll")]
+public static extern System.IntPtr CreateRoundRectRgn(int x1, int y1, int x2, int y2, int cx, int cy);
+[System.Runtime.InteropServices.DllImport("user32.dll")]
+public static extern int SetWindowRgn(System.IntPtr hWnd, System.IntPtr hRgn, bool bRedraw);
+[System.Runtime.InteropServices.DllImport("user32.dll")]
+public static extern bool ReleaseCapture();
+[System.Runtime.InteropServices.DllImport("user32.dll")]
+public static extern System.IntPtr SendMessage(System.IntPtr hWnd, int Msg, System.IntPtr wParam, System.IntPtr lParam);
 "@ -ErrorAction SilentlyContinue
     }
     $ch = [WinUtil.LauncherWinUtil]::GetConsoleWindow()
@@ -84,7 +90,7 @@ function Start-LauncherApp {
     }
 
     if (-not $htmlContent) {
-        $htmlContent = "<html><body style='background:#09090b;color:white;font-family:sans-serif;'><div style='padding:24px;'>Cannot load GUI template. Check internet connection.</div></body></html>"
+        $htmlContent = "<html><body style='background:#fbfbfb;color:#0f172a;font-family:sans-serif;'><div style='padding:24px;'>Cannot load GUI template. Check internet connection.</div></body></html>"
     }
 
     Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, System.Web
@@ -93,22 +99,53 @@ function Start-LauncherApp {
 
     $env:WEBVIEW2_USER_DATA_FOLDER = Join-Path $cacheDir "WebView2Data"
 
-    # WPF Window with full Topmost and hardware-accelerated click support
+    # WPF Window configuration: Non-topmost, custom clean chrome, rounded region
     $window = New-Object System.Windows.Window
     $window.Title = "All-in-One Launcher"
     $window.Width = 1180
     $window.Height = 740
     $window.WindowStyle = "None"
     $window.AllowsTransparency = $false
-    $window.Background = [System.Windows.Media.Brushes]::Black
+    $window.Background = [System.Windows.Media.Brushes]::White
     $window.WindowStartupLocation = "CenterScreen"
-    $window.ResizeMode = "CanResize"
-    $window.Topmost = $true
+    $window.ResizeMode = "NoResize"
+    $window.Topmost = $false
+
+    # Apply WindowChrome to strip any black OS borders
+    $chrome = New-Object System.Windows.Shell.WindowChrome
+    $chrome.CaptionHeight = 0
+    $chrome.ResizeBorderThickness = New-Object System.Windows.Thickness(0)
+    $chrome.GlassFrameThickness = New-Object System.Windows.Thickness(0)
+    $chrome.CornerRadius = New-Object System.Windows.CornerRadius(0)
+    [System.Windows.Shell.WindowChrome]::SetWindowChrome($window, $chrome)
 
     $wv = New-Object Microsoft.Web.WebView2.Wpf.WebView2
     $window.Content = $wv
 
     $script:activeProcess = $null
+
+    # Helper function to apply or clear rounded corners
+    function script:Update-WindowRegion {
+        try {
+            $hwnd = (New-Object System.Windows.Interop.WindowInteropHelper($window)).Handle
+            if ($hwnd -ne [System.IntPtr]::Zero) {
+                if ($window.WindowState -eq "Maximized") {
+                    [WinUtil.LauncherWinUtil]::SetWindowRgn($hwnd, [System.IntPtr]::Zero, $true)
+                } else {
+                    $w = [int]$window.ActualWidth
+                    $h = [int]$window.ActualHeight
+                    if ($w -gt 50 -and $h -gt 50) {
+                        $rgn = [WinUtil.LauncherWinUtil]::CreateRoundRectRgn(0, 0, $w, $h, 24, 24)
+                        [WinUtil.LauncherWinUtil]::SetWindowRgn($hwnd, $rgn, $true)
+                    }
+                }
+            }
+        } catch {}
+    }
+
+    $window.Add_SizeChanged({
+        script:Update-WindowRegion
+    })
 
     $wv.Add_CoreWebView2InitializationCompleted({
         param($s, $e)
@@ -123,9 +160,9 @@ function Start-LauncherApp {
                         "drag" {
                             $window.Dispatcher.Invoke([Action]{
                                 try {
-                                    if ([System.Windows.Input.Mouse]::LeftButton -eq [System.Windows.Input.MouseButtonState]::Pressed) {
-                                        $window.DragMove()
-                                    }
+                                    $hwnd = (New-Object System.Windows.Interop.WindowInteropHelper($window)).Handle
+                                    [WinUtil.LauncherWinUtil]::ReleaseCapture()
+                                    [WinUtil.LauncherWinUtil]::SendMessage($hwnd, 0xA1, 2, 0)
                                 } catch {}
                             })
                         }
@@ -259,15 +296,11 @@ function Start-LauncherApp {
         try {
             $hwnd = (New-Object System.Windows.Interop.WindowInteropHelper($window)).Handle
             if ($hwnd -ne [System.IntPtr]::Zero) {
-                # Windows 11 DWM rounded corners (DWMWA_WINDOW_CORNER_PREFERENCE = 33, DWMWCP_ROUND = 2)
-                $cornerPref = 2
-                [WinUtil.LauncherWinUtil]::DwmSetWindowAttribute($hwnd, 33, [ref]$cornerPref, 4)
+                script:Update-WindowRegion
                 [void][WinUtil.LauncherWinUtil]::ShowWindow($hwnd, 5)
                 [void][WinUtil.LauncherWinUtil]::SetForegroundWindow($hwnd)
             }
-            $window.Topmost = $true
             $window.Activate()
-            $window.Focus()
         } catch {}
     })
 
