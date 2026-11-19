@@ -431,15 +431,20 @@
         }
 
     
-        /* แถบเครื่องมือแนวนอนแถวเดียวตลอดเวลา ไม่ซ้อนทับ ไม่ตกสองแถว */
+        /* แถบเครื่องมือแนวนอนแถวเดียวตลอดเวลา ไม่ซ้อนทับ ไม่ตกสองแถว แสดงป๊อปอัปดรอปดาวน์ทะลุออกด้านนอกสุดเสมอ */
         #mainActionToolbar {
             display: flex !important;
             flex-direction: row !important;
             flex-wrap: nowrap !important;
             align-items: center !important;
             justify-content: space-between !important;
-            overflow-x: auto !important;
+            overflow: visible !important;
             white-space: nowrap !important;
+            background-color: rgba(255, 255, 255, 0.88) !important;
+            border-color: rgba(226, 232, 240, 0.85) !important;
+            box-shadow: 0 4px 12px -2px rgba(0, 0, 0, 0.08), 0 2px 4px -1px rgba(0, 0, 0, 0.04) !important;
+            backdrop-filter: blur(12px) !important;
+            -webkit-backdrop-filter: blur(12px) !important;
         }
         #mainActionToolbar > div {
             display: flex !important;
@@ -449,6 +454,134 @@
             flex-shrink: 0 !important;
         }
 
+        /* เงาและระดับความลึกในธีมมืด (Dark Theme Shadows & Depth) ให้มีมิติ ลอยเด่นสวยงามเหมือนธีมสว่าง */
+        html.dark #mainActionToolbar {
+            background-color: rgba(30, 31, 35, 0.90) !important;
+            border-color: rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.65), 0 4px 6px -2px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* ปุ่มภายใน Toolbar ในธีมสว่าง */
+        #mainActionToolbar button.theme-input {
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            color: #334155 !important;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05) !important;
+        }
+        #mainActionToolbar button.theme-input:hover {
+            background-color: #f8fafc !important;
+            border-color: #cbd5e1 !important;
+            color: #0f172a !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.08) !important;
+        }
+
+        /* ปุ่มภายใน Toolbar ในธีมมืด ให้มีมิติ มีเงา และขอบชัดเจนแบบเดียวกับธีมสว่าง */
+        html.dark #mainActionToolbar button.theme-input {
+            background-color: #2b2d31 !important;
+            border-color: #3f4147 !important;
+            color: #dbdee1 !important;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06) !important;
+        }
+        html.dark #mainActionToolbar button.theme-input:hover {
+            background-color: #35373c !important;
+            border-color: #4e5058 !important;
+            color: #ffffff !important;
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.55), inset 0 1px 0 rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* สไตล์และการลอยเด่นของเมนูดรอปดาวน์เรียงลำดับ (Topmost Floating Sort Menu) */
+        #sortDropdownWrapper {
+            position: relative !important;
+            z-index: 50 !important;
+        }
+        #sortDropdownMenu {
+            z-index: 100 !important;
+            background-color: #ffffff !important;
+            border-color: #e2e8f0 !important;
+            box-shadow: 0 12px 28px -4px rgba(0, 0, 0, 0.15), 0 4px 8px -2px rgba(0, 0, 0, 0.06) !important;
+        }
+        html.dark #sortDropdownMenu {
+            background-color: #1e1f22 !important;
+            border-color: #383a40 !important;
+            box-shadow: 0 20px 35px -5px rgba(0, 0, 0, 0.85), 0 0 0 1px rgba(255, 255, 255, 0.08) !important;
+        }
+
+        /* หน้าต่างยืนยันการติดตั้ง / ถอนการติดตั้ง (Confirmation Modal) แบบในภาพ 100% */
+        #batchConfirmBox {
+            background-color: #2b2b2e !important;
+            border: 1px solid rgba(255, 255, 255, 0.12) !important;
+            box-shadow: 0 25px 60px -15px rgba(0, 0, 0, 0.9) !important;
+            color: #ffffff !important;
+        }
+        #batchConfirmTitle {
+            color: #ffffff !important;
+            font-size: 1.15rem !important;
+            font-weight: 700 !important;
+        }
+        #batchConfirmSubtitle {
+            color: #d4d4d8 !important;
+            font-size: 0.825rem !important;
+        }
+        #batchConfirmList {
+            border: 1.5px solid rgba(255, 255, 255, 0.6) !important;
+            background-color: #202023 !important;
+            color: #ffffff !important;
+            border-radius: 0.75rem !important;
+            padding: 0.65rem 0.85rem !important;
+        }
+        #batchConfirmContinueBtn {
+            background-color: #60a5fa !important;
+            color: #0f172a !important;
+            font-weight: 600 !important;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2) !important;
+        }
+        #batchConfirmContinueBtn:hover {
+            background-color: #93c5fd !important;
+        }
+        #batchConfirmCancelBtn {
+            background-color: #38383c !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            color: #e4e4e7 !important;
+            font-weight: 500 !important;
+        }
+        #batchConfirmCancelBtn:hover {
+            background-color: #45454a !important;
+            color: #ffffff !important;
+        }
+
+        html:not(.dark) #batchConfirmBox {
+            background-color: #ffffff !important;
+            border: 1px solid #e2e8f0 !important;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25) !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) #batchConfirmTitle {
+            color: #0f172a !important;
+        }
+        html:not(.dark) #batchConfirmSubtitle {
+            color: #475569 !important;
+        }
+        html:not(.dark) #batchConfirmList {
+            border: 1.5px solid #94a3b8 !important;
+            background-color: #f8fafc !important;
+            color: #0f172a !important;
+        }
+        html:not(.dark) #batchConfirmContinueBtn {
+            background-color: #2563eb !important;
+            color: #ffffff !important;
+        }
+        html:not(.dark) #batchConfirmContinueBtn:hover {
+            background-color: #1d4ed8 !important;
+        }
+        html:not(.dark) #batchConfirmCancelBtn {
+            background-color: #f1f5f9 !important;
+            border: 1px solid #cbd5e1 !important;
+            color: #334155 !important;
+        }
+        html:not(.dark) #batchConfirmCancelBtn:hover {
+            background-color: #e2e8f0 !important;
+            color: #0f172a !important;
+        }
     </style>
 </head>
 <body class="w-screen h-screen overflow-hidden p-0 m-0 select-none">
@@ -563,6 +696,18 @@
                         </div>
                     </div>
 
+                    <!-- ปุ่ม GitHub (https://github.com/phwyverysad) -->
+                    <button
+                        id="githubBtn"
+                        onclick="openExternalWebsite('https://github.com/phwyverysad')"
+                        title="GitHub (phwyverysad)"
+                        class="w-8 h-8 rounded-xl border theme-input theme-hover flex items-center justify-center theme-text-secondary transition-all active:scale-95 cursor-pointer"
+                    >
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24">
+                            <path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/>
+                        </svg>
+                    </button>
+
                     <!-- ปุ่มสลับธีมมืด / สว่าง -->
                     <button
                         id="themeToggleBtn"
@@ -653,7 +798,7 @@
                 </nav>
 
                 <!-- แถบเครื่องมือจัดการโปรแกรม (Black Box Toolbar Layer) - ติดหนึบอยู่ด้านบนเสมอ (Sticky) ไม่ซ่อนเมื่อสกอร์ล -->
-                <div id="mainActionToolbar" class="sticky top-0 z-30 theme-surface border theme-border rounded-2xl px-4 py-2.5 mb-4 flex flex-nowrap items-center justify-between gap-3 shadow-md backdrop-blur-md overflow-x-auto no-scrollbar">
+                <div id="mainActionToolbar" class="sticky top-0 z-30 theme-surface border theme-border rounded-2xl px-4 py-2.5 mb-4 flex flex-nowrap items-center justify-between gap-3 shadow-md backdrop-blur-md">
                 <!-- ฝั่งซ้าย: Breadcrumbs และ ปุ่มเลือกรายการ (กรอบสีฟ้า) -->
                 <div class="flex items-center gap-2.5 shrink-0">
                     <div class="flex items-center gap-2 text-xs theme-text-secondary">
@@ -714,7 +859,7 @@
                         <button
                             type="button"
                             id="btnInstallSelected"
-                            onclick="runBatchSelected('install')"
+                            onclick="requestBatchSelected('install')"
                             disabled
                             class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-blue-600 hover:bg-blue-500 text-white disabled:opacity-40 disabled:cursor-not-allowed shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
                         >
@@ -729,7 +874,7 @@
                         <button
                             type="button"
                             id="btnUninstallSelected"
-                            onclick="runBatchSelected('uninstall')"
+                            onclick="requestBatchSelected('uninstall')"
                             disabled
                             class="px-3.5 py-1.5 text-xs font-semibold rounded-xl bg-rose-500/15 hover:bg-rose-500/25 text-rose-500 dark:text-rose-400 border border-rose-500/30 disabled:opacity-40 disabled:cursor-not-allowed shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
                         >
@@ -744,7 +889,7 @@
                     <div class="h-4 w-px bg-zinc-300 dark:bg-zinc-700/60 hidden sm:block"></div>
                     
                     <!-- ปุ่ม Sort (เรียงลำดับ) ตามภาพตัวอย่าง -->
-                    <div class="relative" id="sortDropdownWrapper">
+                    <div class="relative z-50" id="sortDropdownWrapper">
                         <button
                             type="button"
                             id="sortDropdownBtn"
@@ -765,7 +910,7 @@
                         </button>
                         <div
                             id="sortDropdownMenu"
-                            class="hidden opacity-0 scale-95 pointer-events-none absolute right-0 top-full mt-1.5 w-56 theme-modal border rounded-xl shadow-xl py-1 z-50 origin-top-right transition-all duration-150"
+                            class="hidden opacity-0 scale-95 pointer-events-none absolute right-0 top-full mt-2 w-56 border rounded-xl shadow-2xl py-1 z-[100] origin-top-right transition-all duration-150"
                         >
                             <button
                                 type="button"
@@ -890,12 +1035,29 @@
 
                 <!-- ส่วนท้ายของหน้าต่าง Log -->
                 <div class="px-5 py-3 border-t theme-border theme-subbar flex items-center justify-between">
-                    <span id="logFooterHint" class="text-[11px] theme-text-muted">ระบบกำลังดำเนินการติดตั้งอัตโนมัติ...</span>
-                    <button
-                        id="logDoneBtn"
-                        onclick="handleLogCloseOrCancel()"
-                        class="px-4 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95"
-                    >
+                    <div class="flex items-center gap-2">
+                        <span id="logFooterHint" class="text-[11px] theme-text-muted">ระบบกำลังดำเนินการติดตั้งอัตโนมัติ...</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <!-- ปุ่มคัดลอกบันทึก Log (Copy Log Button) -->
+                        <button
+                            type="button"
+                            id="copyLogBtn"
+                            onclick="copyLogContent()"
+                            title="คัดลอก Log / Copy Log"
+                            class="px-3 py-1.5 rounded-xl text-xs font-medium theme-input border theme-border hover:theme-hover theme-text-primary transition-all flex items-center gap-1.5 shadow-xs cursor-pointer active:scale-95"
+                        >
+                            <svg id="copyLogIcon" class="w-3.5 h-3.5 theme-text-secondary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                            </svg>
+                            <span id="copyLogText">คัดลอก Log</span>
+                        </button>
+                        <button
+                            id="logDoneBtn"
+                            onclick="handleLogCloseOrCancel()"
+                            class="px-4 py-1.5 rounded-xl text-xs font-medium bg-red-500/10 text-red-600 dark:text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-all active:scale-95 cursor-pointer"
+                        >
                         ยกเลิกการติดตั้ง
                     </button>
                 </div>
@@ -951,6 +1113,7 @@
 
         // ชุดไอคอน SVG สไตล์มินิมอล (ไม่มีอิโมจิ)
         const SVG_ICONS = {
+            windows: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M3 5.5 10.5 4.5v6.5H3V5.5zm8.5-1.1L21 3v8H11.5V4.4zM3 13h7.5v6.5L3 18.5V13zm8.5 0H21v8l-9.5-1.4V13z"/></svg>`,
             apps: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="3" width="7" height="7" rx="1.5"></rect><rect x="14" y="14" width="7" height="7" rx="1.5"></rect><rect x="3" y="14" width="7" height="7" rx="1.5"></rect></svg>`,
             dev: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
             system: `<svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="3" width="20" height="14" rx="2"></rect><line x1="8" y1="21" x2="16" y2="21"></line><line x1="12" y1="17" x2="12" y2="21"></line></svg>`,
@@ -965,6 +1128,14 @@
         const UI_STRINGS = {
             th: {
                 searchPlaceholder: 'ค้นหาโปรแกรม...',
+                copyLogBtn: 'คัดลอก Log',
+                copyLogSuccess: 'คัดลอกแล้ว!',
+                confirmInstallTitle: 'ยืนยันการติดตั้ง',
+                confirmUninstallTitle: 'ยืนยันการถอนการติดตั้ง',
+                confirmInstallSubtitle: 'รายการต่อไปนี้จะถูกติดตั้ง\nคุณต้องการดำเนินการต่อหรือไม่?',
+                confirmUninstallSubtitle: 'รายการต่อไปนี้จะถูกถอนการติดตั้ง\nคุณต้องการดำเนินการต่อหรือไม่?',
+                confirmContinueBtn: 'ดำเนินการต่อ',
+                confirmCancelBtn: 'ยกเลิก',
                 allSub: 'ทั้งหมด',
                 itemsSuffix: 'รายการ',
                 installedBadge: 'ติดตั้งแล้ว',
@@ -1014,6 +1185,14 @@
             },
             en: {
                 searchPlaceholder: 'Search programs...',
+                copyLogBtn: 'Copy Log',
+                copyLogSuccess: 'Copied!',
+                confirmInstallTitle: 'Confirm Installation',
+                confirmUninstallTitle: 'Confirm Uninstallation',
+                confirmInstallSubtitle: 'These items will be installed.\nDo you want to continue?',
+                confirmUninstallSubtitle: 'These items will be uninstalled.\nDo you want to continue?',
+                confirmContinueBtn: 'Continue',
+                confirmCancelBtn: 'Cancel',
                 allSub: 'All',
                 itemsSuffix: 'items',
                 installedBadge: 'Installed',
@@ -5062,6 +5241,1414 @@
 ]
             },
             {
+            "id": "winapps",
+            "name": {
+                        "th": "แอพและฟีเจอร์ของ Windows",
+                        "en": "Windows Apps & Features"
+            },
+            "icon": "windows",
+            "subCategories": [
+                        {
+                                    "id": "ai",
+                                    "name": {
+                                                "th": "ปัญญาประดิษฐ์ (AI)",
+                                                "en": "Artificial Intelligence"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-ai-manager",
+                                                            "name": "AI Manager",
+                                                            "desc": {
+                                                                        "th": "ระบบจัดการบริการและโมเดลปัญญาประดิษฐ์ภายในเครื่อง",
+                                                                        "en": "Office AI Manager that brokers local AI requests for Office apps"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/aimgr.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "aimgr"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('aimgr'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-ai-workloads",
+                                                            "name": "AI Workload Packages",
+                                                            "desc": {
+                                                                        "th": "ชุดไลบรารีและแพ็กเกจรองรับการประมวลผลภาระงานด้าน AI",
+                                                                        "en": "On-device AI packages for OCR, image search, super-resolution, and summarization"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/[.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": "[",
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('['); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-copilot",
+                                                            "name": "Copilot",
+                                                            "desc": {
+                                                                        "th": "ผู้ช่วยปัญญาประดิษฐ์อัจฉริยะจาก Microsoft ช่วยตอบคำถาม สรุปข้อมูล และสร้างเนื้อหา",
+                                                                        "en": "AI assistant for Windows, includes Copilot provider and Store components"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/XP9CXNGPPJ97XX",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.copilot.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Copilot",
+                                                                        "Microsoft.Windows.Ai.Copilot.Provider",
+                                                                        "Microsoft.Copilot_8wekyb3d8bbwe"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "XP9CXNGPPJ97XX",
+                                                            "installCmd": "winget install --id XP9CXNGPPJ97XX --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Copilot','Microsoft.Windows.Ai.Copilot.Provider','Microsoft.Copilot_8wekyb3d8bbwe'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id XP9CXNGPPJ97XX --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-copilot-plus-pc",
+                                                            "name": "Copilot+ PC AI Packages",
+                                                            "desc": {
+                                                                        "th": "แพ็กเกจฟีเจอร์ AI พิเศษเฉพาะคอมพิวเตอร์มาตรฐาน Copilot+ PC",
+                                                                        "en": "AI voice, speech, live typing, input, and file operation packages for NPU-equipped Copilot+ PCs"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/[.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": "[",
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('['); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-edge-game-assist",
+                                                            "name": "Edge Game Assist",
+                                                            "desc": {
+                                                                        "th": "เครื่องมือช่วยเหลือการเล่นเกมและแสดงเคล็ดลับอัจฉริยะผ่าน Microsoft Edge",
+                                                                        "en": "Browser-based overlay for guides and search while playing PC games"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.edge.gameassist.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Edge.GameAssist"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Edge.GameAssist'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-office-actions-server",
+                                                            "name": "Office Actions Server",
+                                                            "desc": {
+                                                                        "th": "บริการประมวลผลคำสั่งอัตโนมัติสำหรับแอปพลิเคชันตระกูล Microsoft Office",
+                                                                        "en": "Background server that runs Office's AI-powered automated actions"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.office.actionsserver.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Office.ActionsServer"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Office.ActionsServer'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-client-aix",
+                                                            "name": "Windows AI Experience",
+                                                            "desc": {
+                                                                        "th": "แพ็กเกจระบบขับเคลื่อนความสามารถ AI อัจฉริยะบน Windows 11",
+                                                                        "en": "Core Windows AI platform package powering Copilot and Click to Do features"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoftwindows.client.aix.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "MicrosoftWindows.Client.AIX"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('MicrosoftWindows.Client.AIX'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-client-copilot",
+                                                            "name": "Windows Copilot Client",
+                                                            "desc": {
+                                                                        "th": "ไคลเอนต์หลักของระบบ Copilot สำหรับเชื่อมต่อการสั่งการกับระบบปฏิบัติการ",
+                                                                        "en": "System Copilot client powering the Copilot button and shell integrations"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoftwindows.client.copilot.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "MicrosoftWindows.Client.CoPilot"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('MicrosoftWindows.Client.CoPilot'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-writing-assistant",
+                                                            "name": "Writing Assistant",
+                                                            "desc": {
+                                                                        "th": "เครื่องมือช่วยเขียนและปรับปรุงสำนวนภาษาด้วย AI",
+                                                                        "en": "Office AI helper for grammar, rewriting, and content suggestions"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.writingassistant.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WritingAssistant"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WritingAssistant'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "utilities",
+                                    "name": {
+                                                "th": "ยูทิลิตี้พื้นฐาน",
+                                                "en": "Utilities"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-alarms-clock",
+                                                            "name": "Alarms & Clock",
+                                                            "desc": {
+                                                                        "th": "นาฬิกา ปลุก จับเวลา นาฬิกาโลก และฟังก์ชัน Focus Sessions",
+                                                                        "en": "Clock, alarms, timer, and stopwatch app"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJ3PR",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowsalarms.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsAlarms"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJ3PR",
+                                                            "installCmd": "winget install --id 9WZDNCRFJ3PR --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsAlarms'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJ3PR --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-calculator",
+                                                            "name": "Calculator",
+                                                            "desc": {
+                                                                        "th": "เครื่องคิดเลขมาตรฐาน คำนวณวิทยาศาสตร์ โปรแกรมเมอร์ และแปลงหน่วย",
+                                                                        "en": "Calculator app with standard, scientific, and programmer modes"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFHVN5",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowscalculator.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsCalculator"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFHVN5",
+                                                            "installCmd": "winget install --id 9WZDNCRFHVN5 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsCalculator'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFHVN5 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-cortana",
+                                                            "name": "Cortana",
+                                                            "desc": {
+                                                                        "th": "อดีตผู้ช่วยเสียงสั่งการของ Microsoft (ยุติการให้บริการแล้ว)",
+                                                                        "en": "Microsoft's voice assistant; deprecated and replaced by Copilot in Windows 11"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/\"9NFFX4SZZ23L\", // Package is deprecated",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.549981c3f5f10.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.549981C3F5F10"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "\"9NFFX4SZZ23L\", // Package is deprecated",
+                                                            "installCmd": "winget install --id \"9NFFX4SZZ23L\", // Package is deprecated --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.549981C3F5F10'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id \"9NFFX4SZZ23L\", // Package is deprecated --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-get-help",
+                                                            "name": "Get Help",
+                                                            "desc": {
+                                                                        "th": "ระบบค้นหาวิธีแก้ไขปัญหาคอมพิวเตอร์และติดต่อฝ่ายสนับสนุนเทคนิค",
+                                                                        "en": "Microsoft's built-in help and support assistant for Windows issues"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9PKDZBMV1H3T",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.gethelp.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.GetHelp"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9PKDZBMV1H3T",
+                                                            "installCmd": "winget install --id 9PKDZBMV1H3T --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.GetHelp'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9PKDZBMV1H3T --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "system-tools",
+                                    "name": {
+                                                "th": "เครื่องมือระบบ",
+                                                "en": "System Tools"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-app-installer",
+                                                            "name": "App Installer",
+                                                            "desc": {
+                                                                        "th": "แพ็กเกจติดตั้งแอปพลิเคชัน MSIX/Appx และตัวรันคำสั่ง WinGet บน Windows",
+                                                                        "en": "Microsoft's MSIX/AppX installer and winget command-line package manager"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NBLGGH4NNS1",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.desktopappinstaller.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.DesktopAppInstaller"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NBLGGH4NNS1",
+                                                            "installCmd": "winget install --id 9NBLGGH4NNS1 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.DesktopAppInstaller'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NBLGGH4NNS1 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-feedback-hub",
+                                                            "name": "Feedback Hub",
+                                                            "desc": {
+                                                                        "th": "ศูนย์ส่งข้อเสนอแนะและรายงานปัญหาการใช้งาน Windows ตรงถึง Microsoft",
+                                                                        "en": "App for sending feedback to Microsoft"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NBLGGH4R32N",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowsfeedbackhub.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsFeedbackHub"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NBLGGH4R32N",
+                                                            "installCmd": "winget install --id 9NBLGGH4R32N --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsFeedbackHub'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NBLGGH4R32N --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-maps",
+                                                            "name": "Maps",
+                                                            "desc": {
+                                                                        "th": "แอปแผนที่นำทาง ค้นหาสถานที่ และดาวน์โหลดแผนที่ออฟไลน์",
+                                                                        "en": "Offline maps and turn-by-turn directions (removed from Store July 2025)"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/\"9WZDNCRDTBVB\", // globally Accessible=false; Microsoft removed July 2025",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowsmaps.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsMaps"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "\"9WZDNCRDTBVB\", // globally Accessible=false; Microsoft removed July 2025",
+                                                            "installCmd": "winget install --id \"9WZDNCRDTBVB\", // globally Accessible=false; Microsoft removed July 2025 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsMaps'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id \"9WZDNCRDTBVB\", // globally Accessible=false; Microsoft removed July 2025 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-edge",
+                                                            "name": "Microsoft Edge",
+                                                            "desc": {
+                                                                        "th": "เว็บเบราว์เซอร์ความเร็วสูงและปลอดภัยจาก Microsoft พร้อมฟีเจอร์ AI ในตัว",
+                                                                        "en": "Microsoft's Chromium-based web browser bundled with Windows"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/XPFFTQ037JWMHS",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.microsoftedge.stable.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.MicrosoftEdge.Stable"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "XPFFTQ037JWMHS",
+                                                            "installCmd": "winget install --id XPFFTQ037JWMHS --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.MicrosoftEdge.Stable'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id XPFFTQ037JWMHS --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-onedrive",
+                                                            "name": "OneDrive",
+                                                            "desc": {
+                                                                        "th": "บริการคลาวด์สตอเรจสำหรับสำรองข้อมูลและซิงค์ไฟล์อัตโนมัติ",
+                                                                        "en": "Microsoft's built-in cloud storage and file sync client"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.onedrivesync.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.OneDriveSync"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.OneDriveSync'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-quick-assist",
+                                                            "name": "Quick Assist",
+                                                            "desc": {
+                                                                        "th": "เครื่องมือช่วยเหลือระยะไกล ช่วยให้ผู้เชี่ยวชาญเชื่อมต่อเข้ามาดูแลเครื่องได้ปลอดภัย",
+                                                                        "en": "Remote assistance app for sharing your screen with someone helping you"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9P7BP5VNWKX5",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoftcorporationii.quickassist.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "MicrosoftCorporationII.QuickAssist"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9P7BP5VNWKX5",
+                                                            "installCmd": "winget install --id 9P7BP5VNWKX5 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('MicrosoftCorporationII.QuickAssist'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9P7BP5VNWKX5 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "feature-recall",
+                                                            "name": "Recall",
+                                                            "desc": {
+                                                                        "th": "ฟีเจอร์ AI บันทึกภาพหน้าจอย้อนหลัง เพื่อช่วยให้ค้นหากิจกรรมเก่าๆ ได้อย่างง่ายดาย",
+                                                                        "en": "Windows 11 AI feature that takes periodic screenshots of activity to make them searchable"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/recall.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "Recall",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Recall' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'Recall' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Recall' -NoRestart",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-terminal",
+                                                            "name": "Terminal",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมเทอร์มินัลระดับโปร รองรับหลายแท็บสำหรับ PowerShell, CMD และ WSL",
+                                                                        "en": "Tabbed terminal that hosts PowerShell, Command Prompt, and WSL shells"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9N0DX20HK701",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowsterminal.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsTerminal"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9N0DX20HK701",
+                                                            "installCmd": "winget install --id 9N0DX20HK701 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsTerminal'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9N0DX20HK701 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "media",
+                                    "name": {
+                                                "th": "3D และมัลติมีเดีย",
+                                                "en": "3D & Multimedia"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-3d-viewer",
+                                                            "name": "3D Viewer",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมเปิดดูโมเดล 3D ภาพเคลื่อนไหว และมุมมอง AR ในฟอร์แมต glTF, FBX และ OBJ",
+                                                                        "en": "View 3D models, animations, and AR scenes in glTF, FBX, and OBJ formats"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NBLGGH42THS",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.microsoft3dviewer.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Microsoft3DViewer"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NBLGGH42THS",
+                                                            "installCmd": "winget install --id 9NBLGGH42THS --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Microsoft3DViewer'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NBLGGH42THS --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-camera",
+                                                            "name": "Camera",
+                                                            "desc": {
+                                                                        "th": "แอปถ่ายภาพและบันทึกวิดีโอผ่านเว็บแคมหรือกล้องคอมพิวเตอร์",
+                                                                        "en": "Take photos and record video using your webcam or built-in camera"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJBBG",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowscamera.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsCamera"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJBBG",
+                                                            "installCmd": "winget install --id 9WZDNCRFJBBG --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsCamera'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJBBG --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-clipchamp",
+                                                            "name": "Clipchamp",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมตัดต่อวิดีโอจาก Microsoft พร้อมเทมเพลต เอฟเฟกต์ และระบบบันทึกหน้าจอ",
+                                                                        "en": "Microsoft's video editor with templates, effects, and screen recording"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9P1J8S7CCWWT",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/clipchamp.clipchamp.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Clipchamp.Clipchamp"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9P1J8S7CCWWT",
+                                                            "installCmd": "winget install --id 9P1J8S7CCWWT --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Clipchamp.Clipchamp'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9P1J8S7CCWWT --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-media-player",
+                                                            "name": "Media Player",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมเล่นไฟล์เพลงและวิดีโอโฉมใหม่ ดีไซน์โมเดิร์น",
+                                                                        "en": "Plays local music and video files; replaces Groove Music"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJ3PT",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.zunemusic.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.ZuneMusic"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJ3PT",
+                                                            "installCmd": "winget install --id 9WZDNCRFJ3PT --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.ZuneMusic'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJ3PT --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-mixed-reality-portal",
+                                                            "name": "Mixed Reality Portal",
+                                                            "desc": {
+                                                                        "th": "ศูนย์รวมการตั้งค่าและเข้าใช้งานแว่นเสมือนจริง Windows Mixed Reality",
+                                                                        "en": "Setup and launcher for Windows VR headsets (deprecated in Windows 11 24H2)"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NG1H8B3ZC7M",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.mixedreality.portal.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.MixedReality.Portal"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NG1H8B3ZC7M",
+                                                            "installCmd": "winget install --id 9NG1H8B3ZC7M --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.MixedReality.Portal'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NG1H8B3ZC7M --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-movies-tv",
+                                                            "name": "Movies & TV",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมเล่นภาพยนตร์ วิดีโอ และจัดการคลังมีเดียส่วนตัว",
+                                                                        "en": "Plays local video files and rented or purchased Microsoft Store content"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJ3P2",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.zunevideo.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.ZuneVideo"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJ3P2",
+                                                            "installCmd": "winget install --id 9WZDNCRFJ3P2 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.ZuneVideo'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJ3P2 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-sound-recorder",
+                                                            "name": "Sound Recorder",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมบันทึกเสียงและแก้ไขคลิปเสียงอย่างง่าย",
+                                                                        "en": "Voice and audio recording app with playback, trim, and export"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFHWKN",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowssoundrecorder.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsSoundRecorder"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFHWKN",
+                                                            "installCmd": "winget install --id 9WZDNCRFHWKN --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsSoundRecorder'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFHWKN --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "graphics",
+                                    "name": {
+                                                "th": "กราฟิกและภาพ",
+                                                "en": "Graphics & Photos"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-paint",
+                                                            "name": "Paint",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมวาดรูปและตกแต่งภาพพื้นฐานยอดนิยมของ Windows พร้อมเครื่องมือ AI",
+                                                                        "en": "Classic image editor with brushes, layers, and AI Cocreator generation"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9PCFS5B6T72H",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.paint.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Paint"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9PCFS5B6T72H",
+                                                            "installCmd": "winget install --id 9PCFS5B6T72H --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Paint'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9PCFS5B6T72H --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-paint-3d",
+                                                            "name": "Paint 3D",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมวาดภาพและปั้นโมเดล 3 มิติอย่างง่ายและสนุกสนาน",
+                                                                        "en": "3D modeling app for creating and editing scenes; deprecated by Microsoft"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.mspaint.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.MSPaint"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.MSPaint'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-photos",
+                                                            "name": "Photos",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมดูรูปภาพ วิดีโอ และจัดการอัลบั้มภาพในเครื่องและบน OneDrive",
+                                                                        "en": "Default photo viewer and editor with crop, markup, and slideshow tools"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJBH4",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windows.photos.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Windows.Photos"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJBH4",
+                                                            "installCmd": "winget install --id 9WZDNCRFJBH4 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Windows.Photos'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJBH4 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-snipping-tool",
+                                                            "name": "Snipping Tool",
+                                                            "desc": {
+                                                                        "th": "เครื่องมือจับภาพหน้าจอ บันทึกวิดีโอหน้าจอ พร้อมระบบคัดลอกข้อความ OCR",
+                                                                        "en": "Screen capture and annotation tool"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9MZ95KL8MR0L",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.screensketch.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.ScreenSketch"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9MZ95KL8MR0L",
+                                                            "installCmd": "winget install --id 9MZ95KL8MR0L --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.ScreenSketch'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9MZ95KL8MR0L --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "productivity",
+                                    "name": {
+                                                "th": "การทำงานและออฟฟิศ",
+                                                "en": "Office"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-office-hub",
+                                                            "name": "MS 365 Copilot (Office Hub)",
+                                                            "desc": {
+                                                                        "th": "ศูนย์รวมแอปพลิเคชัน เอกสาร และบริการทั้งหมดของ Microsoft 365",
+                                                                        "en": "Launcher and recent-files dashboard for Microsoft 365 apps and Copilot"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRD29V9",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.microsoftofficehub.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.MicrosoftOfficeHub"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRD29V9",
+                                                            "installCmd": "winget install --id 9WZDNCRD29V9 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.MicrosoftOfficeHub'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRD29V9 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-notepad",
+                                                            "name": "Notepad",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมแก้ไขข้อความยอดนิยม ปรับปรุงใหม่พร้อมแท็บและบันทึกอัตโนมัติ",
+                                                                        "en": "Default text editor with tabs, autosave, and optional AI rewrite"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9MSMLRH6LZF3",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowsnotepad.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsNotepad"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9MSMLRH6LZF3",
+                                                            "installCmd": "winget install --id 9MSMLRH6LZF3 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsNotepad'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9MSMLRH6LZF3 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-onenote",
+                                                            "name": "OneNote",
+                                                            "desc": {
+                                                                        "th": "สมุดบันทึกดิจิทัลสำหรับจดโน้ต วาดเขียน และรวบรวมไอเดียในที่เดียว",
+                                                                        "en": "Free-form notebook app for typed, handwritten, and clipped notes"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/XPFFZHVGQWWLHB",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.office.onenote.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Office.OneNote"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "XPFFZHVGQWWLHB",
+                                                            "installCmd": "winget install --id XPFFZHVGQWWLHB --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Office.OneNote'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id XPFFZHVGQWWLHB --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-outlook",
+                                                            "name": "Outlook for Windows",
+                                                            "desc": {
+                                                                        "th": "โปรแกรมจัดการอีเมล ปฏิทิน และรายชื่อติดต่อเวอร์ชันใหม่สำหรับ Windows",
+                                                                        "en": "New web-based Outlook client replacing the classic Mail and Calendar apps"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NRX63209R7B",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.outlookforwindows.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.OutlookForWindows"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NRX63209R7B",
+                                                            "installCmd": "winget install --id 9NRX63209R7B --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.OutlookForWindows'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NRX63209R7B --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-power-automate",
+                                                            "name": "Power Automate",
+                                                            "desc": {
+                                                                        "th": "เครื่องมือสร้างระบบอัตโนมัติบนเดสก์ท็อป ช่วยทำงานซ้ำๆ ได้อย่างสะดวกรวดเร็ว",
+                                                                        "en": "Desktop automation builder for recording and scheduling repetitive tasks"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NFTCH6J7FHV",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.powerautomatedesktop.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.PowerAutomateDesktop"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NFTCH6J7FHV",
+                                                            "installCmd": "winget install --id 9NFTCH6J7FHV --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.PowerAutomateDesktop'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NFTCH6J7FHV --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-sticky-notes",
+                                                            "name": "Sticky Notes",
+                                                            "desc": {
+                                                                        "th": "กระดาษโน้ตแปะหน้าจอ สำหรับบันทึกเตือนความจำอย่างรวดเร็ว",
+                                                                        "en": "On-screen notes that sync across devices via your Microsoft account"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NBLGGH4QGHW",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.microsoftstickynotes.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.MicrosoftStickyNotes"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NBLGGH4QGHW",
+                                                            "installCmd": "winget install --id 9NBLGGH4QGHW --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.MicrosoftStickyNotes'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NBLGGH4QGHW --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-tips",
+                                                            "name": "Tips",
+                                                            "desc": {
+                                                                        "th": "แอปแนะนำเคล็ดลับ ทางลัด และฟีเจอร์ใหม่ๆ ในการใช้งาน Windows 11",
+                                                                        "en": "Walk-through tutorials and tips for new Windows features"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.getstarted.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Getstarted"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Getstarted'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "Write-Host 'Cannot automatically reinstall built-in system package without Store ID'",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-todo",
+                                                            "name": "To Do: Lists, Tasks & Reminders",
+                                                            "desc": {
+                                                                        "th": "แอปจัดการรายการสิ่งที่ต้องทำ แพลนเนอร์ และการแจ้งเตือนงาน",
+                                                                        "en": "Cloud-synced task list and reminders, integrated with Outlook tasks"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NBLGGH5R558",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.todos.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Todos"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NBLGGH5R558",
+                                                            "installCmd": "winget install --id 9NBLGGH5R558 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Todos'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NBLGGH5R558 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "communication",
+                                    "name": {
+                                                "th": "การสื่อสาร",
+                                                "en": "Communication"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-mail-calendar",
+                                                            "name": "Mail and Calendar",
+                                                            "desc": {
+                                                                        "th": "แอปจัดการอีเมลและปฏิทินนัดหมายอย่างง่ายบน Windows",
+                                                                        "en": "Built-in email client and calendar (replaced by new Outlook in Windows 11)"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFHVQM",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowscommunicationsapps.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "microsoft.windowscommunicationsapps"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFHVQM",
+                                                            "installCmd": "winget install --id 9WZDNCRFHVQM --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('microsoft.windowscommunicationsapps'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFHVQM --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-family-safety",
+                                                            "name": "Microsoft Family Safety",
+                                                            "desc": {
+                                                                        "th": "ระบบดูแลความปลอดภัยและควบคุมเวลาการใช้งานสำหรับครอบครัว",
+                                                                        "en": "Family safety and screen time management"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9PDJDJS743XF",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoftcorporationii.microsoftfamily.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "MicrosoftCorporationII.MicrosoftFamily"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9PDJDJS743XF",
+                                                            "installCmd": "winget install --id 9PDJDJS743XF --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('MicrosoftCorporationII.MicrosoftFamily'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9PDJDJS743XF --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-teams",
+                                                            "name": "Microsoft Teams",
+                                                            "desc": {
+                                                                        "th": "แพลตฟอร์มการสื่อสาร ประชุมออนไลน์ และทำงานร่วมกันสำหรับทีมและองค์กร",
+                                                                        "en": "Microsoft's team chat, meetings, and collaboration app"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/XP8BT8DW290MPQ",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/msteams.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "MSTeams"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "XP8BT8DW290MPQ",
+                                                            "installCmd": "winget install --id XP8BT8DW290MPQ --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('MSTeams'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id XP8BT8DW290MPQ --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-people",
+                                                            "name": "People",
+                                                            "desc": {
+                                                                        "th": "ศูนย์รวมรายชื่อและสมุดโทรศัพท์สำหรับจัดการบุคคลที่ติดต่อ",
+                                                                        "en": "Contacts hub for Outlook, Skype, and other accounts (no longer installable)"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/\"9NBLGGH10PG8\", // globally Accessible=false; Microsoft deprecated",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.people.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.People"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "\"9NBLGGH10PG8\", // globally Accessible=false; Microsoft deprecated",
+                                                            "installCmd": "winget install --id \"9NBLGGH10PG8\", // globally Accessible=false; Microsoft deprecated --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.People'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id \"9NBLGGH10PG8\", // globally Accessible=false; Microsoft deprecated --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-phone-link",
+                                                            "name": "Phone Link",
+                                                            "desc": {
+                                                                        "th": "เชื่อมต่อสมาร์ทโฟน Android/iOS เข้ากับคอมพิวเตอร์เพื่อดูการแจ้งเตือนและโทรออก",
+                                                                        "en": "Connect your Android or iOS device to Windows"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NMPJ99VJBWV",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.yourphone.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.YourPhone"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NMPJ99VJBWV",
+                                                            "installCmd": "winget install --id 9NMPJ99VJBWV --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.YourPhone'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NMPJ99VJBWV --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-skype",
+                                                            "name": "Skype",
+                                                            "desc": {
+                                                                        "th": "แอปโทรฟรี วิดีโอคอล และส่งข้อความยอดนิยมระดับโลก",
+                                                                        "en": "Video calling and messaging app; retired by Microsoft in May 2025"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/\"9WZDNCRFJ364\", // Skype is retired",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.skypeapp.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.SkypeApp"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "\"9WZDNCRFJ364\", // Skype is retired",
+                                                            "installCmd": "winget install --id \"9WZDNCRFJ364\", // Skype is retired --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.SkypeApp'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id \"9WZDNCRFJ364\", // Skype is retired --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "games",
+                                    "name": {
+                                                "th": "เกมและ Xbox",
+                                                "en": "Gaming & Xbox"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-solitaire",
+                                                            "name": "Solitaire Collection",
+                                                            "desc": {
+                                                                        "th": "รวมเกมไพ่คลาสสิกระดับตำนานของ Windows เช่น Klondike, Spider, FreeCell",
+                                                                        "en": "Bundle of card games including Klondike, Spider, and FreeCell (with ads)"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/\"9WZDNCRFHWD2\", // https://apps.microsoft.com/detail/9wzdncrfhwd2?hl=en-US&gl=ZA",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.microsoftsolitairecollection.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.MicrosoftSolitaireCollection"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "\"9WZDNCRFHWD2\", // https://apps.microsoft.com/detail/9wzdncrfhwd2?hl=en-US&gl=ZA",
+                                                            "installCmd": "winget install --id \"9WZDNCRFHWD2\", // https://apps.microsoft.com/detail/9wzdncrfhwd2?hl=en-US&gl=ZA --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.MicrosoftSolitaireCollection'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id \"9WZDNCRFHWD2\", // https://apps.microsoft.com/detail/9wzdncrfhwd2?hl=en-US&gl=ZA --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-xbox",
+                                                            "name": "Xbox",
+                                                            "desc": {
+                                                                        "th": "แอปศูนย์รวมเกมพีซี จัดการคลังเกม และสมัครสมาชิก PC Game Pass",
+                                                                        "en": "Game library, Game Pass storefront, and PC game launcher"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9MV0B5HZVK9Z",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.gamingapp.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.GamingApp",
+                                                                        "Microsoft.XboxApp"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9MV0B5HZVK9Z",
+                                                            "installCmd": "winget install --id 9MV0B5HZVK9Z --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.GamingApp','Microsoft.XboxApp'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9MV0B5HZVK9Z --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-xbox-game-bar",
+                                                            "name": "Xbox Game Bar",
+                                                            "desc": {
+                                                                        "th": "โอเวอร์เลย์เกมแถบลัดสำหรับจับภาพหน้าจอ ดูสถิติเครื่อง และแชทกับเพื่อนขณะเล่นเกม",
+                                                                        "en": "Gaming overlay with screen capture, performance monitoring, and social features"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NZKPSTSNW4P",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xboxgamingoverlay.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.XboxGamingOverlay"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NZKPSTSNW4P",
+                                                            "installCmd": "winget install --id 9NZKPSTSNW4P --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.XboxGamingOverlay'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NZKPSTSNW4P --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-xbox-game-bar-plugin",
+                                                            "name": "Xbox Game Bar Plugin",
+                                                            "desc": {
+                                                                        "th": "ปลั๊กอินส่วนขยายเสริมประสิทธิภาพสำหรับแถบควบคุม Xbox Game Bar",
+                                                                        "en": "Game Bar overlay component (Microsoft unpublished; auto-installed with Game Bar)"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/\"9NBLGGH537C2\", // globally Accessible=false since 2020-06; bundled with Xbox Game Bar",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xboxgameoverlay.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.XboxGameOverlay"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "\"9NBLGGH537C2\", // globally Accessible=false since 2020-06; bundled with Xbox Game Bar",
+                                                            "installCmd": "winget install --id \"9NBLGGH537C2\", // globally Accessible=false since 2020-06; bundled with Xbox Game Bar --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.XboxGameOverlay'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id \"9NBLGGH537C2\", // globally Accessible=false since 2020-06; bundled with Xbox Game Bar --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-xbox-identity-provider",
+                                                            "name": "Xbox Identity Provider",
+                                                            "desc": {
+                                                                        "th": "บริการยืนยันตัวตนและเข้าสู่ระบบบัญชีเครือข่าย Xbox Live",
+                                                                        "en": "Authentication service for Xbox Live and related Microsoft gaming services"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRD1HKW",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xboxidentityprovider.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.XboxIdentityProvider"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRD1HKW",
+                                                            "installCmd": "winget install --id 9WZDNCRD1HKW --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.XboxIdentityProvider'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRD1HKW --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-xbox-live-ingame",
+                                                            "name": "Xbox Live In-Game Experience",
+                                                            "desc": {
+                                                                        "th": "ระบบรองรับการเชื่อมต่อและความสำเร็จ (Achievements) ระหว่างเล่นเกม",
+                                                                        "en": "Title Callable UI for Xbox Live overlays and dialogs shown inside games"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NKNC0LD5NN6",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.xbox.tcui.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Xbox.TCUI"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NKNC0LD5NN6",
+                                                            "installCmd": "winget install --id 9NKNC0LD5NN6 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Xbox.TCUI'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NKNC0LD5NN6 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "search",
+                                    "name": {
+                                                "th": "การค้นหาและข่าวสาร",
+                                                "en": "Search & News"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "windows-app-bing-search",
+                                                            "name": "Bing Search",
+                                                            "desc": {
+                                                                        "th": "ระบบค้นหาเว็บและข้อมูลออนไลน์ผสานใน Start Menu และแถบค้นหาของ Windows",
+                                                                        "en": "Web search results delivered inside Windows Search and the Start menu"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9NZBF4GT040C",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.bingsearch.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.BingSearch"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9NZBF4GT040C",
+                                                            "installCmd": "winget install --id 9NZBF4GT040C --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.BingSearch'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9NZBF4GT040C --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-msn-weather",
+                                                            "name": "MSN Weather",
+                                                            "desc": {
+                                                                        "th": "รายงานสภาพอากาศล่วงหน้า เรดาร์เมฆฝน และพยากรณ์อากาศ 10 วันจาก MSN",
+                                                                        "en": "Weather forecasts, radar, and 10-day outlook from MSN"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJ3Q2",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.bingweather.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.BingWeather"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJ3Q2",
+                                                            "installCmd": "winget install --id 9WZDNCRFJ3Q2 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.BingWeather'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJ3Q2 --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-microsoft-news",
+                                                            "name": "Microsoft News",
+                                                            "desc": {
+                                                                        "th": "แอปอ่านข่าวสารล่าสุดและพาดหัวข่าวเด่นทั่วโลกจาก Microsoft Start",
+                                                                        "en": "News reader powered by Microsoft Start with personalised headlines"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFHVFW",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.bingnews.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.BingNews"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFHVFW",
+                                                            "installCmd": "winget install --id 9WZDNCRFHVFW --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.BingNews'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFHVFW --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-store",
+                                                            "name": "Microsoft Store",
+                                                            "desc": {
+                                                                        "th": "ร้านค้าอย่างเป็นทางการสำหรับดาวน์โหลดแอปพลิเคชัน เกม และภาพยนตร์บน Windows",
+                                                                        "en": "Official storefront for installing apps, games, and updates on Windows"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9WZDNCRFJBMP",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windowsstore.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.WindowsStore"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9WZDNCRFJBMP",
+                                                            "installCmd": "winget install --id 9WZDNCRFJBMP --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.WindowsStore'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9WZDNCRFJBMP --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                }
+                                    ]
+                        },
+                        {
+                                    "id": "dev-features",
+                                    "name": {
+                                                "th": "ฟีเจอร์ขั้นสูงและนักพัฒนา",
+                                                "en": "Advanced & Dev Features"
+                                    },
+                                    "items": [
+                                                {
+                                                            "id": "feature-dotnet35",
+                                                            "name": ".NET Framework 3.5",
+                                                            "desc": {
+                                                                        "th": "แพ็กเกจไลบรารีรันไทม์ .NET 3.5 สำหรับรันโปรแกรมและเกมรุ่นเก่า",
+                                                                        "en": "Legacy .NET Framework for older applications"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/netfx3.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "NetFx3",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'NetFx3' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'NetFx3' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'NetFx3' -NoRestart",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "feature-hyperv",
+                                                            "name": "Hyper-V",
+                                                            "desc": {
+                                                                        "th": "แพลตฟอร์ม Virtual Machine ระดับองค์กร สำหรับสร้างและรันระบบปฏิบัติการอื่นบนเครื่อง",
+                                                                        "en": "Virtualization platform for running multiple operating systems"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft-hyper-v-all.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "Microsoft-Hyper-V-All",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-All' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-All' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-All' -NoRestart",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "feature-hyperv-tools",
+                                                            "name": "Hyper-V Management Tools",
+                                                            "desc": {
+                                                                        "th": "ชุดเครื่องมือจัดการและคอนฟิกเครื่องเสมือนสำหรับ Hyper-V",
+                                                                        "en": "Tools for managing Hyper-V virtual machines"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft-hyper-v-tools-all.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "Microsoft-Hyper-V-Tools-All",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-Tools-All' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-Tools-All' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-Tools-All' -NoRestart",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "feature-wsl",
+                                                            "name": "Subsystem for Linux",
+                                                            "desc": {
+                                                                        "th": "ระบบรันระบบปฏิบัติการ Linux (WSL) บน Windows ได้โดยตรงโดยไม่ต้องใช้ VM เต็มรูปแบบ",
+                                                                        "en": "Allows running Linux binary executables natively on Windows"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft-windows-subsystem-linux.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "Microsoft-Windows-Subsystem-Linux",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Windows-Subsystem-Linux' -NoRestart",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "windows-app-dev-home",
+                                                            "name": "Windows Advanced Settings",
+                                                            "desc": {
+                                                                        "th": "ศูนย์การตั้งค่าขั้นสูงและฟีเจอร์เสริมสำหรับนักพัฒนาซอฟต์แวร์",
+                                                                        "en": "Power-user Settings page: sudo, long paths, Dev Drive, Git in Explorer"
+                                                            },
+                                                            "website": "https://apps.microsoft.com/detail/9N8MHTPHNGVV",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft.windows.devhome.png",
+                                                            "isWindowsApp": true,
+                                                            "isOptionalFeature": false,
+                                                            "appxPackageName": [
+                                                                        "Microsoft.Windows.DevHome"
+                                                            ],
+                                                            "optionalFeatureName": "",
+                                                            "msStoreId": "9N8MHTPHNGVV",
+                                                            "installCmd": "winget install --id 9N8MHTPHNGVV --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "uninstallCmd": "$pkgs = @('Microsoft.Windows.DevHome'); foreach ($p in $pkgs) { Get-AppxPackage -AllUsers -Name \"*$p*\" | Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue; Get-AppxProvisionedPackage -Online | Where-Object { $_.PackageName -like \"*$p*\" } | Remove-AppxProvisionedPackage -Online -ErrorAction SilentlyContinue }",
+                                                            "cmd": "winget install --id 9N8MHTPHNGVV --source msstore --accept-package-agreements --accept-source-agreements",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "feature-hyperv-platform",
+                                                            "name": "Windows Hypervisor Platform",
+                                                            "desc": {
+                                                                        "th": "แพลตฟอร์มระบบจำลองเสมือนระดับเคอร์เนลสำหรับโปรแกรมจำลองอื่นๆ",
+                                                                        "en": "Core virtualization platform without Hyper-V management tools"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/microsoft-hyper-v-hypervisor.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "Microsoft-Hyper-V-Hypervisor",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-Hypervisor' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-Hypervisor' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Microsoft-Hyper-V-Hypervisor' -NoRestart",
+                                                            "installed": false
+                                                },
+                                                {
+                                                            "id": "feature-windows-sandbox",
+                                                            "name": "Windows Sandbox",
+                                                            "desc": {
+                                                                        "th": "สภาพแวดล้อมเดสก์ท็อปแยกต่างหากชั่วคราว สำหรับเปิดไฟล์หรือทดสอบแอปที่น่าสงสัยอย่างปลอดภัย",
+                                                                        "en": "Throwaway isolated desktop for running suspicious or untrusted apps"
+                                                            },
+                                                            "website": "",
+                                                            "iconUrl": "https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/windows/containers-disposableclientvm.png",
+                                                            "isWindowsApp": false,
+                                                            "isOptionalFeature": true,
+                                                            "appxPackageName": [],
+                                                            "optionalFeatureName": "Containers-DisposableClientVM",
+                                                            "msStoreId": "",
+                                                            "installCmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Containers-DisposableClientVM' -NoRestart",
+                                                            "uninstallCmd": "Disable-WindowsOptionalFeature -Online -FeatureName 'Containers-DisposableClientVM' -NoRestart",
+                                                            "cmd": "Enable-WindowsOptionalFeature -Online -FeatureName 'Containers-DisposableClientVM' -NoRestart",
+                                                            "installed": false
+                                                }
+                                    ]
+                        }
+            ]
+},
+            {
                 id: 'tweaks',
                 name: { th: 'ปรับแต่งระบบ', en: 'System Tweaks' },
                 icon: 'system',
@@ -5968,27 +7555,148 @@
             }
         }
 
-        // รันการติดตั้งหรือถอนการติดตั้งโปรแกรมที่เลือกเป็นกลุ่ม (Batch Run)
-        function runBatchSelected(mode) {
+        
+        // ==========================================
+        // ฟังก์ชันคัดลอกบันทึก Log (Copy Log Function)
+        // ==========================================
+        function copyLogContent() {
+            const logBox = document.getElementById('logOutputBox');
+            if (!logBox) return;
+            const text = logBox.innerText || logBox.textContent || '';
+            const t = UI_STRINGS[currentLang] || UI_STRINGS.th;
+            if (!text.trim()) {
+                showToast(currentLang === 'th' ? 'ไม่มีข้อความ Log ให้คัดลอก' : 'No log output to copy');
+                return;
+            }
+            navigator.clipboard.writeText(text).then(() => {
+                const btnText = document.getElementById('copyLogText');
+                const icon = document.getElementById('copyLogIcon');
+                if (btnText) btnText.textContent = t.copyLogSuccess || 'คัดลอกแล้ว!';
+                if (icon) {
+                    icon.innerHTML = '<polyline points="20 6 9 17 4 12"></polyline>';
+                    icon.setAttribute('stroke', '#10b981');
+                    icon.setAttribute('stroke-width', '2.5');
+                }
+                showToast(currentLang === 'th' ? 'คัดลอก Log ลงคลิปบอร์ดแล้ว' : 'Log copied to clipboard');
+                setTimeout(() => {
+                    const btnTextReset = document.getElementById('copyLogText');
+                    const iconReset = document.getElementById('copyLogIcon');
+                    if (btnTextReset) btnTextReset.textContent = t.copyLogBtn || 'คัดลอก Log';
+                    if (iconReset) {
+                        iconReset.innerHTML = '<rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>';
+                        iconReset.setAttribute('stroke', 'currentColor');
+                        iconReset.setAttribute('stroke-width', '2');
+                    }
+                }, 2000);
+            }).catch(() => {
+                const ta = document.createElement('textarea');
+                ta.value = text;
+                ta.style.position = 'fixed';
+                ta.style.opacity = '0';
+                document.body.appendChild(ta);
+                ta.select();
+                document.execCommand('copy');
+                document.body.removeChild(ta);
+                showToast(currentLang === 'th' ? 'คัดลอก Log ลงคลิปบอร์ดแล้ว' : 'Log copied to clipboard');
+            });
+        }
+
+        // ==========================================
+        // ระบบยืนยันก่อนติดตั้ง / ถอนการติดตั้งเป็นกลุ่ม (Batch Confirmation Modal)
+        // ==========================================
+        let pendingBatchMode = null;
+
+        function requestBatchSelected(mode) {
             const visible = getCurrentlyDisplayedItems();
             const targetItems = visible.filter(it => selectedItemIds.has(it.id));
             if (targetItems.length === 0) {
                 showToast(currentLang === 'th' ? 'กรุณาเลือกโปรแกรมที่ต้องการก่อน' : 'Please select items first');
                 return;
             }
+            pendingBatchMode = mode;
+            showBatchConfirmModal(mode, targetItems);
+        }
+
+        function showBatchConfirmModal(mode, items) {
+            const modal = document.getElementById('batchConfirmModal');
+            const box = document.getElementById('batchConfirmBox');
+            const title = document.getElementById('batchConfirmTitle');
+            const subtitle = document.getElementById('batchConfirmSubtitle');
+            const list = document.getElementById('batchConfirmList');
+            const continueBtn = document.getElementById('batchConfirmContinueBtn');
+            const cancelBtn = document.getElementById('batchConfirmCancelBtn');
+            const t = UI_STRINGS[currentLang] || UI_STRINGS.th;
+
+            if (mode === 'install') {
+                title.textContent = t.confirmInstallTitle || 'Confirm Installation';
+                subtitle.textContent = t.confirmInstallSubtitle || 'These items will be installed.\nDo you want to continue?';
+                continueBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-semibold bg-blue-500 hover:bg-blue-400 text-white shadow-sm transition-all active:scale-95 cursor-pointer text-center';
+            } else {
+                title.textContent = t.confirmUninstallTitle || 'Confirm Uninstallation';
+                subtitle.textContent = t.confirmUninstallSubtitle || 'These items will be uninstalled.\nDo you want to continue?';
+                continueBtn.className = 'flex-1 py-2.5 rounded-xl text-xs font-semibold bg-rose-500 hover:bg-rose-400 text-white shadow-sm transition-all active:scale-95 cursor-pointer text-center';
+            }
+
+            continueBtn.textContent = t.confirmContinueBtn || 'Continue';
+            cancelBtn.textContent = t.confirmCancelBtn || 'Cancel';
+
+            list.innerHTML = items.map(it => `
+                <div class="py-0.5 truncate text-sm font-medium">
+                    ${it.name}
+                </div>
+            `).join('');
+
+            modal.style.display = 'flex';
+            requestAnimationFrame(() => {
+                modal.classList.remove('opacity-0', 'pointer-events-none');
+                box.classList.remove('scale-95');
+            });
+        }
+
+        function closeBatchConfirmModal() {
+            const modal = document.getElementById('batchConfirmModal');
+            const box = document.getElementById('batchConfirmBox');
+            if (!modal) return;
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            box.classList.add('scale-95');
+            setTimeout(() => {
+                modal.style.display = 'none';
+                pendingBatchMode = null;
+            }, 200);
+        }
+
+        function proceedBatchAction() {
+            const mode = pendingBatchMode;
+            closeBatchConfirmModal();
+            if (mode) {
+                executeBatchSelected(mode);
+            }
+        }
+
+        // ดำเนินการรันคำสั่ง Batch หลังจากได้รับการกดยืนยัน
+        function executeBatchSelected(mode) {
+            const visible = getCurrentlyDisplayedItems();
+            const targetItems = visible.filter(it => selectedItemIds.has(it.id));
+            if (targetItems.length === 0) return;
 
             const itemsPayload = targetItems.map(it => ({
                 id: it.id,
                 name: it.name,
                 wingetId: it.wingetId || '',
-                cmd: it.cmd || ''
+                cmd: it.cmd || '',
+                installCmd: it.installCmd || it.cmd || '',
+                uninstallCmd: it.uninstallCmd || (it.wingetId ? `winget uninstall -e --id ${it.wingetId}` : `winget uninstall "${it.name}"`),
+                appxPackageName: it.appxPackageName || [],
+                optionalFeatureName: it.optionalFeatureName || '',
+                isWindowsApp: Boolean(it.isWindowsApp),
+                isOptionalFeature: Boolean(it.isOptionalFeature)
             }));
 
             const batchTitle = mode === 'install'
                 ? (currentLang === 'th' ? `กำลังติดตั้ง ${itemsPayload.length} รายการที่เลือก` : `Installing ${itemsPayload.length} selected items`)
                 : (currentLang === 'th' ? `กำลังถอนการติดตั้ง ${itemsPayload.length} รายการที่เลือก` : `Uninstalling ${itemsPayload.length} selected items`);
 
-            openInstallLogModal(batchTitle, `${mode.toUpperCase()} BATCH (${itemsPayload.length} items)`);
+            openInstallLogModal(batchTitle, '', true);
 
             if (window.chrome && window.chrome.webview) {
                 window.chrome.webview.postMessage({
@@ -5997,6 +7705,11 @@
                     items: itemsPayload
                 });
             }
+        }
+
+        // รันการติดตั้งหรือถอนการติดตั้งโปรแกรมที่เลือกเป็นกลุ่ม (Batch Run - ส่งต่อไปยังขั้นตอนยืนยัน)
+        function runBatchSelected(mode) {
+            requestBatchSelected(mode);
         }
 
         // แสดงรายการการ์ดโปรแกรม (แบบภาพที่ 1: Checkbox, Winhance Icon, Bold Title, Link, Installed Badge, ไม่มีปุ่มรันโปรแกรม)
@@ -6141,7 +7854,7 @@
         }
 
         // เปิดหน้าต่าง Log แสดงขั้นตอนการติดตั้งแบบเรียลไทม์
-        function openInstallLogModal(appName, cmd) {
+        function openInstallLogModal(appName, cmd, isBatch = false) {
             const t = UI_STRINGS[currentLang];
             const backdrop = document.getElementById('installLogBackdrop');
             const modal = document.getElementById('installLogModal');
@@ -6185,8 +7898,8 @@
                 modal.classList.add('log-modal-visible');
             });
 
-            if (window.chrome && window.chrome.webview) {
-                // รันคำสั่งจริงบนระบบ Windows ผ่าน PowerShell
+            if (!isBatch && window.chrome && window.chrome.webview && cmd) {
+                // รันคำสั่งจริงเฉพาะ Single Run (ไม่ใช่ Batch)
                 window.chrome.webview.postMessage({
                     type: 'run',
                     appName: appName,
@@ -6914,26 +8627,64 @@
             }
         };
 
-        // ผูกการลากหน้าต่าง (Drag Window) บริเวณแถบบนสุด (Red box header) เลื่อนตำแหน่งโปรแกรมได้อย่างราบรื่น
+        // ผูกการลากหน้าต่าง (Drag Window) และ ดับเบิลคลิกขยาย/คืนขนาดหน้าต่าง (Double Click Maximize/Restore) บริเวณแถบบนสุด (Red box header)
         document.addEventListener('DOMContentLoaded', () => {
-            const titleBar = document.getElementById('appTitleBar') || document.querySelector('.app-header > div:first-child');
-            if (titleBar) {
-                titleBar.addEventListener('mousedown', (e) => {
+            const headerEl = document.querySelector('header.app-header') || document.getElementById('appTitleBar');
+            if (headerEl) {
+                let dragArmed = false;
+                let startX = 0;
+                let startY = 0;
+                let lastMaximizeToggleTime = 0;
+
+                function safeToggleMaximizeApp() {
+                    const now = Date.now();
+                    if (now - lastMaximizeToggleTime < 300) return;
+                    lastMaximizeToggleTime = now;
+                    toggleMaximizeApp();
+                }
+
+                headerEl.addEventListener('mousedown', (e) => {
                     if (e.button !== 0) return;
-                    // หากคลิกที่ปุ่ม, ช่องค้นหา, หรือดรอปดาวน์ ให้ทำงานตามปกติ ไม่เริ่มลาก
+                    // หากคลิกที่ปุ่ม, ช่องค้นหา, หรือดรอปดาวน์ ให้ทำงานตามปกติ ไม่เริ่มลากหรือขยาย
                     if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, #sortDropdownWrapper, [role="button"]')) {
+                        dragArmed = false;
                         return;
                     }
-                    if (window.chrome && window.chrome.webview) {
-                        window.chrome.webview.postMessage({ type: 'drag' });
+
+                    // เมื่อคลิกครั้งที่ 2 (ดับเบิลคลิก) ให้ขยาย/คืนขนาดหน้าต่างทันที
+                    if (e.detail >= 2) {
+                        dragArmed = false;
+                        safeToggleMaximizeApp();
+                        return;
+                    }
+
+                    dragArmed = true;
+                    startX = e.screenX;
+                    startY = e.screenY;
+                });
+
+                window.addEventListener('mousemove', (e) => {
+                    if (!dragArmed) return;
+                    const dx = Math.abs(e.screenX - startX);
+                    const dy = Math.abs(e.screenY - startY);
+                    // เมื่อเลื่อนเมาส์เกิน 3 พิกเซลขณะกดปุ่มซ้าย จึงส่งคำสั่งลากหน้าต่าง (Drag Window)
+                    if (dx > 3 || dy > 3) {
+                        dragArmed = false;
+                        if (window.chrome && window.chrome.webview) {
+                            window.chrome.webview.postMessage({ type: 'drag' });
+                        }
                     }
                 });
 
-                titleBar.addEventListener('dblclick', (e) => {
+                window.addEventListener('mouseup', () => {
+                    dragArmed = false;
+                });
+
+                headerEl.addEventListener('dblclick', (e) => {
                     if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, #sortDropdownWrapper, [role="button"]')) {
                         return;
                     }
-                    toggleMaximizeApp();
+                    safeToggleMaximizeApp();
                 });
             }
         });
@@ -7017,5 +8768,35 @@
             enableDragAndWheelScroll(document.getElementById('mainCategoryBar'));
         });
 </script>
+
+    <!-- หน้าต่างยืนยันการติดตั้ง / ถอนการติดตั้ง (Confirm Action Modal ตรงตามรูปภาพ 100%) -->
+    <div id="batchConfirmModal" style="display:none;" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/65 backdrop-blur-xs opacity-0 pointer-events-none transition-all duration-200">
+        <div class="w-full max-w-sm rounded-2xl p-6 shadow-2xl transition-all scale-95 border theme-modal border-zinc-700/60" id="batchConfirmBox">
+            <h2 id="batchConfirmTitle" class="text-base font-bold theme-text-primary mb-2">Confirm Installation</h2>
+            <p id="batchConfirmSubtitle" class="text-xs theme-text-secondary leading-relaxed mb-4 whitespace-pre-line">These items will be installed.&#10;Do you want to continue?</p>
+            <div id="batchConfirmList" class="border border-zinc-500/40 bg-black/15 dark:bg-black/35 rounded-xl p-3 mb-5 max-h-44 overflow-y-auto app-scroll flex flex-col gap-1.5 font-medium text-xs theme-text-primary select-text">
+                <!-- รายการโปรแกรมที่เลือกจะถูกแสดงที่นี่ -->
+            </div>
+            <div class="flex items-center gap-3">
+                <button
+                    id="batchConfirmContinueBtn"
+                    type="button"
+                    onclick="proceedBatchAction()"
+                    class="flex-1 py-2.5 rounded-xl text-xs font-semibold bg-blue-500 hover:bg-blue-400 text-white shadow-sm transition-all active:scale-95 cursor-pointer text-center"
+                >
+                    Continue
+                </button>
+                <button
+                    id="batchConfirmCancelBtn"
+                    type="button"
+                    onclick="closeBatchConfirmModal()"
+                    class="flex-1 py-2.5 rounded-xl text-xs font-medium theme-input border theme-border hover:theme-hover theme-text-primary transition-all active:scale-95 cursor-pointer text-center"
+                >
+                    Cancel
+                </button>
+            </div>
+        </div>
+    </div>
+
 </body>
 </html>

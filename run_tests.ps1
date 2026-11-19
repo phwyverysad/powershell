@@ -169,6 +169,39 @@ print(f'STRICT_DETECTION_OK: {len(installed)} detected, 0 false positives')
 
 Assert-Test ($detectOutput.Contains("STRICT_DETECTION_OK")) "Strict detection accurately detects real apps and rejects false positives (DirectX/Java not falsely detected)"
 
+# ----------------------------------------------------
+# 7. Verifying Windows Apps & Features, Confirm Modal & Copy Log
+# ----------------------------------------------------
+Write-Host "`n[7] Verifying Windows Apps, Confirm Modal, Copy Log & Fixes..." -ForegroundColor Yellow
+
+# 7.1 Windows Apps & Features Category
+Assert-Test ($html.Contains('"id": "winapps"') -or $html.Contains("id: 'winapps'")) "Main category 'Windows Apps & Features' (winapps) exists in catalogData"
+Assert-Test ($html.Contains("แอพและฟีเจอร์ของ Windows")) "Category title 'แอพและฟีเจอร์ของ Windows' exists"
+Assert-Test ($html.Contains("windows-app-3d-viewer") -and $html.Contains("feature-wsl")) "Windows Apps (3D Viewer) and Features (WSL) are integrated into catalog"
+
+# 7.2 Confirmation Modal (Confirm Installation / Uninstallation)
+Assert-Test ($html.Contains('id="batchConfirmModal"')) "Batch confirmation modal container exists"
+Assert-Test ($html.Contains('id="batchConfirmBox"') -and $html.Contains('id="batchConfirmList"')) "Batch confirmation box and items list exist"
+Assert-Test ($html.Contains('id="batchConfirmContinueBtn"') -and $html.Contains('id="batchConfirmCancelBtn"')) "Continue and Cancel buttons exist in confirmation modal"
+Assert-Test ($html.Contains('function requestBatchSelected') -and $html.Contains('function proceedBatchAction')) "Confirmation modal workflow functions implemented"
+
+# 7.3 Copy Log Button in Install Modal
+Assert-Test ($html.Contains('id="copyLogBtn"')) "Copy Log button exists in install log modal"
+Assert-Test ($html.Contains('function copyLogContent')) "copyLogContent() function implemented with clipboard write and toast"
+
+# 7.4 Fix INSTALL BATCH syntax error
+Assert-Test ($html.Contains('!isBatch && window.chrome && window.chrome.webview && cmd')) "openInstallLogModal prevents executing batch title as shell command, eliminating 'INSTALL BATCH' syntax error"
+
+# 7.5 Title Bar Double-Click Window Toggle
+Assert-Test ($html.Contains('safeToggleMaximizeApp') -and $html.Contains('e.detail >= 2')) "Title bar header supports double-click window maximize/restore with debounce"
+
+# 7.6 Dark Mode Toolbar Shadows & Depth
+Assert-Test ($html.Contains('html.dark #mainActionToolbar') -and $html.Contains('inset 0 1px 0')) "Dark mode toolbar has floating box-shadow, highlight and depth"
+Assert-Test ($html.Contains('html.dark #mainActionToolbar button.theme-input')) "Toolbar buttons in dark mode have elevated shadows and visible borders"
+
+# 7.7 GitHub Profile Button
+Assert-Test ($html.Contains('id="githubBtn"') -and $html.Contains('https://github.com/phwyverysad')) "GitHub profile button exists before theme toggle button with link to https://github.com/phwyverysad"
+
 $sw.Stop()
 Write-Host "`n====================================================" -ForegroundColor Cyan
 Write-Host " ALL $passCount / $testCount TESTS PASSED SUCCESSFULLY in $($sw.ElapsedMilliseconds) ms!" -ForegroundColor Green
