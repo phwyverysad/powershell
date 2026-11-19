@@ -17,6 +17,8 @@ public static extern bool ShowWindow(System.IntPtr hWnd, int nCmdShow);
 public static extern bool SetForegroundWindow(System.IntPtr hWnd);
 [System.Runtime.InteropServices.DllImport("kernel32.dll")]
 public static extern System.IntPtr GetConsoleWindow();
+[System.Runtime.InteropServices.DllImport("dwmapi.dll")]
+public static extern int DwmSetWindowAttribute(System.IntPtr hwnd, int attr, ref int attrValue, int attrSize);
 "@ -ErrorAction SilentlyContinue
     }
     $ch = [WinUtil.LauncherWinUtil]::GetConsoleWindow()
@@ -82,7 +84,7 @@ function Start-LauncherApp {
     }
 
     if (-not $htmlContent) {
-        $htmlContent = "<html><body style='background:transparent;color:white;font-family:sans-serif;'><div style='background:#1e1f22;padding:24px;border-radius:16px;'>Cannot load GUI template. Check internet connection.</div></body></html>"
+        $htmlContent = "<html><body style='background:#09090b;color:white;font-family:sans-serif;'><div style='padding:24px;'>Cannot load GUI template. Check internet connection.</div></body></html>"
     }
 
     Add-Type -AssemblyName PresentationFramework, PresentationCore, WindowsBase, System.Web
@@ -91,18 +93,19 @@ function Start-LauncherApp {
 
     $env:WEBVIEW2_USER_DATA_FOLDER = Join-Path $cacheDir "WebView2Data"
 
+    # WPF Window with full Topmost and hardware-accelerated click support
     $window = New-Object System.Windows.Window
     $window.Title = "All-in-One Launcher"
     $window.Width = 1180
     $window.Height = 740
     $window.WindowStyle = "None"
-    $window.AllowsTransparency = $true
-    $window.Background = [System.Windows.Media.Brushes]::Transparent
+    $window.AllowsTransparency = $false
+    $window.Background = [System.Windows.Media.Brushes]::Black
     $window.WindowStartupLocation = "CenterScreen"
     $window.ResizeMode = "CanResize"
+    $window.Topmost = $true
 
     $wv = New-Object Microsoft.Web.WebView2.Wpf.WebView2
-    $wv.DefaultBackgroundColor = [System.Drawing.Color]::Transparent
     $window.Content = $wv
 
     $script:activeProcess = $null
@@ -119,7 +122,11 @@ function Start-LauncherApp {
                     switch ($payload.type) {
                         "drag" {
                             $window.Dispatcher.Invoke([Action]{
-                                try { $window.DragMove() } catch {}
+                                try {
+                                    if ([System.Windows.Input.Mouse]::LeftButton -eq [System.Windows.Input.MouseButtonState]::Pressed) {
+                                        $window.DragMove()
+                                    }
+                                } catch {}
                             })
                         }
                         "minimize" {
@@ -252,8 +259,15 @@ function Start-LauncherApp {
         try {
             $hwnd = (New-Object System.Windows.Interop.WindowInteropHelper($window)).Handle
             if ($hwnd -ne [System.IntPtr]::Zero) {
+                # Windows 11 DWM rounded corners (DWMWA_WINDOW_CORNER_PREFERENCE = 33, DWMWCP_ROUND = 2)
+                $cornerPref = 2
+                [WinUtil.LauncherWinUtil]::DwmSetWindowAttribute($hwnd, 33, [ref]$cornerPref, 4)
+                [void][WinUtil.LauncherWinUtil]::ShowWindow($hwnd, 5)
                 [void][WinUtil.LauncherWinUtil]::SetForegroundWindow($hwnd)
             }
+            $window.Topmost = $true
+            $window.Activate()
+            $window.Focus()
         } catch {}
     })
 

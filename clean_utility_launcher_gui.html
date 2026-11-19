@@ -53,15 +53,13 @@
 
         body {
             font-family: 'Plus Jakarta Sans', 'IBM Plex Sans Thai', -apple-system, BlinkMacSystemFont, sans-serif;
-            background-color: transparent !important;
+            background-color: var(--bg-window) !important;
             color: var(--text-primary);
             -webkit-font-smoothing: antialiased;
             -webkit-user-select: none;
-            -moz-user-select: none;
-            -ms-user-select: none;
             user-select: none;
             margin: 0;
-            padding: 8px;
+            padding: 0;
             overflow: hidden;
             width: 100vw;
             height: 100vh;
@@ -239,6 +237,7 @@
 
         /* อนิเมชั่น Log Overlay & Modal */
         .log-backdrop-hidden {
+            display: none !important;
             opacity: 0;
             pointer-events: none;
         }
@@ -317,10 +316,10 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex items-center justify-center p-2 select-none bg-transparent">
+<body class="h-screen w-screen overflow-hidden flex items-center justify-center p-0 m-0 select-none">
 
     <!-- หน้าต่างแอปพลิเคชันหลัก (Desktop App Window Frame แนวนอน) -->
-    <div id="appWindow" class="w-full h-full rounded-[24px] shadow-[0_24px_60px_-15px_rgba(15,23,42,0.35)] border flex flex-col overflow-hidden relative">
+    <div id="appWindow" class="w-full h-full border-0 flex flex-col overflow-hidden relative">
 
         <!-- Canvas ตัวอักษรไหลครอบคลุมทั้งหน้าต่างแอปตั้งแต่ขอบบนสุดจนถึงด้านล่างสุด -->
         <canvas id="matrixCanvas"></canvas>
@@ -630,7 +629,7 @@
     </div>
 
     <!-- แถบ Dock ด้านล่างเมื่อกดย่อหน้าต่าง (Minimize) -->
-    <div id="minimizedDock" class="fixed bottom-5 left-1/2 -translate-x-1/2 opacity-0 translate-y-4 pointer-events-none transition-all duration-300 z-30">
+    <div id="minimizedDock" style="display:none;" class="fixed bottom-5 left-1/2 -translate-x-1/2 opacity-0 translate-y-4 pointer-events-none transition-all duration-300 z-30">
         <button
             onclick="restoreApp()"
             class="flex items-center gap-2.5 px-4 py-2.5 rounded-2xl theme-surface border shadow-xl hover:scale-105 active:scale-95 transition-all"
@@ -646,7 +645,7 @@
     </div>
 
     <!-- ปุ่มเปิดแอปใหม่เมื่อกดปิดหน้าต่าง (Close) -->
-    <div id="closedLauncher" class="fixed inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-20">
+    <div id="closedLauncher" style="display:none;" class="fixed inset-0 flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300 z-20">
         <button
             onclick="reopenApp()"
             class="group flex flex-col items-center gap-3 p-6 rounded-3xl theme-surface border shadow-lg hover:shadow-xl hover:-translate-y-1 transition-all"
@@ -2160,12 +2159,13 @@
             }
         };
 
-        // ผูกการลากหน้าต่าง (Drag Window) บน Desktop
+        // ผูกการลากหน้าต่าง (Drag Window) บน Desktop ให้คลิกได้ทุกปุ่ม 100%
         document.addEventListener('DOMContentLoaded', () => {
             const appHeader = document.querySelector('.app-header');
             if (appHeader) {
                 appHeader.addEventListener('mousedown', (e) => {
-                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, nav, [role="button"]')) {
+                    if (e.button !== 0) return;
+                    if (e.target.closest('button, input, select, textarea, a, #searchContainer, #langDropdownWrapper, nav, #mainCategoryBar, #subCategoryBar, .tab-indicator, [role="button"]')) {
                         return;
                     }
                     if (window.chrome && window.chrome.webview) {
