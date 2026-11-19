@@ -411,6 +411,9 @@
             backdrop-filter: blur(12px) !important;
             -webkit-backdrop-filter: blur(12px) !important;
         }
+        #mainActionToolbar.hidden {
+            display: none !important;
+        }
         #mainActionToolbar > div {
             display: flex !important;
             flex-direction: row !important;
@@ -8230,6 +8233,16 @@
             const currentMain = catalogData.find(c => c.id === activeMainId);
             if (!currentMain) return;
 
+            // ซ่อนแถบเครื่องมือหลัก (Red box Toolbar) เฉพาะในหมวดหมู่ Windows Defender ตามคำขอของผู้ใช้
+            const toolbar = document.getElementById('mainActionToolbar');
+            if (toolbar) {
+                if (activeMainId === 'defender') {
+                    toolbar.classList.add('hidden');
+                } else {
+                    toolbar.classList.remove('hidden');
+                }
+            }
+
             breadcrumbMain.textContent = getLocalizedText(currentMain.name);
 
             const itemsToDisplay = getCurrentlyDisplayedItems();
@@ -8251,12 +8264,54 @@
             }
 
             emptyState.classList.add('hidden');
+
+            const isDefender = activeMainId === 'defender';
+
             grid.innerHTML = itemsToDisplay.map((item, idx) => {
                 const isSelected = selectedItemIds.has(item.id);
                 const iconUrl = item.iconUrl || (item.wingetId ? `https://cdn.jsdelivr.net/gh/memstechtips/package-icons@main/icons/external/${item.wingetId.toLowerCase()}.png` : '');
                 const descText = getLocalizedText(item.desc);
                 const safeWebsite = item.website ? encodeURIComponent(item.website) : '';
                 const delay = Math.min(idx * 20, 200);
+
+                if (isDefender) {
+                    const safeName = encodeURIComponent(item.name);
+                    const safeCmd = encodeURIComponent(item.cmd || '');
+                    return `
+                        <div
+                            id="card-${item.id}"
+                            style="animation-delay: ${delay}ms;"
+                            onclick="runAction('${safeName}', '${safeCmd}')"
+                            class="app-card-item animate-card card-hover group relative border rounded-2xl p-4 flex items-center justify-between gap-3.5 transition-all duration-200 cursor-pointer select-none shadow-xs"
+                        >
+                            <div class="flex items-start gap-3.5 min-w-0 flex-1">
+                                <!-- ไอคอน SVG ประจำฟังก์ชันความปลอดภัย -->
+                                <div class="card-icon-box w-11 h-11 rounded-xl border flex items-center justify-center p-1.5 shrink-0 overflow-hidden shadow-xs">
+                                    ${item.iconSvg || SVG_ICONS.shield || SVG_ICONS.box}
+                                </div>
+
+                                <!-- รายละเอียดคำสั่งความปลอดภัย -->
+                                <div class="flex-1 min-w-0">
+                                    <div class="flex items-center justify-between gap-2">
+                                        <h3 class="card-title text-[14px] font-semibold leading-tight truncate">${item.name}</h3>
+                                    </div>
+                                    <p class="card-desc text-xs mt-1 line-clamp-2 leading-relaxed font-normal">${descText}</p>
+                                </div>
+                            </div>
+
+                            <!-- ปุ่มดำเนินการ (Action Run Button) ทันสมัย คลีน สไตล์เดียวกับธีม -->
+                            <button
+                                type="button"
+                                onclick="event.stopPropagation(); runAction('${safeName}', '${safeCmd}', this);"
+                                class="card-run-btn px-3 py-1.5 rounded-xl border theme-input theme-hover text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 shrink-0 theme-text-primary"
+                                title="${currentLang === 'th' ? 'ดำเนินการ' : 'Run'}"
+                            >
+                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
+                                <span>${currentLang === 'th' ? 'ดำเนินการ' : 'Run'}</span>
+                            </button>
+                        </div>
+                    `;
+                }
 
                 return `
                     <div
@@ -9504,12 +9559,18 @@
                 if (el.classList.contains('app-card-item')) {
                     const titleEl = el.querySelector('.card-title');
                     const name = titleEl ? titleEl.textContent.trim() : '';
-                    const isSel = el.classList.contains('is-selected');
                     const shortName = name.length > 20 ? name.substring(0, 18) + '...' : name;
+                    if (typeof activeMainId !== 'undefined' && activeMainId === 'defender') {
+                        return isTh ? `รัน ${shortName}` : `Run ${shortName}`;
+                    }
+                    const isSel = el.classList.contains('is-selected');
                     if (name) {
                         return isSel ? (isTh ? `ยกเลิก ${shortName}` : `Deselect ${shortName}`) : (isTh ? `เลือก ${shortName}` : `Select ${shortName}`);
                     }
                     return isTh ? 'เลือกโปรแกรม' : 'Select Program';
+                }
+                if (el.classList.contains('card-run-btn')) {
+                    return isTh ? 'ดำเนินการทันที' : 'Run Action';
                 }
 
                 // Subcategory Pills
