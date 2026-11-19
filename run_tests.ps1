@@ -223,6 +223,7 @@ Assert-Test ($html.Contains("id: 'defender'") -and $html.Contains("name: { th: '
 Assert-Test ($html.Contains("id: 'def-scan'") -and $html.Contains("id: 'def-protection'") -and $html.Contains("id: 'def-asr'") -and $html.Contains("id: 'def-maintenance'")) "Windows Defender has 4 dedicated subcategories"
 Assert-Test ($html.Contains("Start-MpScan") -and $html.Contains("Set-MpPreference") -and $html.Contains("Add-MpPreference")) "Windows Defender items include PowerShell security management commands"
 Assert-Test ($html.Contains("activeMainId === 'defender'") -and $html.Contains("toolbar.classList.add('hidden')")) "Action toolbar is hidden exclusively for Windows Defender category"
+Assert-Test ($html.Contains('toggleDefenderSwitch') -and $html.Contains('toggle-switch-track') -and $html.Contains('toggle-switch-thumb')) "Windows Defender cards feature interactive ON/OFF toggle switches"
 
 $sw.Stop()
 Write-Host "`n====================================================" -ForegroundColor Cyan

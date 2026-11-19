@@ -6958,6 +6958,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><path d="m16 12-4-4-4 4M12 16V8"></path></svg>`,
                                 website: '',
                                 cmd: 'Start-MpScan -ScanType QuickScan',
+                                offCmd: 'Stop-MpScan -ErrorAction SilentlyContinue; Write-Host "[OK] Quick scan stopped" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -6967,6 +6968,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="22" y1="12" x2="18" y2="12"></line><line x1="6" y1="12" x2="2" y2="12"></line><line x1="12" y1="6" x2="12" y2="2"></line><line x1="12" y1="22" x2="12" y2="18"></line></svg>`,
                                 website: '',
                                 cmd: 'Start-MpScan -ScanType FullScan',
+                                offCmd: 'Stop-MpScan -ErrorAction SilentlyContinue; Write-Host "[OK] Full scan stopped" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -6976,6 +6978,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 0 0-9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path><path d="M3 3v5h5"></path><path d="M3 12a9 9 0 0 0 9 9 9.75 9.75 0 0 0 6.74-2.74L21 16"></path><path d="M16 21h5v-5"></path></svg>`,
                                 website: '',
                                 cmd: 'Update-MpSignature',
+                                offCmd: 'Write-Host "[INFO] Security signatures are up to date" -ForegroundColor Green',
                                 installed: false
                             },
                             {
@@ -6985,6 +6988,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>`,
                                 website: '',
                                 cmd: 'Start-Process "windowsdefender:"',
+                                offCmd: 'Stop-Process -Name "SecHealthUI" -Force -ErrorAction SilentlyContinue; Write-Host "[OK] Windows Security closed" -ForegroundColor Yellow',
                                 installed: false
                             }
                         ]
@@ -7000,6 +7004,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line></svg>`,
                                 website: '',
                                 cmd: 'Set-MpPreference -PUAProtection Enabled',
+                                offCmd: 'Set-MpPreference -PUAProtection Disabled; Write-Host "[OK] PUA Protection Disabled" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -7009,6 +7014,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.5 19H9a7 7 0 1 1 6.71-9h1.79a4.5 4.5 0 1 1 0 9Z"></path></svg>`,
                                 website: '',
                                 cmd: 'Set-MpPreference -MAPSReporting Advanced; Set-MpPreference -SubmitSamplesConsent SendSafeSamples',
+                                offCmd: 'Set-MpPreference -MAPSReporting Disabled; Set-MpPreference -SubmitSamplesConsent NeverSend; Write-Host "[OK] Cloud Protection Disabled" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -7018,6 +7024,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="2" y1="12" x2="22" y2="12"></line><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"></path></svg>`,
                                 website: '',
                                 cmd: 'Set-MpPreference -EnableNetworkProtection Enabled',
+                                offCmd: 'Set-MpPreference -EnableNetworkProtection Disabled; Write-Host "[OK] Network Protection Disabled" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -7027,6 +7034,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>`,
                                 website: '',
                                 cmd: 'Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -DisableBehaviorMonitoring $false; Set-MpPreference -DisableIOAVProtection $false',
+                                offCmd: 'Set-MpPreference -DisableRealtimeMonitoring $true; Set-MpPreference -DisableBehaviorMonitoring $true; Set-MpPreference -DisableIOAVProtection $true; Write-Host "[OK] Real-time Monitoring Disabled" -ForegroundColor Yellow',
                                 installed: false
                             }
                         ]
@@ -7042,6 +7050,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg>`,
                                 website: '',
                                 cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids 56a863a9-875e-4185-98a7-b882c60b3ce5,d3e037e1-3eb8-44c8-a917-57927947596d -AttackSurfaceReductionRules_Actions Enabled,Enabled',
+                                offCmd: 'Remove-MpPreference -AttackSurfaceReductionRules_Ids 56a863a9-875e-4185-98a7-b882c60b3ce5,d3e037e1-3eb8-44c8-a917-57927947596d -ErrorAction SilentlyContinue; Write-Host "[OK] Malicious Scripts Blocking Disabled" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -7051,6 +7060,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>`,
                                 website: '',
                                 cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids d4f940ab-401b-4efc-aadc-ad5f3c50688a,3b576869-a4ec-4529-8536-b80a7769e899 -AttackSurfaceReductionRules_Actions Enabled,Enabled',
+                                offCmd: 'Remove-MpPreference -AttackSurfaceReductionRules_Ids d4f940ab-401b-4efc-aadc-ad5f3c50688a,3b576869-a4ec-4529-8536-b80a7769e899 -ErrorAction SilentlyContinue; Write-Host "[OK] Office Macro Exploits Blocking Disabled" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -7060,6 +7070,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="8" height="12" x="8" y="8" rx="2"></rect><path d="M12 8V2"></path><path d="M9 2h6"></path><circle cx="12" cy="14" r="1"></circle></svg>`,
                                 website: '',
                                 cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4 -AttackSurfaceReductionRules_Actions Enabled',
+                                offCmd: 'Remove-MpPreference -AttackSurfaceReductionRules_Ids b2b3f03d-6a65-4f7b-a9c7-1c7ef74a9ba4 -ErrorAction SilentlyContinue; Write-Host "[OK] Untrusted USB Executables Blocking Disabled" -ForegroundColor Yellow',
                                 installed: false
                             },
                             {
@@ -7069,6 +7080,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="18" height="11" x="3" y="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>`,
                                 website: '',
                                 cmd: 'Add-MpPreference -AttackSurfaceReductionRules_Ids 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 -AttackSurfaceReductionRules_Actions Enabled',
+                                offCmd: 'Remove-MpPreference -AttackSurfaceReductionRules_Ids 9e6c4e1f-7d60-472f-ba1a-a39ef669e4b2 -ErrorAction SilentlyContinue; Write-Host "[OK] LSASS Credential Protection Disabled" -ForegroundColor Yellow',
                                 installed: false
                             }
                         ]
@@ -7084,6 +7096,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18"></path><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path></svg>`,
                                 website: '',
                                 cmd: 'Remove-Item -Path "$env:ProgramData\\Microsoft\\Windows Defender\\Scans\\History\\Service\\DetectionHistory\\*" -Recurse -Force -ErrorAction SilentlyContinue; Restart-Service WinDefend -ErrorAction SilentlyContinue; Write-Host "[OK] Protection history cache cleared successfully" -ForegroundColor Green',
+                                offCmd: 'Write-Host "[INFO] Protection history cache is clean" -ForegroundColor Green',
                                 installed: false
                             },
                             {
@@ -7093,6 +7106,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"></path><line x1="9" y1="14" x2="15" y2="14"></line></svg>`,
                                 website: '',
                                 cmd: 'Start-Process "windowsdefender://threatsettings"',
+                                offCmd: 'Write-Host "[INFO] Exclusions window closed" -ForegroundColor Green',
                                 installed: false
                             },
                             {
@@ -7102,6 +7116,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="20" height="5" x="2" y="3" rx="1"></rect><path d="M4 8v11a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8"></path><path d="M10 12h4"></path></svg>`,
                                 website: '',
                                 cmd: 'Start-Process "windowsdefender://history"',
+                                offCmd: 'Write-Host "[INFO] Quarantine window closed" -ForegroundColor Green',
                                 installed: false
                             },
                             {
@@ -7111,6 +7126,7 @@
                                 iconSvg: `<svg class="w-5 h-5 theme-text-primary" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"></path><path d="M21 3v5h-5"></path><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"></path><path d="M8 16H3v5"></path></svg>`,
                                 website: '',
                                 cmd: 'Set-MpPreference -DisableRealtimeMonitoring $false; Set-MpPreference -DisableBehaviorMonitoring $false; Set-MpPreference -DisableIOAVProtection $false; Set-MpPreference -DisableScriptScanning $false; Set-MpPreference -PUAProtection Enabled; Write-Host "[OK] Windows Defender reset to secure defaults" -ForegroundColor Green',
+                                offCmd: 'Write-Host "[INFO] Secure defaults maintained" -ForegroundColor Green',
                                 installed: false
                             }
                         ]
@@ -8277,11 +8293,13 @@
                 if (isDefender) {
                     const safeName = encodeURIComponent(item.name);
                     const safeCmd = encodeURIComponent(item.cmd || '');
+                    const safeOffCmd = encodeURIComponent(item.offCmd || '');
+                    const isActive = !!defenderSwitchStates[item.id];
                     return `
                         <div
                             id="card-${item.id}"
                             style="animation-delay: ${delay}ms;"
-                            onclick="runAction('${safeName}', '${safeCmd}')"
+                            onclick="toggleDefenderSwitch('${item.id}', '${safeName}', '${safeCmd}', '${safeOffCmd}')"
                             class="app-card-item animate-card card-hover group relative border rounded-2xl p-4 flex items-center justify-between gap-3.5 transition-all duration-200 cursor-pointer select-none shadow-xs"
                         >
                             <div class="flex items-start gap-3.5 min-w-0 flex-1">
@@ -8299,16 +8317,28 @@
                                 </div>
                             </div>
 
-                            <!-- ปุ่มดำเนินการ (Action Run Button) ทันสมัย คลีน สไตล์เดียวกับธีม -->
-                            <button
-                                type="button"
-                                onclick="event.stopPropagation(); runAction('${safeName}', '${safeCmd}', this);"
-                                class="card-run-btn px-3 py-1.5 rounded-xl border theme-input theme-hover text-xs font-medium flex items-center gap-1.5 transition-all active:scale-95 shrink-0 theme-text-primary"
-                                title="${currentLang === 'th' ? 'ดำเนินการ' : 'Run'}"
-                            >
-                                <svg class="w-3.5 h-3.5 fill-current" viewBox="0 0 24 24"><polygon points="5 3 19 12 5 21 5 3"></polygon></svg>
-                                <span>${currentLang === 'th' ? 'ดำเนินการ' : 'Run'}</span>
-                            </button>
+                            <!-- สวิตช์ เปิด/ปิด (Toggle Switch) สไตล์ Modern iOS / Tailwind ทรงแคปซูล -->
+                            <div class="flex items-center gap-2.5 shrink-0 ml-2" onclick="event.stopPropagation(); toggleDefenderSwitch('${item.id}', '${safeName}', '${safeCmd}', '${safeOffCmd}');">
+                                <span class="text-[11px] font-semibold font-mono switch-label transition-colors duration-200 ${
+                                    isActive ? 'text-blue-600 dark:text-blue-400' : 'theme-text-muted'
+                                }">
+                                    ${isActive ? (currentLang === 'th' ? 'เปิด' : 'ON') : (currentLang === 'th' ? 'ปิด' : 'OFF')}
+                                </span>
+                                <div
+                                    role="switch"
+                                    aria-checked="${isActive ? 'true' : 'false'}"
+                                    class="toggle-switch-track relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-colors duration-200 ease-in-out focus:outline-hidden ${
+                                        isActive ? 'bg-blue-600 dark:bg-blue-500' : 'bg-zinc-300 dark:bg-zinc-700'
+                                    }"
+                                >
+                                    <span
+                                        aria-hidden="true"
+                                        class="toggle-switch-thumb pointer-events-none inline-block h-5 w-5 transform rounded-full bg-white shadow-sm ring-0 transition-transform duration-200 ease-in-out ${
+                                            isActive ? 'translate-x-5' : 'translate-x-0'
+                                        }"
+                                    ></span>
+                                </div>
+                            </div>
                         </div>
                     `;
                 }
@@ -8410,6 +8440,60 @@
             renderSubCategories();
             renderPrograms();
             scrollToTop();
+        }
+
+        // สถานะสวิตช์เปิด/ปิด ในหมวดหมู่ Windows Defender
+        const defenderSwitchStates = {
+            'def-pua-enable': true,
+            'def-cloud-protection': true,
+            'def-network-protection': true,
+            'def-behavior-monitoring': true,
+            'def-asr-scripts': true,
+            'def-asr-office': true,
+            'def-asr-usb': true,
+            'def-asr-credentials': true
+        };
+
+        function toggleDefenderSwitch(itemId, encodedName, encodedOnCmd, encodedOffCmd) {
+            const isCurrentlyOn = !!defenderSwitchStates[itemId];
+            const willBeOn = !isCurrentlyOn;
+            defenderSwitchStates[itemId] = willBeOn;
+
+            const name = decodeURIComponent(encodedName);
+            const cmd = decodeURIComponent(willBeOn ? encodedOnCmd : (encodedOffCmd || ''));
+
+            // อัปเดตสถานะ visual ของสวิตช์ทันที
+            const card = document.getElementById(`card-${itemId}`);
+            if (card) {
+                const track = card.querySelector('.toggle-switch-track');
+                const thumb = card.querySelector('.toggle-switch-thumb');
+                const label = card.querySelector('.switch-label');
+                if (track && thumb) {
+                    track.setAttribute('aria-checked', willBeOn ? 'true' : 'false');
+                    if (willBeOn) {
+                        track.classList.remove('bg-zinc-300', 'dark:bg-zinc-700');
+                        track.classList.add('bg-blue-600', 'dark:bg-blue-500');
+                        thumb.classList.remove('translate-x-0');
+                        thumb.classList.add('translate-x-5');
+                    } else {
+                        track.classList.remove('bg-blue-600', 'dark:bg-blue-500');
+                        track.classList.add('bg-zinc-300', 'dark:bg-zinc-700');
+                        thumb.classList.remove('translate-x-5');
+                        thumb.classList.add('translate-x-0');
+                    }
+                }
+                if (label) {
+                    label.textContent = willBeOn ? (currentLang === 'th' ? 'เปิด' : 'ON') : (currentLang === 'th' ? 'ปิด' : 'OFF');
+                    label.className = `text-[11px] font-semibold font-mono switch-label transition-colors duration-200 ${
+                        willBeOn ? 'text-blue-600 dark:text-blue-400' : 'theme-text-muted'
+                    }`;
+                }
+            }
+
+            // รันคำสั่งเปิดหรือปิดใน PowerShell พร้อมเปิดโมดอล Log
+            if (cmd) {
+                openInstallLogModal(name + (willBeOn ? ' [ON]' : ' [OFF]'), cmd);
+            }
         }
 
         // จำลองการรันโปรแกรมและเปิดหน้าต่างอนิเมชั่น Log กำลังติดตั้ง
@@ -9561,7 +9645,9 @@
                     const name = titleEl ? titleEl.textContent.trim() : '';
                     const shortName = name.length > 20 ? name.substring(0, 18) + '...' : name;
                     if (typeof activeMainId !== 'undefined' && activeMainId === 'defender') {
-                        return isTh ? `รัน ${shortName}` : `Run ${shortName}`;
+                        const rawId = el.id ? el.id.replace('card-', '') : '';
+                        const isNowOn = !!defenderSwitchStates[rawId];
+                        return isNowOn ? (isTh ? `สลับปิด ${shortName}` : `Turn OFF ${shortName}`) : (isTh ? `สลับเปิด ${shortName}` : `Turn ON ${shortName}`);
                     }
                     const isSel = el.classList.contains('is-selected');
                     if (name) {
@@ -9569,8 +9655,13 @@
                     }
                     return isTh ? 'เลือกโปรแกรม' : 'Select Program';
                 }
-                if (el.classList.contains('card-run-btn')) {
-                    return isTh ? 'ดำเนินการทันที' : 'Run Action';
+                if (el.classList.contains('toggle-switch-track') || el.closest('.toggle-switch-track')) {
+                    const card = el.closest('.app-card-item');
+                    const titleEl = card ? card.querySelector('.card-title') : null;
+                    const name = titleEl ? titleEl.textContent.trim() : '';
+                    const shortName = name.length > 20 ? name.substring(0, 18) + '...' : name;
+                    const isNowOn = card && card.querySelector('.toggle-switch-track')?.getAttribute('aria-checked') === 'true';
+                    return isNowOn ? (isTh ? `สลับปิด ${shortName}` : `Turn OFF ${shortName}`) : (isTh ? `สลับเปิด ${shortName}` : `Turn ON ${shortName}`);
                 }
 
                 // Subcategory Pills
