@@ -546,8 +546,7 @@ function Start-LauncherApp {
         }
     })
 
-    $app = New-Object System.Windows.Application
-    $app.Run($window) | Out-Null
+    $window.ShowDialog() | Out-Null
 }
 
 Start-LauncherApp
