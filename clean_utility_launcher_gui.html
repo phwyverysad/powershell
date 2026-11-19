@@ -285,7 +285,7 @@
         }
 
         ::view-transition-group(app-window) {
-            border-radius: 24px;
+            border-radius: 0;
             overflow: hidden;
         }
 
@@ -293,7 +293,7 @@
         ::view-transition-new(app-window) {
             animation: none;
             mix-blend-mode: normal;
-            border-radius: 24px;
+            border-radius: 0;
         }
 
         ::view-transition-old(app-window) {
@@ -316,7 +316,7 @@
         }
     </style>
 </head>
-<body class="h-screen w-screen overflow-hidden flex items-center justify-center p-0 m-0 select-none">
+<body class="w-screen h-screen overflow-hidden p-0 m-0 select-none">
 
     <!-- หน้าต่างแอปพลิเคชันหลัก (Desktop App Window Frame แนวนอน) -->
     <div id="appWindow" class="w-full h-full border-0 flex flex-col overflow-hidden relative">
@@ -1170,6 +1170,26 @@
                 initMatrixGrid();
             }, 360);
         }
+
+        
+        // ซิงค์สถานะการขยาย/คืนขนาดหน้าต่างกับ Desktop OS
+        window.setWindowState = function(isMax) {
+            isMaximized = !!isMax;
+            const icon = document.getElementById('maximizeIcon');
+            const btn = document.getElementById('maximizeBtn');
+            const t = UI_STRINGS[currentLang] || {};
+            if (isMaximized) {
+                if (btn) btn.title = t.restoreTitle || 'คืนขนาด';
+                if (icon) icon.innerHTML = '<rect x="7" y="4" width="13" height="13" rx="2"></rect><path d="M4 8v10a2 2 0 0 0 2 2h10"></path>';
+            } else {
+                if (btn) btn.title = t.maxTitle || 'ขยายเต็มจอ';
+                if (icon) icon.innerHTML = '<rect x="4" y="4" width="16" height="16" rx="2.5"></rect>';
+            }
+            setTimeout(() => {
+                updateMainTabIndicator();
+                initMatrixGrid();
+            }, 60);
+        };
 
         function toggleMaximizeApp() {
             if (window.chrome && window.chrome.webview) {
