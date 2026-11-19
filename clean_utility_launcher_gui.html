@@ -1155,9 +1155,9 @@
     </div>
 
         <!-- หน้าต่าง Log แสดงอนิเมชั่นกำลังติดตั้ง / รันโปรแกรม (อยู่ภายในขอบหน้าต่างแอป) -->
-        <!-- หน้าต่างคู่มือการใช้งาน / Tutorial & Tips Modal (คลีน ไร้ไอคอนรกรุงรัง ครอบคลุมทั้งหน้าต่างแอป) -->
-        <div id="guideModal" style="display:none;" onclick="if(event.target===this)closeGuideModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-black/75 backdrop-blur-[6px] opacity-0 pointer-events-none transition-all duration-200">
-            <div class="w-full max-w-lg rounded-2xl p-6 shadow-2xl transition-all scale-95 border theme-modal border-zinc-700/60 max-h-[85vh] flex flex-col" id="guideBox">
+        <!-- หน้าต่างคู่มือการใช้งาน / Tutorial & Tips Modal (คลีน โทนเดียว พร้อมอนิเมชั่นและไอคอนตัวอย่าง) -->
+        <div id="guideModal" style="display:none;" onclick="if(event.target===this)closeGuideModal()" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 dark:bg-black/75 backdrop-blur-[6px] opacity-0 pointer-events-none transition-all duration-300">
+            <div class="w-full max-w-lg rounded-2xl p-6 shadow-2xl transition-all duration-300 ease-out transform scale-90 translate-y-4 opacity-0 border theme-modal border-zinc-700/60 max-h-[85vh] flex flex-col" id="guideBox">
                 <!-- Modal Header -->
                 <div class="flex items-center justify-between pb-3 border-b border-zinc-500/20 mb-4 shrink-0">
                     <div>
@@ -1178,42 +1178,83 @@
                     </button>
                 </div>
 
-                <!-- Modal Content (Scrollable list of tips - คลีน ไร้ไอคอนรกรุงรัง) -->
+                <!-- Modal Content (Scrollable list of tips - คลีน โทนเดียว พร้อมไอคอนตัวอย่าง) -->
                 <div class="overflow-y-auto app-scroll flex-1 pr-1 space-y-2.5 text-xs theme-text-secondary leading-relaxed">
                     <!-- Tip 1: Target Cursor -->
-                    <div class="p-3.5 rounded-xl border border-blue-500/20 bg-blue-500/5 space-y-1.5">
+                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="font-semibold text-xs theme-text-primary">วิธีเปิด / ปิด Target Cursor</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-blue-500/15 text-blue-500 font-mono font-medium">Reticle Icon</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg theme-input border theme-border flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-300 shadow-xs" title="ไอคอนเป้าเล็ง (Reticle)">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <circle cx="12" cy="12" r="3"></circle>
+                                        <path d="M3 12h3M18 12h3M12 3v3M12 18v3"></path>
+                                    </svg>
+                                </span>
+                                <span class="font-semibold text-xs theme-text-primary">วิธีเปิด / ปิด Target Cursor</span>
+                            </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-500/10 border border-zinc-500/15 text-zinc-600 dark:text-zinc-400 font-mono font-medium">Reticle Icon</span>
                         </div>
-                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">สามารถกดปุ่ม <b>เป้าเล็ง (Reticle)</b> บนแถบขวาบนสุดเพื่อ <b>เปิดหรือปิด</b> Target Cursor ได้ตลอดเวลา ระบบจะบันทึกสถานะล่าสุดไว้ให้อัตโนมัติ</p>
+                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">
+                            กดปุ่มไอคอนเป้าเล็ง <span class="inline-flex items-center justify-center w-5 h-5 rounded border theme-border theme-input align-middle mx-0.5"><svg class="w-3 h-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"></circle><path d="M3 12h3M18 12h3M12 3v3M12 18v3"></path></svg></span> บนแถบขวาบนสุดข้างปุ่มธีม เพื่อ <b>เปิดหรือปิด</b> Target Cursor ได้ตลอดเวลา ระบบจะบันทึกสถานะไว้ให้อัตโนมัติ
+                        </p>
                     </div>
 
                     <!-- Tip 2: Scroll to top on category re-click -->
-                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-1.5">
+                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="font-semibold text-xs theme-text-primary">เลื่อนขึ้นบนสุดอัตโนมัติ (Scroll to Top)</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 font-mono font-medium">Scroll to Top</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg theme-input border theme-border flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-300 shadow-xs" title="เลื่อนขึ้นบนสุด (Scroll to Top)">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="18 15 12 9 6 15"></polyline>
+                                    </svg>
+                                </span>
+                                <span class="font-semibold text-xs theme-text-primary">เลื่อนขึ้นบนสุดอัตโนมัติ (Scroll to Top)</span>
+                            </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-500/10 border border-zinc-500/15 text-zinc-600 dark:text-zinc-400 font-mono font-medium">Scroll to Top</span>
                         </div>
-                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">เมื่อเลื่อนดูรายการลงมาด้านล่าง หากต้องการกลับขึ้นบนสุดอย่างรวดเร็ว ให้กดที่ <b>หมวดหมู่หลัก</b> หรือ <b>หมวดหมู่ที่กำลังดูอยู่ซ้ำอีกครั้ง</b> หน้าจอจะเลื่อนขึ้นบนสุดทันที</p>
+                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">
+                            เมื่อเลื่อนดูรายการลงมาด้านล่าง กดที่ <b>หมวดหมู่หลัก</b> หรือ <b>หมวดหมู่ที่กำลังดูอยู่ซ้ำอีกครั้ง</b> หน้าจอจะเลื่อนกลับขึ้นบนสุดทันที
+                        </p>
                     </div>
 
                     <!-- Tip 3: Selection & Batch Install -->
-                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-1.5">
+                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="font-semibold text-xs theme-text-primary">การเลือกและติดตั้งทีละหลายโปรแกรม</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-violet-500/15 text-violet-600 dark:text-violet-400 font-mono font-medium">Batch Action</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg theme-input border theme-border flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-300 shadow-xs" title="เลือกและติดตั้ง (Batch Action)">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
+                                    </svg>
+                                </span>
+                                <span class="font-semibold text-xs theme-text-primary">การเลือกและติดตั้งทีละหลายโปรแกรม</span>
+                            </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-500/10 border border-zinc-500/15 text-zinc-600 dark:text-zinc-400 font-mono font-medium">Batch Action</span>
                         </div>
-                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">คลิกที่การ์ดเพื่อเลือก (หรือกดปุ่ม 'เลือกที่ยังไม่ได้ติดตั้ง') จากนั้นกดปุ่มสีฟ้า <b>'ติดตั้งที่เลือก'</b> หน้าต่างยืนยันจะแสดงสรุปรายการก่อนเริ่มติดตั้งจริง</p>
+                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">
+                            คลิกที่การ์ดเพื่อเลือก (หรือกดปุ่ม 'เลือกที่ยังไม่ได้ติดตั้ง') จากนั้นกดปุ่ม <b>'ติดตั้งที่เลือก'</b> หน้าต่างยืนยันจะแสดงสรุปรายการก่อนเริ่มติดตั้งจริง
+                        </p>
                     </div>
 
                     <!-- Tip 4: Instant Search & Sorting -->
-                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-1.5">
+                    <div class="p-3.5 rounded-xl border theme-border theme-surface space-y-2">
                         <div class="flex items-center justify-between">
-                            <span class="font-semibold text-xs theme-text-primary">การค้นหาและเรียงลำดับ A-Z</span>
-                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-amber-500/15 text-amber-600 dark:text-amber-400 font-mono font-medium">A-Z Sort</span>
+                            <div class="flex items-center gap-2">
+                                <span class="w-6 h-6 rounded-lg theme-input border theme-border flex items-center justify-center shrink-0 text-zinc-600 dark:text-zinc-300 shadow-xs" title="ค้นหาและเรียงลำดับ (A-Z)">
+                                    <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        <line x1="4" y1="6" x2="16" y2="6"></line>
+                                        <line x1="4" y1="12" x2="12" y2="12"></line>
+                                        <line x1="4" y1="18" x2="8" y2="18"></line>
+                                        <polyline points="15 15 18 18 21 15"></polyline>
+                                        <line x1="18" y1="9" x2="18" y2="18"></line>
+                                    </svg>
+                                </span>
+                                <span class="font-semibold text-xs theme-text-primary">การค้นหาและเรียงลำดับ A-Z</span>
+                            </div>
+                            <span class="text-[10px] px-2 py-0.5 rounded-md bg-zinc-500/10 border border-zinc-500/15 text-zinc-600 dark:text-zinc-400 font-mono font-medium">A-Z Sort</span>
                         </div>
-                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">พิมพ์ค้นหาได้ทั้งภาษาไทยและอังกฤษ พร้อมเมนูเรียงลำดับที่จัดให้ตัวอักษร A-Z แสดงขึ้นก่อนตัวเลขและสัญลักษณ์อย่างเป็นระเบียบ</p>
+                        <p class="text-[11.5px] leading-relaxed theme-text-secondary">
+                            พิมพ์ค้นหาได้ทั้งภาษาไทยและอังกฤษ พร้อมเมนูเรียงลำดับที่จัดให้ตัวอักษร A-Z แสดงขึ้นก่อนตัวเลขและสัญลักษณ์อย่างเป็นระเบียบ
+                        </p>
                     </div>
                 </div>
 
@@ -7911,8 +7952,15 @@
             const box = document.getElementById('guideBox');
             if (!modal) return;
             modal.style.display = 'flex';
-            modal.classList.remove('opacity-0', 'pointer-events-none');
-            if (box) box.classList.remove('scale-95');
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    if (box) {
+                        box.classList.remove('scale-90', 'translate-y-4', 'opacity-0');
+                        box.classList.add('scale-100', 'translate-y-0', 'opacity-100');
+                    }
+                });
+            });
         }
 
         function closeGuideModal() {
@@ -7920,10 +7968,13 @@
             const box = document.getElementById('guideBox');
             if (!modal) return;
             modal.classList.add('opacity-0', 'pointer-events-none');
-            if (box) box.classList.add('scale-95');
+            if (box) {
+                box.classList.remove('scale-100', 'translate-y-0', 'opacity-100');
+                box.classList.add('scale-90', 'translate-y-4', 'opacity-0');
+            }
             setTimeout(() => {
                 modal.style.display = 'none';
-            }, 200);
+            }, 280);
         }
 
         function closeBatchConfirmModal() {
